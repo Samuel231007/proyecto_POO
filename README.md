@@ -21,6 +21,21 @@ Trabajamos con una rama por cada requerimiento (RF o RNF), además de `main`, as
 
 En total son 11 ramas (RF-01 a RF-10 y RNF-01), más `main`. Cada rama se llama igual que el requerimiento que le corresponde, en minúsculas.
 
+## Ramas por clase
+
+Además de las ramas de requerimiento, tenemos una rama por cada clase del diseño, para trabajar su implementación de forma aislada. Estas se nombran igual que la clase en Java (con mayúscula inicial):
+
+| Rama | Clase |
+|---|---|
+| `Usuario` | Clase padre de Tecnico y Cliente |
+| `Tecnico` | Técnicos registrados |
+| `Cliente` | Clientes registrados |
+| `Solicitud` | Solicitudes de servicio |
+| `OrdenServicio` | Órdenes de servicio |
+| `Servicio` | Tipos de servicio |
+| `Garantia` | Garantías de los servicios |
+| `Calificacion` | Calificaciones de los clientes |
+
 ## Cómo trabajamos
 
 Antes de crear una rama o empezar a trabajar en ella, hacemos `git pull` sobre `main` para partir siempre de la última versión.
