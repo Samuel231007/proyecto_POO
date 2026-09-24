@@ -1,5 +1,27 @@
 # Estructura del proyecto
 
+## 1. Conformación del equipo y roles
+
+| Integrante | Rol inicial |
+|---|---|
+| Valeria Morales Quintero | Responsable del producto |
+| Valerie Sofía Medieta | Responsable del producto |
+| Valeria Alvarado | Responsable de diseño |
+| Juan David Lara | Responsable de diseño |
+| Sara Gómez | Responsable de calidad |
+| Samuel Rusinque | Responsable de integración |
+
+## 2. Repositorio
+- **Enlace al repositorio:** [https://github.com/Samuel231007/proyecto_POO](https://github.com/Samuel231007/proyecto_POO)
+- **Nota:** Se cuenta con el docente invitado agregado como colaborador y se valida que cada integrante cuenta con al menos un commit registrado en el historial.
+
+---
+
+## 3. Documentación del proyecto
+Toda la información correspondiente a la trazabilidad, registro de decisiones y bitácora de uso de IA se encuentra debidamente documentada y organizada dentro de este repositorio.
+
+---
+
 ## Cómo organizamos las ramas
 
 Trabajamos con una rama por cada requerimiento (RF o RNF), además de `main`, así cada integrante avanza en lo suyo sin pisar el trabajo de los demás.
