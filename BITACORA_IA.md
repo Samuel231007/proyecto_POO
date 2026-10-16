@@ -30,4 +30,20 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 
 ---
 
+---
+
+## Registro 3 · Validaciones de pago con excepciones
+
+| Campo | Detalle |
+|---|---|
+| **Fecha** | 16/10/2026 |
+| **Herramienta y modelo** | Codex (OpenAI) |
+| **Qué se le pidió** | Añadir excepciones al código para impedir pagos con monto nulo o negativo, fechas nulas y referencias de autorización vacías en los pagos con tarjeta o transferencia. |
+| **Qué respondió** | Propuso validar esos datos en los constructores y setters de las clases de pago, lanzando una excepción cuando el valor no sea válido. También aclaró que `double`, el tipo elegido para el monto, no puede ser nulo; para detectar un monto nulo habría que usar `Double`. |
+| **Qué aceptamos** | Añadir validaciones para evitar montos negativos, fechas nulas y referencias de autorización vacías antes de guardar o actualizar un pago. |
+| **Qué corregimos** | Como se decidió mantener el monto como `double`, se aclaró que no aplica una comprobación de nulidad para ese atributo. Se valida que el monto sea mayor que cero; si se necesita distinguir entre un monto nulo y uno informado, habría que cambiar su tipo a `Double`. |
+
+---
+
+
 *Se irán agregando nuevos registros a medida que el equipo use IA en el desarrollo del proyecto (diseño de clases, generación de código, documentación, etc.), cada uno con su fecha, herramienta, lo pedido, lo respondido, lo aceptado y lo corregido.*
