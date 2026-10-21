@@ -5,6 +5,9 @@
  */
 public class Servicio {
 
+    // Constante estática: factor de una tarifa normal, sin recargo.
+    public static final double FACTOR_NORMAL = 1.0;
+
     private String tipo;                  // Ejemplo: "Plomería".
     private double factorTarifa;          // Multiplicador propio del tipo (1.0 = tarifa normal).
     private double duracionEstimadaHoras; // Horas que se espera que tome el trabajo.

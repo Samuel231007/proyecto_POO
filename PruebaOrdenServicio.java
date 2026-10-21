@@ -5,7 +5,7 @@ public class PruebaOrdenServicio {
 
     public static void main(String[] args) {
         Servicio plomeria = new Servicio("Plomería", 1.2, 2, 30);
-        OrdenServicio orden = new OrdenServicio("OS-001", "1012345678", plomeria);
+        OrdenServicio orden = new OrdenServicio(OrdenServicio.generarCodigo(), "1012345678", plomeria);
 
         // RF-05: estimado = 2 h x 50000 x 1.2 + 30000 = 150000
         System.out.println("Estimado: " + orden.calcularCostoEstimado(50000, 30000));
@@ -42,6 +42,13 @@ public class PruebaOrdenServicio {
         System.out.println("Saldo con pago pendiente: " + orden.getSaldoPendiente());
         pago.confirmarPago();
         System.out.println("Saldo con pago confirmado: " + orden.getSaldoPendiente());
+
+        // RF-19: aviso del último cambio, enviado por un canal (polimorfismo con Notificable).
+        Notificacion aviso = orden.crearAvisoUltimoCambio("Ana", "3001234567", "ana@correo.com");
+        Notificable canal = new NotificacionWhatsApp();
+        canal.enviar(aviso);
+        System.out.println(aviso);
+        System.out.println("Órdenes creadas: " + OrdenServicio.getTotalOrdenes());
 
         // RNF-04: historial de cambios.
         for (OrdenServicio.CambioEstado c : orden.getCambios()) {

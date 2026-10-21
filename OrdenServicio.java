@@ -8,7 +8,7 @@ import java.util.List;
  * Orden de servicio: reúne el servicio pedido, el técnico, el estado, los costos,
  * la garantía y los pagos. Implementa Pagable (decisión 7).
  * Contiene la clase anidada estática CambioEstado (decisión 9).
- * Apoya RF-05, RF-06, RF-16, RF-18, RF-17 y RNF-04.
+ * Apoya RF-05, RF-06, RF-16, RF-18, RF-17, RF-19 y RNF-04.
  */
 public class OrdenServicio implements Pagable {
 
@@ -62,6 +62,9 @@ public class OrdenServicio implements Pagable {
         }
     }
 
+    // Atributo estático: lo comparten todas las órdenes y sirve para numerarlas.
+    private static int consecutivo = 0;
+
     private final String codigo;
     private final String documentoCliente;
     private final Servicio servicio;
@@ -93,6 +96,20 @@ public class OrdenServicio implements Pagable {
         this.estado = Estado.PENDIENTE;
         this.cambios = new ArrayList<>();
         this.pagos = new ArrayList<>();
+    }
+
+    /**
+     * Método estático: genera el siguiente código de orden (OS-001, OS-002...).
+     * Es estático porque no depende de una orden en particular.
+     */
+    public static String generarCodigo() {
+        consecutivo++;
+        return String.format("OS-%03d", consecutivo);
+    }
+
+    /** Método estático: cuántos códigos de orden se han generado. */
+    public static int getTotalOrdenes() {
+        return consecutivo;
     }
 
     public String getCodigo() {
@@ -229,6 +246,19 @@ public class OrdenServicio implements Pagable {
         if (costoMateriales < 0) {
             throw new IllegalArgumentException("El costo de materiales no puede ser negativo.");
         }
+    }
+
+    // ---------- RF-19: aviso del último cambio de estado ----------
+
+    // Crea la notificación del último cambio de estado; el canal (Notificable) la envía después.
+    public Notificacion crearAvisoUltimoCambio(String nombreCliente, String telefonoCliente, String correoCliente) {
+        if (cambios.isEmpty()) {
+            throw new IllegalStateException("La orden todavía no ha cambiado de estado.");
+        }
+        CambioEstado ultimo = cambios.get(cambios.size() - 1);
+        String mensaje = Notificacion.crearMensajeCambioEstado(nombreCliente, codigo,
+                ultimo.getEstadoAnterior().name(), ultimo.getEstadoNuevo().name());
+        return new Notificacion(codigo, documentoCliente, nombreCliente, telefonoCliente, correoCliente, mensaje);
     }
 
     // ---------- RF-18: revisión por garantía ----------
