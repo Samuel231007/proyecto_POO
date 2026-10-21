@@ -1,69 +1,98 @@
-import java.time.LocalDateTime;
-import java.util.Objects;
+import java.time.LocalDate;
 
-/**
- * Representa la información común de cualquier pago.
- * Las formas concretas de pago heredan de esta clase.
- */
+// Clase abstracta que reúne los datos y operaciones comunes de los pagos.
 public abstract class Pago {
 
-    public enum EstadoPago {
+    // Estados posibles para un pago.
+    public enum Estado {
         PENDIENTE,
         CONFIRMADO,
         RECHAZADO
     }
 
-    private double monto;
-    private LocalDateTime fecha;
-    private EstadoPago estado;
+    private final double monto;    // No cambia después de crear el pago.
+    private final LocalDate fecha; // Fecha en que se registró el pago.
+    private Estado estado;         // Cambia al confirmar o rechazar el pago.
 
-    /** Crea un pago con fecha actual y estado pendiente. */
-    protected Pago(double monto) {
-        this(monto, LocalDateTime.now(), EstadoPago.PENDIENTE);
-    }
+    // Valida los datos comunes y deja todo pago nuevo como pendiente.
+    protected Pago(double monto, LocalDate fecha) {
+        if (monto <= 0) {
+            throw new IllegalArgumentException("El monto debe ser mayor a 0.");
+        }
 
-    /** Crea un pago con sus datos iniciales. */
-    protected Pago(double monto, LocalDateTime fecha, EstadoPago estado) {
-        setMonto(monto);
-        this.fecha = Objects.requireNonNull(fecha, "La fecha del pago es obligatoria.");
-        this.estado = Objects.requireNonNull(estado, "El estado del pago es obligatorio.");
+        if (fecha == null) {
+            throw new IllegalArgumentException("La fecha es obligatoria.");
+        }
+
+        this.monto = monto;
+        this.fecha = fecha;
+        this.estado = Estado.PENDIENTE;
     }
 
     public double getMonto() {
         return monto;
     }
 
-    public final void setMonto(double monto) {
-        if (!Double.isFinite(monto) || monto <= 0) {
-            throw new IllegalArgumentException("El monto debe ser un número positivo y finito.");
-        }
-        this.monto = monto;
-    }
-
-    public LocalDateTime getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = Objects.requireNonNull(fecha, "La fecha del pago es obligatoria.");
-    }
-
-    public EstadoPago getEstado() {
+    public Estado getEstado() {
         return estado;
     }
 
-    public final void setEstado(EstadoPago estado) {
-        this.estado = Objects.requireNonNull(estado, "El estado del pago es obligatorio.");
+    // Confirma el pago solo si todavía está pendiente.
+    public void confirmarPago() {
+        exigirPendiente("confirmar");
+        estado = Estado.CONFIRMADO;
     }
 
-    /** Devuelve el nombre del medio de pago concreto. */
+    // Rechaza el pago solo si todavía está pendiente.
+    public void rechazarPago() {
+        exigirPendiente("rechazar");
+        estado = Estado.RECHAZADO;
+    }
+
+    public boolean estaPendiente() {
+        return estado == Estado.PENDIENTE;
+    }
+
+    public boolean estaConfirmado() {
+        return estado == Estado.CONFIRMADO;
+    }
+
+    // Cada tipo de pago indica su nombre y sus datos particulares.
     public abstract String getMetodoPago();
 
-    /** Valida un texto obligatorio compartido por las subclases. */
-    protected static String validarTextoNoVacio(String valor, String nombreCampo) {
-        if (valor == null || valor.trim().isEmpty()) {
-            throw new IllegalArgumentException(nombreCampo + " es obligatorio.");
+    public abstract String getDetalle();
+
+    // Evita confirmar o rechazar un pago más de una vez.
+    private void exigirPendiente(String accion) {
+        if (estado != Estado.PENDIENTE) {
+            throw new IllegalStateException(
+                    "No se puede " + accion + " un pago que ya está "
+                            + estado.name().toLowerCase() + "."
+            );
         }
+    }
+
+    // Rechaza textos nulos, vacíos o formados solo por espacios.
+    protected static String validarTextoObligatorio(
+            String valor, String nombreCampo) {
+
+        if (valor == null || valor.trim().length() == 0) {
+            throw new IllegalArgumentException(
+                    nombreCampo + " no puede estar vacío."
+            );
+        }
+
         return valor.trim();
+    }
+
+    // Devuelve un resumen del pago con los datos de su tipo específico.
+    @Override
+    public String toString() {
+        return getMetodoPago() + " , $" + monto + " , " + fecha
+                + " , " + estado + " , " + getDetalle();
     }
 }
