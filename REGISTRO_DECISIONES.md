@@ -153,17 +153,26 @@ OrdenServicio implementa Pagable y los objetos Transferencia, Efectivo y Tarjeta
 
 Notificacion almacena el aviso, su destinatario, canal y resultado. Notificable define la operación para enviarlo. NotificacionWhatsApp y NotificacionCorreo implementan la interfaz.
 
-**Alternativa considerada**
+**Alternativas consideradas**
 
-Hacer que Notificacion almacene los datos y también contenga toda la lógica de envío para cada canal.
+1. Hacer que Notificacion almacene los datos y también contenga toda la lógica de envío para cada canal.
+2. Hacer Notificacion clase padre de NotificacionWhatsApp y NotificacionCorreo (herencia) en lugar de usar una interfaz.
 
 **Por qué**
 
-Separar el registro del aviso y el mecanismo de envío evita mezclar responsabilidades y permite agregar canales.
+Separar el registro del aviso y el mecanismo de envío evita mezclar responsabilidades y permite agregar canales. WhatsApp y correo no comparten datos entre sí, solo comparten una capacidad: saber enviar un aviso. Por eso la relación es un contrato (interfaz) y no una herencia: un canal no "es una" notificación.
 
 **Consecuencia**
 
-Los canales implementan el mismo contrato y pueden usarse polimórficamente. Esta decisión apoya RF-19 y RNF-06.
+Los canales implementan el mismo contrato y pueden usarse polimórficamente: quien envía llama `canal.enviar(aviso)` sin `if` por canal, y para agregar otro canal (por ejemplo SMS) basta una clase nueva que implemente Notificable. Detalles de implementación:
+
+- Notificable declara `getNombreCanal(): String` y `enviar(Notificacion): boolean`.
+- El envío es simulado: NotificacionWhatsApp valida que el celular tenga 10 dígitos y empiece por 3, y NotificacionCorreo valida el correo y arma el asunto. Cada canal deja el aviso como ENVIADA o FALLIDA con el detalle o la causa (RNF-06).
+- Notificacion guarda código de la orden, documento, nombre, teléfono y correo del cliente, mensaje, fecha (`LocalDateTime`), canal, estado y detalle, todos privados. No tiene setters: solo `marcarEnviada()` y `marcarFallida()`, que funcionan una sola vez para que el registro no se altere (RNF-04).
+- `EstadoEnvio` (PENDIENTE, ENVIADA, FALLIDA) es un enum anidado dentro de Notificacion.
+- Miembros estáticos: el contador `totalNotificaciones` (numera los avisos), `getTotalNotificaciones()`, `crearMensajeCambioEstado()` (arma el texto del aviso en lenguaje claro) y la constante `NOMBRE_CANAL` de cada canal.
+
+Esta decisión apoya RF-19, RNF-04 y RNF-06.
 
 ---
 
