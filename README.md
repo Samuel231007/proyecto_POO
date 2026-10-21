@@ -22,8 +22,7 @@
 
 La información del proyecto se organiza en el README, el registro de decisiones, la trazabilidad y la bitácora de uso de IA. La bitácora se mantiene como un documento independiente del registro de decisiones.
 
-## Contexto
-|# TÉCNICOS DEL HOGAR A DOMICILIO
+## Contexto - TÉCNICOS DEL HOGAR A DOMICILIO
 
 | ELEMENTO | DESCRIPCIÓN |
 |---|---|
