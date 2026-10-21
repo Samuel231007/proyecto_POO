@@ -22,6 +22,21 @@
 
 La información del proyecto se organiza en el README, el registro de decisiones, la trazabilidad y la bitácora de uso de IA. La bitácora se mantiene como un documento independiente del registro de decisiones.
 
+## Contexto
+|# TÉCNICOS DEL HOGAR A DOMICILIO
+
+| ELEMENTO | DESCRIPCIÓN |
+|---|---|
+| **Contexto** | Actualmente, en Colombia se necesitan profesionales confiables para realizar servicios técnicos y reparaciones en el hogar, como electricidad, plomería y pintura. Esta búsqueda se realiza normalmente mediante recomendaciones informales de amigos y familiares. El objetivo de nuestra plataforma es formalizar este proceso y brindar mayor seguridad y confianza a los usuarios. |
+| **Actores** | Cliente, Técnico, Administrador (dueño de la plataforma) y Sistema. |
+| **Proceso actual** | Búsqueda informal de técnicos mediante recomendaciones personales. |
+| **Dolor 1** | Puede que no haya técnicos disponibles y confiables en la zona requerida. |
+| **Dolor 2** | La confiabilidad y seguridad del servicio se ven afectadas porque la contratación se realiza de manera informal, sin contratos ni garantías de tiempo y calidad. |
+| **Dolor 3** | Los técnicos viven en constante incertidumbre al no tener acceso directo a los clientes que requieren sus servicios, por lo que dependen de su círculo cercano de contactos. |
+| **Impacto técnico** | Formaliza la asignación y el seguimiento de las órdenes de servicio. |
+| **Impacto económico** | Permite establecer tarifas claras y contempla la posibilidad de cobrar una comisión para la plataforma. |
+| **Impacto social** | Formaliza el trabajo de técnicos independientes y genera mayor confianza en los clientes. |
+
 ## Cómo organizamos las ramas
 
 Se trabaja con una rama por requisito y una rama por clase o interfaz de nivel superior. La rama main se usa para integrar el proyecto cuando las ramas estén listas.
