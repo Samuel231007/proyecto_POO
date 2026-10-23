@@ -237,7 +237,7 @@ Está relacionada con `DisponibilidadTecnico` mediante composición, por lo que 
 
 ---
 
-### Decisión 13 · Utilizar herencia para Cliente, Tecnico y Administrador
+### Decisión 12 · Utilizar herencia para Cliente, Tecnico y Administrador
 
 **Decisión**
 
@@ -253,7 +253,7 @@ Cada clase conserva los atributos y comportamientos generales de Usuario y añad
 
 ---
 
-### Decisión 14 · Asociar Cliente con Solicitud
+### Decisión 13 · Asociar Cliente con Solicitud
 
 **Decisión**
 
@@ -269,7 +269,7 @@ La plataforma puede consultar las solicitudes de cada cliente, identificar al re
 
 ---
 
-### Decisión 15 · Incorporar la actualización de datos para el RF-11
+### Decisión 14 · Incorporar la actualización de datos para el RF-11
 
 **Decisión**
 
@@ -285,7 +285,7 @@ El cliente puede actualizar sus datos sin necesidad de crear una cuenta nueva. L
 
 ---
 
-### Decisión 16 · Controlar la cancelación de solicitudes para el RF-12
+### Decisión 15 · Controlar la cancelación de solicitudes para el RF-12
 
 **Decisión**
 
@@ -301,7 +301,7 @@ El sistema puede impedir cancelaciones que no sean permitidas por las reglas del
 
 ---
 
-### Decisión 17 · Aplicar encapsulamiento y validación
+### Decisión 16 · Aplicar encapsulamiento y validación
 
 **Decisión**
 
