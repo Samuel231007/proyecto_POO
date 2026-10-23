@@ -1,125 +1,109 @@
-Crea una presentación académica, clara y visual en español sobre el proyecto “Técnicos del hogar a domicilio”. La presentación debe explicar el proyecto completo: su propósito, funcionamiento, requisitos, clases, relaciones UML, pagos, notificaciones y decisiones de diseño.
+# Estructura del proyecto
 
-Usa un estilo profesional y sencillo, adecuado para exponer en clase. Incluye diagramas, tablas y ejemplos visuales cuando ayuden a entender. No inventes datos, resultados, nombres de integrantes ni reglas del negocio que no aparezcan aquí. Si falta información, indícala como pendiente de confirmar.
+## 1. Conformación del equipo y roles
 
-Organiza la presentación en unas 12 a 15 diapositivas:
+| Integrante | Rol inicial |
+|---|---|
+| Valeria Morales Quintero | Responsable del producto |
+| Valerie Sofía Medieta | Responsable del producto |
+| Valeria Alvarado | Responsable de diseño |
+| Juan David Lara | Responsable de diseño |
+| Sara Gómez | Responsable de calidad |
+| Samuel Rusinque | Responsable de integración |
 
-1. Portada
-   - Proyecto: Técnicos del hogar a domicilio.
-   - Deja espacios editables para los nombres de los seis integrantes, curso, docente y fecha.
+## 2. Repositorio
 
-2. Problema y propósito
-   - Explica la necesidad de organizar solicitudes de servicios técnicos a domicilio.
-   - Presenta el propósito del sistema: registrar solicitudes, asignar técnicos, hacer seguimiento a las órdenes y gestionar pagos, garantías, calificaciones y notificaciones.
+- **Enlace al repositorio:** [proyecto_POO](https://github.com/Samuel231007/proyecto_POO)
+- **Diagrama UML:** [Ver diagrama de clases](https://lucid.app/lucidchart/6b8de022-7d2f-4c7f-ab6e-32428fa6780c/edit?viewport_loc=-4837%2C-1424%2C11332%2C5940%2C0_0&invitationId=inv_890ba847-9cd2-4821-b89e-546f47aec054)
+- Se cuenta con el docente invitado agregado como colaborador.
 
-3. Alcance y actores
-   - Cliente: registra sus datos, solicita servicios, consulta información y califica la atención.
-   - Técnico: cuenta con especialidad, zona de cobertura, tarifa y disponibilidad; atiende órdenes asignadas.
-   - Administrador: registra técnicos y gestiona usuarios y órdenes.
+---
 
-4. Flujo general del sistema
-   - Cliente crea una Solicitud.
-   - La solicitud puede originar una OrdenServicio.
-   - Se asigna un Técnico según disponibilidad.
-   - La orden cambia de estado mientras se realiza el trabajo.
-   - Se registra el trabajo y los materiales, se calcula el costo y se recibe el pago.
-   - Al finalizar, puede registrarse una calificación y generarse una notificación.
-   - Si aplica, la orden cuenta con garantía.
+## 3. Documentación del proyecto
 
-5. Requerimientos funcionales
-   - Presenta los requisitos funcionales en una tabla con: ID, descripción, clases involucradas, temas del curso y estado.
-   - Conserva los requisitos originales RF-01 a RF-10 si se proporcionan en los documentos del proyecto.
-   - Los requisitos nuevos deben continuar desde RF-11.
-   - Incluye funciones relacionadas con solicitudes, disponibilidad y asignación de técnicos, seguimiento de órdenes, costos, pagos, garantías, calificaciones y notificaciones.
-   - Evita requisitos duplicados o que expresen la misma función con otras palabras.
-   - No inventes descripciones exactas ni estados si no están incluidos en la información fuente.
+La información del proyecto se organiza en el README, el registro de decisiones, la trazabilidad y la bitácora de uso de IA. La bitácora se mantiene como un documento independiente del registro de decisiones.
 
-6. Requerimientos no funcionales
-   - Usa la misma estructura de tabla de la diapositiva anterior.
-   - Conserva RNF-01 si aparece en los documentos del proyecto. Los nuevos deben comenzar en RNF-02.
-   - Incluye solo condiciones de calidad o restricciones del sistema, como persistencia de la información, validación de datos, facilidad de mantenimiento y claridad de uso, siempre que estén respaldadas por la información entregada.
-   - No presentes funciones del sistema como requisitos no funcionales.
+## Cómo organizamos las ramas
 
-7. Modelo de clases: usuarios, solicitudes y asignaciones
-   Incluye estas clases y responsabilidades:
-   - Usuario es abstracta y contiene los datos comunes: nombre, documento, teléfono, contraseña y correo.
-   - Cliente y Administrador heredan de Usuario.
-   - Técnico también hereda de Usuario y agrega especialidad, zona de cobertura, disponibilidad y tarifa base.
-   - Solicitud registra el problema, ubicación, descripción, horario disponible, fecha y estado.
-   - DisponibilidadTecnico administra las franjas disponibles y los bloqueos.
-   - FranjaHoraria es una clase anidada estática de DisponibilidadTecnico.
-   - Asignacion relaciona una orden con el técnico asignado y permite conservar el historial de asignaciones.
-   - EstadoSolicitud es el enum asociado a Solicitud.
+Se trabaja con una rama por requisito y una rama por clase o interfaz de nivel superior. La rama `main` se usa para integrar el proyecto cuando las ramas estén listas.
 
-8. Modelo de clases: órdenes y trabajo
-   - OrdenServicio es el centro del modelo. Incluye código, cliente, técnico, estado, costos, fecha, servicio, garantía, cambios de estado y pagos.
-   - Servicio contiene el tipo, factor de tarifa, duración estimada y días de garantía.
-   - DetalleTrabajo registra descripción, horas, actividades y materiales.
-   - Material registra descripción, costo unitario y cantidad.
-   - Garantia registra vigencia, cobertura y revisiones.
-   - CambioEstado es una clase anidada estática de OrdenServicio.
-   - EstadoOrden es un enum anidado en OrdenServicio con: PENDIENTE, ASIGNADA, EN_PROCESO, FINALIZADA y CANCELADA.
+### Ramas por requisito
 
-9. Modelo de clases: pagos
-   - Pagable es una interfaz con las operaciones para registrar un pago y consultar el saldo pendiente.
-   - OrdenServicio implementa Pagable.
-   - Pago es abstracta y contiene monto, fecha y estado, además de operaciones para confirmar o rechazar el pago.
-   - Tarjeta, Transferencia y Efectivo heredan de Pago.
-   - Tarjeta guarda una referencia de autorización; Transferencia guarda una referencia bancaria.
-   - EstadoPago es un enum anidado en Pago con: PENDIENTE, CONFIRMADO y RECHAZADO.
-   - Explica que la herencia permite compartir los datos y comportamientos comunes del pago.
+| Rama | Requisito |
+|---|---|
+| `main` | Integración del proyecto |
+| `RF-01` | Registrar técnicos |
+| `RF-02` | Registrar clientes |
+| `RF-03` | Solicitar un servicio |
+| `RF-04` | Asignar un técnico disponible |
+| `RF-05` | Calcular el precio estimado del servicio |
+| `RF-06` | Cambiar el estado de una orden |
+| `RF-07` | Registrar la garantía del servicio |
+| `RF-08` | Consultar el historial de órdenes de un cliente |
+| `RF-09` | Consultar las órdenes activas de un técnico |
+| `RF-10` | Calificar el servicio recibido |
+| `RF-11` | Actualizar los datos del cliente |
+| `RF-12` | Cancelar una solicitud pendiente |
+| `RF-13` | Registrar la indisponibilidad de un técnico |
+| `RF-14` | Reasignar una orden |
+| `RF-15` | Registrar el trabajo realizado y los materiales usados |
+| `RF-16` | Calcular el costo final del servicio |
+| `RF-17` | Registrar pagos |
+| `RF-18` | Solicitar una revisión cubierta por la garantía |
+| `RF-19` | Notificar cambios de estado |
+| `RF-20` | Filtrar órdenes |
+| `RNF-01` | Conservar los datos entre ejecuciones |
+| `RNF-02` | Restringir el acceso según el rol |
+| `RNF-03` | Mantener la integridad de la información |
+| `RNF-04` | Conservar la trazabilidad de cambios y reasignaciones |
+| `RNF-05` | Proteger los datos personales y de pago |
+| `RNF-06` | Presentar mensajes claros |
 
-10. Modelo de clases: calificaciones y notificaciones
-   - Calificacion guarda puntaje, comentario, fecha y documento del cliente.
-   - Notificacion guarda los datos del aviso, su fecha, canal y estado de envío.
-   - Notificable es una interfaz para consultar el canal y enviar una notificación.
-   - NotificacionCorreo y NotificacionWhatsApp implementan Notificable.
-   - EstadoEnvio es un enum anidado en Notificacion con: PENDIENTE, ENVIADA y FALLIDA.
-   - No dupliques Notificacion y Notificable: Notificacion representa el aviso; Notificable define el comportamiento de los canales.
+Los nombres de las ramas de requisitos usan los identificadores RF y RNF en mayúsculas.
 
-11. Diagrama UML completo
-   - Genera un diagrama de clases legible, dividido visualmente por áreas si es necesario.
-   - Muestra atributos y métodos principales, visibilidad UML (+ público, - privado, # protegido), herencia, interfaces, enums y clases anidadas.
-   - Usa triángulos vacíos para la herencia y líneas discontinuas para la implementación de interfaces.
-   - Añade las multiplicidades:
-     * Cliente 1 — 0..* Solicitud.
-     * Solicitud 1 — 0..1 OrdenServicio.
-     * Técnico 1 — 1 DisponibilidadTecnico.
-     * DisponibilidadTecnico 1 — 0..* FranjaHoraria.
-     * Técnico 1 — 0..* Asignacion.
-     * OrdenServicio 1 — 0..* Asignacion.
-     * OrdenServicio 1 — 1 Servicio; Servicio 0..* — OrdenServicio.
-     * OrdenServicio 1 — 0..1 Garantia.
-     * OrdenServicio 1 — 0..* DetalleTrabajo.
-     * DetalleTrabajo 1 — 0..* Material.
-     * OrdenServicio 1 — 0..* CambioEstado.
-     * OrdenServicio 1 — 0..1 Calificacion.
-     * Cliente 1 — 0..* Calificacion.
-     * OrdenServicio 1 — 0..* Pago.
-     * OrdenServicio 1 — 0..* Notificacion.
-     * Cliente 1 — 0..* Notificacion.
-   - No agregues una asociación directa entre Cliente y OrdenServicio ni entre Técnico y OrdenServicio: esas relaciones pasan por Solicitud y Asignacion, respectivamente.
-   - Muestra que OrdenServicio implementa Pagable y que NotificacionCorreo y NotificacionWhatsApp implementan Notificable.
-   - Mantén el diagrama despejado; si no cabe, repártelo en varias diapositivas conectadas.
+### Ramas por clase e interfaz
 
-12. Decisiones de diseño orientado a objetos
-   - Usuario es abstracta porque el sistema crea Cliente, Técnico o Administrador, no un Usuario genérico.
-   - Pago es abstracta porque se crean pagos concretos mediante Tarjeta, Transferencia o Efectivo.
-   - La herencia comparte atributos y comportamientos comunes y evita duplicación.
-   - Pagable y Notificable son interfaces para definir comportamientos que pueden implementarse en distintas clases.
-   - Las clases anidadas y enums deben mostrarse dentro de las clases contenedoras correspondientes.
+Cada clase o interfaz de nivel superior tiene una rama con el mismo nombre que su archivo Java. Las clases anidadas se trabajan en la rama de su clase contenedora y no tienen una rama independiente.
 
-13. Reglas de validación y excepciones
-   - Explica las validaciones indicadas para evitar montos nulos o negativos, fechas nulas y referencias de autorización o transferencia vacías.
-   - Preséntalas como reglas de validación del código, no como funciones nuevas del negocio.
-   - No inventes excepciones específicas si no están definidas en el proyecto.
+| Rama | Responsabilidad |
+|---|---|
+| `Administrador` | Gestiona técnicos y órdenes |
+| `Usuario` | Clase abstracta con los datos comunes de las personas usuarias |
+| `Tecnico` | Representa técnicos y sus datos de servicio |
+| `Cliente` | Representa clientes y sus datos de contacto |
+| `Solicitud` | Almacena la solicitud de servicio |
+| `OrdenServicio` | Relaciona solicitud, técnico, estado, costo y pagos |
+| `Servicio` | Representa el tipo de servicio |
+| `Garantia` | Registra la cobertura y vigencia de garantía |
+| `Calificacion` | Almacena la calificación del cliente |
+| `DisponibilidadTecnico` | Registra los bloques de disponibilidad e indisponibilidad |
+| `Asignacion` | Relaciona un técnico con una orden y conserva reasignaciones |
+| `DetalleTrabajo` | Registra actividades y tiempo empleado |
+| `Material` | Representa los materiales usados y sus costos |
+| `Notificacion` | Almacena la información y el resultado de un aviso |
+| `Notificable` | Interfaz para enviar una notificación |
+| `NotificacionWhatsApp` | Implementa el envío de notificaciones por WhatsApp |
+| `NotificacionCorreo` | Implementa el envío de notificaciones por correo |
+| `Pagable` | Interfaz con las operaciones de pago de una orden |
+| `Pago` | Clase abstracta con los datos y comportamientos comunes de un pago |
+| `Transferencia` | Tipo de pago por transferencia |
+| `Efectivo` | Tipo de pago en efectivo |
+| `Tarjeta` | Tipo de pago con tarjeta |
 
-14. Trazabilidad y temas del curso
-   - Relaciona requisitos y clases con temas de programación orientada a objetos: clases, objetos, encapsulamiento, constructores, getters y setters, herencia, abstracción, interfaces, composición/asociación, clases anidadas, enums y excepciones.
-   - Usa solo temas que correspondan al diseño descrito.
+`DisponibilidadTecnico` contiene la clase anidada estática `FranjaHoraria`. `OrdenServicio` contiene la clase anidada estática `CambioEstado`.
 
-15. Cierre
-   - Resume el flujo principal y las decisiones de diseño.
-   - Incluye una diapositiva final con conclusiones y espacios para preguntas.
+## Cómo trabajamos
 
-Mantén consistencia en los nombres: usa “Tecnico” o “Técnico” de manera uniforme en cada diapositiva, y no cambies los nombres de las clases del modelo. Evita saturar las diapositivas: divide diagramas grandes y usa texto breve, claro y fácil de exponer.
+Antes de empezar en una rama, se actualiza la referencia de `main` y se revisa el estado del repositorio. Cada integrante trabaja en la rama de su clase o requisito. Las ramas se integran en `main` cuando el trabajo correspondiente esté listo y revisado; al integrar, se corrigen los problemas antes de continuar.
+
+## Commits
+
+Los mensajes de commit son descriptivos y en español, en modo imperativo. Cuando aplique, incluyen el identificador del requisito; por ejemplo: `RF-01: agrega validación de documento único en Tecnico`.
+
+## Buenas prácticas
+
+- Usar `git status` antes y después de cada operación.
+- Hacer commits pequeños y descriptivos.
+- Mantener configurado `.gitignore` para archivos compilados y del IDE.
+- Integrar a `main` cambios que compilen.
+- Evitar `push --force` y no reescribir historial compartido.

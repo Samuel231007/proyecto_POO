@@ -46,43 +46,46 @@ OrdenServicio se asocia con Solicitud y Tecnico. También relaciona el servicio,
 
 ---
 
-## Decisión 3 · DisponibilidadTecnico y sus intervalos
+## Decisión 3 · DisponibilidadTecnico: separar los horarios de los datos del técnico
 
 **Decisión**
 
-Crear DisponibilidadTecnico para registrar cuándo puede atender un técnico y sus bloques de indisponibilidad. La clase anidada estática FranjaHoraria representa cada intervalo.
+Crear la clase `DisponibilidadTecnico` para registrar los horarios en los que un técnico puede trabajar y los bloques temporales en los que no puede recibir asignaciones. 
 
 **Alternativa considerada**
 
-Guardar todos los intervalos como atributos separados de Tecnico.
+1. Guardar todos los horarios disponibles y los bloqueos directamente como atributos de la clase `Tecnico`, sin separar la gestión de disponibilidad.
+2. Registrar únicamente el horario habitual del técnico, sin contemplar los bloques de indisponibilidad temporal.
 
 **Por qué**
 
-Un técnico puede tener varios intervalos. Representarlos como objetos facilita registrar y consultar cada bloque sin acumular atributos repetidos en Tecnico.
+Un técnico puede tener varios intervalos. Representarlos como objetos facilita registrar y consultar cada bloque sin acumular atributos repetidos en Tecnico. Se eligió separar esta responsabilidad para administrar los horarios y las indisponibilidades sin mezclar toda esa lógica con los datos personales y profesionales del técnico.
 
 **Consecuencia**
 
-FranjaHoraria se define dentro de DisponibilidadTecnico y no tiene una rama independiente. Esta estructura apoya RF-04 y RF-13.
+Se relaciona por composición con `Tecnico` y contiene, también mediante composición, objetos de la clase `FranjaHoraria`. Por esta razón, no se considera completamente independiente de esas relaciones dentro del modelo. Cumple directamente con el **RF-13**, al permitir registrar bloques de indisponibilidad temporal, y apoya el **RF-04**, porque permite consultar la disponibilidad del técnico antes de asignarle un servicio.
+
 
 ---
 
-## Decisión 4 · Asignacion conserva los cambios de técnico
+## Decisión 4 · Asignacion: vincular órdenes y conservar el historial
 
 **Decisión**
 
-Crear Asignacion para relacionar una orden con un técnico y conservar las asignaciones anteriores cuando se reasigna una orden.
+Crear la clase `Asignacion` para vincular un técnico con una orden de servicio. También permite representar la reasignación cuando el técnico inicialmente asignado no puede atenderla y conservar las asignaciones anteriores para mantener la trazabilidad.
 
-**Alternativa considerada**
+**Alternativas consideradas**
 
-Guardar únicamente el técnico actual dentro de OrdenServicio.
+1. Guardar el técnico asignado directamente en `OrdenServicio`, sin crear una clase independiente para gestionar las asignaciones y sus cambios.
+2. Cambiar directamente el técnico asociado a la orden sin conservar un historial de las asignaciones anteriores.
 
 **Por qué**
 
-Si solo se conserva el técnico actual, se pierde el historial de reasignaciones.
+Se eligió crear una clase propia para centralizar la asignación de técnicos a las órdenes y facilitar el registro de las reasignaciones y de los técnicos anteriores.
 
 **Consecuencia**
 
-OrdenServicio mantiene la asignación vigente y Asignacion registra los cambios. Esta decisión apoya RF-14 y RNF-04.
+Se asocia con `Tecnico` y con `OrdenServicio`. No es completamente independiente, porque necesita relacionar ambas clases para cumplir su función. Apoya el **RF-04**, al representar la asignación del técnico al servicio; el **RF-14**, al permitir representar las reasignaciones; y el **RNF-04**, al conservar la trazabilidad de los cambios de asignación.
 
 ---
 
@@ -153,17 +156,26 @@ OrdenServicio implementa Pagable y los objetos Transferencia, Efectivo y Tarjeta
 
 Notificacion almacena el aviso, su destinatario, canal y resultado. Notificable define la operación para enviarlo. NotificacionWhatsApp y NotificacionCorreo implementan la interfaz.
 
-**Alternativa considerada**
+**Alternativas consideradas**
 
-Hacer que Notificacion almacene los datos y también contenga toda la lógica de envío para cada canal.
+1. Hacer que Notificacion almacene los datos y también contenga toda la lógica de envío para cada canal.
+2. Hacer Notificacion clase padre de NotificacionWhatsApp y NotificacionCorreo (herencia) en lugar de usar una interfaz.
 
 **Por qué**
 
-Separar el registro del aviso y el mecanismo de envío evita mezclar responsabilidades y permite agregar canales.
+Separar el registro del aviso y el mecanismo de envío evita mezclar responsabilidades y permite agregar canales. WhatsApp y correo no comparten datos entre sí, solo comparten una capacidad: saber enviar un aviso. Por eso la relación es un contrato (interfaz) y no una herencia: un canal no "es una" notificación.
 
 **Consecuencia**
 
-Los canales implementan el mismo contrato y pueden usarse polimórficamente. Esta decisión apoya RF-19 y RNF-06.
+Los canales implementan el mismo contrato y pueden usarse polimórficamente: quien envía llama `canal.enviar(aviso)` sin `if` por canal, y para agregar otro canal (por ejemplo SMS) basta una clase nueva que implemente Notificable. Detalles de implementación:
+
+- Notificable declara `getNombreCanal(): String` y `enviar(Notificacion): boolean`.
+- El envío es simulado: NotificacionWhatsApp valida que el celular tenga 10 dígitos y empiece por 3, y NotificacionCorreo valida el correo y arma el asunto. Cada canal deja el aviso como ENVIADA o FALLIDA con el detalle o la causa (RNF-06).
+- Notificacion guarda código de la orden, documento, nombre, teléfono y correo del cliente, mensaje, fecha (`LocalDateTime`), canal, estado y detalle, todos privados. No tiene setters: solo `marcarEnviada()` y `marcarFallida()`, que funcionan una sola vez para que el registro no se altere (RNF-04).
+- `EstadoEnvio` (PENDIENTE, ENVIADA, FALLIDA) es un enum anidado dentro de Notificacion.
+- Miembros estáticos: el contador `totalNotificaciones` (numera los avisos), `getTotalNotificaciones()`, `crearMensajeCambioEstado()` (arma el texto del aviso en lenguaje claro) y la constante `NOMBRE_CANAL` de cada canal.
+
+Esta decisión apoya RF-19, RNF-04 y RNF-06.
 
 ---
 
@@ -180,3 +192,45 @@ Cada clase anidada representa un concepto estrechamente relacionado con su clase
 **Consecuencia**
 
 Las clases se implementan en los archivos de sus contenedoras. FranjaHoraria apoya RF-13 y CambioEstado apoya RNF-04.
+
+---
+
+## Decisión 10 · Clase Tecnico: heredar lo común y especializar el servicio
+
+**Decisión**
+
+Crear la clase `Tecnico` para representar a los técnicos que prestan los servicios. Contiene sus datos específicos, como especialidad, zona de cobertura, horario disponible y tarifa base. Además, hereda de la clase `Usuario` los datos personales y permite representar la recepción de solicitudes.
+
+**Alternativas consideradas**
+
+1. Crear una clase independiente que incluya todos los datos personales y los datos específicos del técnico, sin heredar de `Usuario`.
+2. Incluir los datos personales y las características del técnico en una sola clase, sin utilizar herencia.
+
+**Por qué**
+
+Se eligió la herencia para reutilizar los datos de `Usuario` y mantener en `Tecnico` únicamente la información y las funciones propias de los técnicos.
+
+**Consecuencia**
+
+La clase hereda los atributos de `Usuario`, se relaciona por composición con `DisponibilidadTecnico` y por asociación con `Asignacion`. Apoya el **RF-01**, porque permite registrar los datos y características del técnico, y contribuye al **RF-04**, porque su especialidad, zona y disponibilidad sirven para determinar si puede atender un servicio solicitado.
+
+---
+
+## Decisión 11 · Clase FranjaHoraria: organizar cada intervalo como una unidad
+
+**Decisión**
+
+Crear la clase anidada estática `FranjaHoraria` dentro de `DisponibilidadTecnico` para representar un día específico y un intervalo horario mediante una hora de inicio y una hora de finalización. También permite validar los intervalos y comprobar si dos franjas se entrelazan.
+
+**Alternativas consideradas**
+
+1. Representar cada franja horaria mediante datos separados, como el día, la hora de inicio y la hora de finalización, directamente dentro de `DisponibilidadTecnico`, sin crear una clase específica.
+2. Crear `FranjaHoraria` como una clase independiente, fuera de `DisponibilidadTecnico`.
+
+**Por qué**
+
+Se eligió una clase anidada para organizar cada intervalo horario como una unidad y facilitar la validación de los horarios y los bloques de indisponibilidad.
+
+**Consecuencia**
+
+Está relacionada con `DisponibilidadTecnico` mediante composición, por lo que cada franja forma parte de la disponibilidad que la contiene. Su función está vinculada a esa clase y apoya el **RF-13**, porque permite representar y validar los intervalos horarios en los que el técnico no puede recibir asignaciones.

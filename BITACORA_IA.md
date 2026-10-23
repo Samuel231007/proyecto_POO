@@ -46,4 +46,17 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 ---
 
 
+## Registro 4 · Organización de las clases de notificaciones
+
+| Campo | Detalle |
+|---|---|
+| **Fecha** | 16/10/2026 |
+| **Herramienta y modelo** | Claude (Anthropic) · modelo claude-opus-5-5 |
+| **Qué se le pidió** | Ayuda para organizar las clases `Notificacion`, `Notificable`, `NotificacionWhatsApp` y `NotificacionCorreo` según el Excel de requerimientos y lo que pide el profesor: qué hace cada clase, cómo se relacionan y qué decisión de diseño las justifica. |
+| **Qué respondió** | Propuso separar `Notificacion` (el registro del aviso) de `Notificable` (interfaz con `enviar`), con WhatsApp y Correo como implementaciones, y explicó por qué interfaz y no herencia. Propuso atributos privados, un contador estático, el enum anidado `EstadoEnvio` y las relaciones del UML. Redactó un borrador de la Decisión 8 y de la trazabilidad de RF-19, RNF-04 y RNF-06. |
+| **Qué aceptamos** | La estructura de las cuatro clases con la interfaz `Notificable`, la Decisión 8 del registro de decisiones y el código de cada clase en su rama. |
+| **Qué corregimos** | La explicación escrita salió muy larga y se acortó de unas 1400 a unas 430 palabras para que quedara con una extensión similar a la de los demás integrantes. |
+
+---
+
 *Se irán agregando nuevos registros a medida que el equipo use IA en el desarrollo del proyecto (diseño de clases, generación de código, documentación, etc.), cada uno con su fecha, herramienta, lo pedido, lo respondido, lo aceptado y lo corregido.*
