@@ -60,7 +60,21 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 ---
 
 
-## Registro 5 · Revisión diagrama de clases y organización para mayor claridad
+## Registro 5 · Revisión y coherencia de las clases de pago y detalle del servicio
+
+| Campo | Detalle |
+|---|---|
+| **Fecha** | 19/10/2026 |
+| **Herramienta y modelo** | ChatGPT (OpenAI) · modelo GPT-6 |
+| **Qué se le pidió** | Revisar el UML y la planificación de las clases `Pagable`, `DetalleTrabajo`, `Calificacion` y `Material`, contrastándolas con algunas clases ya desarrolladas y la documentación existente del proyecto. Ayudar a mantener nombres de atributos y métodos coherentes con el resto del documento  |
+| **Qué respondió** | Propuso ajustes en los nombres de algunos atributos para mejorar la claridad y la coherencia del modelo. Se revisó el uso de `monto` en la clase relacionada con los pagos, propuso cambiarlo a `pago` y se planteó el cambio de `horas` a `horasReales` en `DetalleTrabajo`. |
+| **Qué aceptamos** | Se aceptó el uso de `pago` en lugar de `monto` para nombrar el atributo correspondiente al valor monetario. También se aceptó cambiar el nombre relacionado con las horas, pero se eligió `horasTrabajo` en lugar de `horasReales`, ya que describe de forma más clara el tiempo dedicado al trabajo y evita confusiones con otra definición de horas existente en una clase diferente. |
+| **Qué corregimos** | Se ajustó la propuesta para conservar la coherencia con el modelo existente. En lugar de aplicar directamente todos los nombres sugeridos, se priorizó que cada atributo expresara claramente su propósito y no se confundiera con conceptos definidos en otras clases. |
+
+---
+
+
+## Registro 6 · Revisión diagrama de clases y organización para mayor claridad
 | Campo | Detalle |
 |---|---|
 | **Fecha**| 20/10/2026 |
