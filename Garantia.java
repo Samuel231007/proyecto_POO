@@ -1,6 +1,5 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,18 +30,6 @@ public class Garantia {
         this.revisiones = new ArrayList<>();
     }
 
-    public LocalDate getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public int getDiasVigencia() {
-        return diasVigencia;
-    }
-
-    public String getCobertura() {
-        return cobertura;
-    }
-
     public LocalDate getFechaFin() {
         return fechaInicio.plusDays(diasVigencia);
     }
@@ -63,13 +50,9 @@ public class Garantia {
         revisiones.add(fecha + " - " + problema.trim());
     }
 
-    // Devuelve una copia de solo lectura para que nadie modifique la lista desde afuera.
+    // Devuelve una copia de la lista: si alguien la modifica, la lista original no cambia.
     public List<String> getRevisiones() {
-        return Collections.unmodifiableList(revisiones);
+        return new ArrayList<>(revisiones);
     }
 
-    @Override
-    public String toString() {
-        return "Garantía de " + diasVigencia + " días (hasta " + getFechaFin() + "): " + cobertura;
-    }
 }

@@ -1,7 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,10 +55,6 @@ public class OrdenServicio implements Pagable {
             return responsable;
         }
 
-        @Override
-        public String toString() {
-            return estadoAnterior + " -> " + estadoNuevo + " (" + responsable + ")";
-        }
     }
 
     // Atributo estático: lo comparten todas las órdenes y sirve para numerarlas.
@@ -104,7 +99,13 @@ public class OrdenServicio implements Pagable {
      */
     public static String generarCodigo() {
         consecutivo++;
-        return String.format("OS-%03d", consecutivo);
+        // Rellena con ceros: OS-001, OS-002, ...
+        if (consecutivo < 10) {
+            return "OS-00" + consecutivo;
+        } else if (consecutivo < 100) {
+            return "OS-0" + consecutivo;
+        }
+        return "OS-" + consecutivo;
     }
 
     /** Método estático: cuántos códigos de orden se han generado. */
@@ -112,48 +113,12 @@ public class OrdenServicio implements Pagable {
         return consecutivo;
     }
 
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public String getDocumentoCliente() {
-        return documentoCliente;
-    }
-
-    public String getDocumentoTecnico() {
-        return documentoTecnico;
-    }
-
-    public Servicio getServicio() {
-        return servicio;
-    }
-
-    public LocalDateTime getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public double getCostoEstimado() {
-        return costoEstimado;
-    }
-
-    public double getCostoFinal() {
-        return costoFinal;
-    }
-
     public Garantia getGarantia() {
         return garantia;
     }
 
     public List<CambioEstado> getCambios() {
-        return Collections.unmodifiableList(cambios);
-    }
-
-    public List<Pago> getPagos() {
-        return Collections.unmodifiableList(pagos);
+        return new ArrayList<>(cambios);
     }
 
     // ---------- RF-06: cambios de estado ----------
@@ -293,8 +258,4 @@ public class OrdenServicio implements Pagable {
         return total - pagado;
     }
 
-    @Override
-    public String toString() {
-        return "Orden " + codigo + " [" + servicio.getTipo() + ", " + estado + "]";
-    }
 }

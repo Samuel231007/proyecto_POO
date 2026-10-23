@@ -6,6 +6,8 @@
 
 ![Diagrama de clases de la parte de la orden de servicio](UML_OrdenServicio_Vale.png){width=6.5in}
 
+*Cómo leer el diagrama:* cada recuadro sigue el formato que usa el grupo (nombre arriba, atributos en medio, métodos abajo, con `nombre: Tipo`). Lo **estático** se escribe con la palabra `static` (por ejemplo `static consecutivo: int=0`). La clase anidada y el enum anidado se dibujan aparte con el nombre completo (`OrdenServicio.CambioEstado` y `OrdenServicio.Estado`) para que no se confundan con los enums de otras clases. Los recuadros no dibujan flechas; las relaciones entre las clases están explicadas en la sección 3.
+
 ## 1. Idea general
 
 `OrdenServicio` es la clase central del proceso: reúne el servicio pedido, el técnico asignado, el estado, los costos, la garantía y los pagos. Cada vez que cambia de estado deja un registro (`CambioEstado`). Al finalizar, crea la `Garantia` del servicio con los días que define su tipo (`Servicio`). Como implementa `Pagable`, también recibe pagos y dice cuánto falta por pagar.
@@ -20,7 +22,7 @@
 | `tipo`, `factorTarifa`, `duracionEstimadaHoras`, `diasGarantia` | privados | Datos propios de cada tipo de servicio: nombre, recargo, duración esperada y días de garantía. |
 | Constructor y setters | públicos | Validan que los datos no sean vacíos ni negativos. |
 | `calcularManoObra(horas, tarifaBaseTecnico)` | público | Horas x tarifa base del técnico x factor del tipo (RF-05 y RF-16). |
-| getters y `toString()` | públicos | Consultar los datos. |
+| `getTipo()`, `getDuracionEstimadaHoras()`, `getDiasGarantia()` | públicos | Solo los getters que `OrdenServicio` necesita para calcular costos y crear la garantía. |
 
 ### `Garantia`
 
@@ -30,7 +32,7 @@
 | `revisiones: List<String>` | privado | Revisiones pedidas durante la vigencia (colección). |
 | `getFechaFin()`, `estaVigente(fecha)` | públicos | Calculan y consultan la vigencia. |
 | `solicitarRevision(fecha, problema)` | público | Registra una revisión solo si la garantía está vigente; si no, lanza una excepción con un mensaje claro (RF-18). |
-| `getRevisiones()` | público | Devuelve la lista de solo lectura. |
+| `getRevisiones()` | público | Devuelve una copia de la lista, para que nadie cambie la original desde afuera. |
 
 ### `OrdenServicio` (implementa `Pagable`)
 
@@ -45,6 +47,7 @@
 | `crearAvisoUltimoCambio(...)` | público | Crea la `Notificacion` del último cambio de estado (RF-19); la envía un canal `Notificable`. |
 | `solicitarRevisionGarantia(fecha, problema)` | público | Delega en `Garantia` (RF-18). |
 | `registrarPago(pago)` y `getSaldoPendiente()` | públicos | Cumplen el contrato `Pagable` (RF-17). |
+| `getGarantia()` y `getCambios()` | públicos | Consultar la garantía y el historial de cambios (RNF-04). Son los únicos getters de la orden: no se crearon más porque no hacían falta. |
 | `cambiarEstado`, `transicionPermitida`, `validarMateriales` | privados | Reglas internas: solo estas funciones modifican el estado. |
 
 ### `OrdenServicio.CambioEstado` (clase anidada estática)
@@ -55,7 +58,7 @@ Guarda `estadoAnterior`, `estadoNuevo`, `fecha` y `responsable` (todos privados 
 
 `PENDIENTE`, `ASIGNADA`, `EN_PROCESO`, `FINALIZADA` y `CANCELADA`. Va dentro de la orden porque esos estados solo tienen sentido para ella. Usar un enum evita errores de escritura en un texto.
 
-## 3. Relaciones (como van en el UML)
+## 3. Relaciones entre las clases (para el UML unido)
 
 | Relación | Tipo | Explicación |
 |---|---|---|
@@ -67,7 +70,7 @@ Guarda `estadoAnterior`, `estadoNuevo`, `fecha` y `responsable` (todos privados 
 | `OrdenServicio` → `Pago` | **Asociación** (1 a 0..*) | La orden guarda varios pagos. |
 | `Servicio` → `Garantia` | **Dependencia** | El servicio define los días de vigencia de la garantía. |
 | `OrdenServicio` → `Notificacion` | **Dependencia** «crea» | Crea el aviso al cambiar de estado (punto de unión con la parte de Juan David). |
-| `Solicitud`, `Asignacion`, `DetalleTrabajo` y `Material` → `OrdenServicio` | **Dependencia / asociación** (en gris en el UML) | Son clases de otros compañeros que se conectan con la orden. |
+| `Solicitud`, `Asignacion`, `DetalleTrabajo` y `Material` → `OrdenServicio` | **Dependencia / asociación** (clases de otros compañeros) | Son clases de otros compañeros que se conectan con la orden. |
 
 ## 4. Conceptos del curso y cómo se aplican
 
@@ -79,7 +82,7 @@ Guarda `estadoAnterior`, `estadoNuevo`, `fecha` y `responsable` (todos privados 
 | **Interfaces** | `Pagable`, implementada por `OrdenServicio`. | Separa "ser una orden" de "poder recibir pagos" (Decisión 7). |
 | **Polimorfismo** | `registrarPago(Pago)` recibe un `Pago` que puede ser `Efectivo`, `Tarjeta` o `Transferencia`; la orden solo usa `estaConfirmado()` y `getMonto()`. Con `Notificable`, el aviso se envía por el canal que corresponda. | No hay `if` por tipo de pago ni `instanceof`. Se puede agregar otro medio de pago sin tocar `OrdenServicio`. |
 | **Colecciones** | `ArrayList` de `CambioEstado`, `Pago` y revisiones. | Administran el historial y los pagos. |
-| **Encapsulamiento** | Atributos privados, `cambiarEstado` privado, constructor privado de `CambioEstado`, listas de solo lectura. | Nadie cambia el estado ni el historial sin pasar por las reglas. |
+| **Encapsulamiento** | Atributos privados, `cambiarEstado` privado, constructor privado de `CambioEstado`, getters que devuelven copias de las listas. | Nadie cambia el estado ni el historial sin pasar por las reglas. |
 | **Excepciones** | `IllegalArgumentException` y `IllegalStateException` con mensajes claros. | Por ejemplo: "No se puede finalizar una orden que no ha sido asignada." |
 
 ## 5. Cómo se cubre cada requerimiento

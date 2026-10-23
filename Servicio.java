@@ -24,10 +24,6 @@ public class Servicio {
         return tipo;
     }
 
-    public double getFactorTarifa() {
-        return factorTarifa;
-    }
-
     public double getDuracionEstimadaHoras() {
         return duracionEstimadaHoras;
     }
@@ -76,8 +72,4 @@ public class Servicio {
         return horas * tarifaBaseTecnico * factorTarifa;
     }
 
-    @Override
-    public String toString() {
-        return tipo + " (" + duracionEstimadaHoras + " h, garantía " + diasGarantia + " días)";
-    }
 }

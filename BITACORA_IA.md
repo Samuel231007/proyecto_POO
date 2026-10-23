@@ -30,4 +30,17 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 
 ---
 
+## Registro 3 · Atributos y métodos de las clases de la orden de servicio y su diagrama UML (Valeria Alvarado)
+
+| Campo | Detalle |
+|---|---|
+| **Fecha** | 21/10/2026 a 22/10/2026 |
+| **Herramienta y modelo** | Claude (Anthropic) · modelo Claude Sonnet 5.5 |
+| **Qué se le pidió** | Ayuda para saber, más o menos, qué atributos y métodos podía registrar en las clases de mi parte (OrdenServicio, Servicio y Garantia), y apoyo para estructurar el diagrama de clases en UML. |
+| **Qué respondió** | Una propuesta de atributos y métodos para cada clase y un diagrama UML con las clases organizadas. |
+| **Qué aceptamos** | La forma de organizar los atributos y los métodos de cada clase y la estructura del diagrama. |
+| **Qué corregimos** | Rehicimos el diagrama con el mismo formato de recuadros que usa el resto del grupo. |
+
+---
+
 *Se irán agregando nuevos registros a medida que el equipo use IA en el desarrollo del proyecto (diseño de clases, generación de código, documentación, etc.), cada uno con su fecha, herramienta, lo pedido, lo respondido, lo aceptado y lo corregido.*

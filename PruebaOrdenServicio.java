@@ -25,7 +25,8 @@ public class PruebaOrdenServicio {
         System.out.println("Diferencia con el estimado: " + orden.compararConEstimado());
 
         orden.finalizar("Técnico");
-        System.out.println(orden.getGarantia());
+        Garantia garantia = orden.getGarantia();
+        System.out.println("La garantía termina el " + garantia.getFechaFin());
 
         // RF-18: revisión dentro y fuera de la vigencia.
         orden.solicitarRevisionGarantia(LocalDate.now().plusDays(5), "La llave vuelve a gotear");
@@ -47,12 +48,11 @@ public class PruebaOrdenServicio {
         Notificacion aviso = orden.crearAvisoUltimoCambio("Ana", "3001234567", "ana@correo.com");
         Notificable canal = new NotificacionWhatsApp();
         canal.enviar(aviso);
-        System.out.println(aviso);
         System.out.println("Órdenes creadas: " + OrdenServicio.getTotalOrdenes());
 
         // RNF-04: historial de cambios.
         for (OrdenServicio.CambioEstado c : orden.getCambios()) {
-            System.out.println("Cambio: " + c);
+            System.out.println("Cambio: " + c.getEstadoAnterior() + " -> " + c.getEstadoNuevo() + " (" + c.getResponsable() + ")");
         }
     }
 }
