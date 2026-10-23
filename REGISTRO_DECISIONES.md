@@ -1,4 +1,4 @@
-# Registro de decisiones de POO
+# Registro de decisiones de Poo
 
 Proyecto integrador: plataforma de técnicos a domicilio.
 
