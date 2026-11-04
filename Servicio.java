@@ -1,80 +1,75 @@
 /**
- * Representa un tipo de servicio técnico del hogar (plomería, electricidad, pintura...).
- * Cada tipo define su propia tarifa, su duración estimada y el tiempo de garantía.
- * Apoya RF-05, RF-07 y RF-16.
+ * Tipo de servicio que ofrece la plataforma (electricidad, plomería, pintura...).
+ * Cada tipo define su propia tarifa, su duración estimada y su tiempo de garantía.
+ * Apoya RF-05 (precio estimado), RF-07 (garantía por tipo) y RF-16 (costo final).
  */
 public class Servicio {
 
-    private String tipo;                  // Ej.: "Plomería", "Electricidad".
-    private double tarifaPorHora;         // Cada tipo de servicio aplica su propia tarifa (RF-05).
-    private double duracionEstimadaHoras; // Duración que se espera para el trabajo.
-    private int garantiaMeses;            // Cada tipo define su tiempo de garantía (RF-07). 0 = sin garantía.
+    // Constante estática: factor de una tarifa normal, sin recargo.
+    public static final double FACTOR_NORMAL = 1.0;
 
-    /** Crea un servicio validando que los datos tengan sentido. */
-    public Servicio(String tipo, double tarifaPorHora, double duracionEstimadaHoras, int garantiaMeses) {
-        this.tipo = validarTextoObligatorio(tipo, "El tipo de servicio");
+    private String tipo;                  // Ejemplo: "Plomería".
+    private double factorTarifa;          // Multiplicador propio del tipo (1.0 = tarifa normal).
+    private double duracionEstimadaHoras; // Horas que se espera que tome el trabajo.
+    private int diasGarantia;             // Días de garantía de este tipo de servicio.
 
-        if (tarifaPorHora <= 0) {
-            throw new IllegalArgumentException("La tarifa por hora debe ser mayor a 0.");
-        }
-
-        if (duracionEstimadaHoras <= 0) {
-            throw new IllegalArgumentException("La duración estimada debe ser mayor a 0.");
-        }
-
-        if (garantiaMeses < 0) {
-            throw new IllegalArgumentException("Los meses de garantía no pueden ser negativos.");
-        }
-
-        this.tarifaPorHora = tarifaPorHora;
-        this.duracionEstimadaHoras = duracionEstimadaHoras;
-        this.garantiaMeses = garantiaMeses;
+    public Servicio(String tipo, double factorTarifa, double duracionEstimadaHoras, int diasGarantia) {
+        setTipo(tipo);
+        setFactorTarifa(factorTarifa);
+        setDuracionEstimadaHoras(duracionEstimadaHoras);
+        setDiasGarantia(diasGarantia);
     }
 
     public String getTipo() {
         return tipo;
     }
 
-    public double getTarifaPorHora() {
-        return tarifaPorHora;
-    }
-
     public double getDuracionEstimadaHoras() {
         return duracionEstimadaHoras;
     }
 
-    public int getGarantiaMeses() {
-        return garantiaMeses;
+    public int getDiasGarantia() {
+        return diasGarantia;
     }
 
-    /**
-     * Calcula el costo con la fórmula: tarifa por hora x horas + materiales.
-     * Sirve para el costo estimado (RF-05) y para el costo final (RF-16).
-     */
-    public double calcularCosto(double horas, double costoMateriales) {
+    // Los setters validan los datos para que el objeto nunca quede inválido.
+    public void setTipo(String tipo) {
+        if (tipo == null || tipo.trim().isEmpty()) {
+            throw new IllegalArgumentException("El tipo de servicio no puede estar vacío.");
+        }
+        this.tipo = tipo.trim();
+    }
+
+    public void setFactorTarifa(double factorTarifa) {
+        if (factorTarifa <= 0) {
+            throw new IllegalArgumentException("El factor de tarifa debe ser mayor a 0.");
+        }
+        this.factorTarifa = factorTarifa;
+    }
+
+    public void setDuracionEstimadaHoras(double duracionEstimadaHoras) {
+        if (duracionEstimadaHoras <= 0) {
+            throw new IllegalArgumentException("La duración estimada debe ser mayor a 0.");
+        }
+        this.duracionEstimadaHoras = duracionEstimadaHoras;
+    }
+
+    public void setDiasGarantia(int diasGarantia) {
+        if (diasGarantia < 0) {
+            throw new IllegalArgumentException("Los días de garantía no pueden ser negativos.");
+        }
+        this.diasGarantia = diasGarantia;
+    }
+
+    // Costo de la mano de obra: horas x tarifa base del técnico x factor propio del tipo.
+    public double calcularManoObra(double horas, double tarifaBaseTecnico) {
         if (horas <= 0) {
             throw new IllegalArgumentException("Las horas deben ser mayores a 0.");
         }
-
-        if (costoMateriales < 0) {
-            throw new IllegalArgumentException("El costo de los materiales no puede ser negativo.");
+        if (tarifaBaseTecnico <= 0) {
+            throw new IllegalArgumentException("La tarifa base del técnico debe ser mayor a 0.");
         }
-
-        return tarifaPorHora * horas + costoMateriales;
+        return horas * tarifaBaseTecnico * factorTarifa;
     }
 
-    @Override
-    public String toString() {
-        return tipo + " (tarifa " + tarifaPorHora + " por hora, " + duracionEstimadaHoras
-                + " h estimadas, garantía " + garantiaMeses + " meses)";
-    }
-
-    // Rechaza textos nulos, vacíos o formados solo por espacios.
-    private static String validarTextoObligatorio(String valor, String nombreCampo) {
-        if (valor == null || valor.trim().length() == 0) {
-            throw new IllegalArgumentException(nombreCampo + " no puede estar vacío.");
-        }
-
-        return valor.trim();
-    }
 }
