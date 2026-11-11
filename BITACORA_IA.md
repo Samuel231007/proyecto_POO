@@ -99,6 +99,22 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 | **¿Qué aceptamos?** | Aceptamos las explicaciones y sugerencias que nos permitieron aclarar la función de cada clase, organizar mejor sus responsabilidades y comprender las conexiones representadas en el diagrama. |
 | **¿Qué corregimos?** | Realizamos pequeños ajustes en la definición de algunos métodos y en la descripción de las relaciones entre las clases, procurando mantener el diseño original del equipo y cumplir con los requerimientos establecidos. |
 
+
+---
+
+
+## Registro 8 · Revisión de vacios en el código de DisponibilidadTecnico
+
+| Campo | Detalle |
+|---|---|
+| **Fecha** | 10/11/2026 |
+| **Herramienta** | Claude (Anthropic) |
+| **¿Qué se le pidió?** | Se solicitó ayuda para revisar el código de la clase `DisponibilidadTecnico`, verificando que estuviera correctamente relacionada con las demás clases del proyecto y que realizara las llamadas correspondientes entre ellas, de acuerdo con el diagrama UML. |
+| **¿Qué respondió?** | Nos ayudó a revisar la estructura del código, explicó cómo se conectaba `DisponibilidadTecnico` con las demás clases y señaló algunos aspectos que se podían ajustar para que coincidiera con el diagrama UML. |
+| **¿Qué aceptamos?** | Únicamente verificamos que el código de `DisponibilidadTecnico` estuviera funcionando correctamente y que sus conexiones con las demás clases correspondieran con el diagrama UML. |
+| **¿Qué corregimos?** | Corregimos únicamente un par de detalles que podían mejorar el código, buscando que las conexiones y llamadas entre las clases fueran más claras y mantuvieran la coherencia con el diagrama UML. |
+
+
 ---
 
 *Se irán agregando nuevos registros a medida que el equipo use IA en el desarrollo del proyecto (diseño de clases, generación de código, documentación, etc.), cada uno con su fecha, herramienta, lo pedido, lo respondido, lo aceptado y lo corregido.*
