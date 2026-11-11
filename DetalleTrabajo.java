@@ -1,38 +1,54 @@
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class detalleTrabajo {
+public class DetalleTrabajo {
+
     private String descripcion;
     private double horasTrabajo;
     private List<String> actividades;
-    private List<material> materiales;
+    private List<Material> materiales;
 
-    public detalleTrabajo() {
+    public DetalleTrabajo() {
         this.actividades = new ArrayList<>();
         this.materiales = new ArrayList<>();
     }
 
+    // Metodos
     public void agregarActividad(String actividad) {
         actividades.add(actividad);
     }
 
-    public void registrarMaterial(material material) {
+    public void registrarMaterial(Material material) {
         materiales.add(material);
     }
 
-    public double calcularCostoManoObra(double tarifaHora) {
-        // TODO: Implementar el calculo
-        return 0.0;
-    }
+    // Clase anidada Material
+    public static class Material {
 
-    public double calcularCostoMateriales() {
-        // TODO: Implementar el calculo
-        return 0.0;
-    }
+        private String descripcion;
+        private double costoUnitario;
+        private double cantidad;
 
-    public double calcularCostoTotal(double tarifaHora) {
-        // TODO: Implementar el calculo
-        return 0.0;
+        // Constructor
+        public Material(String descripcion, double costoUnitario,
+                        double cantidad) {
+            this.descripcion = descripcion;
+            this.costoUnitario = costoUnitario;
+            this.cantidad = cantidad;
+        }
+
+        // Setters
+        public void setDescripcion(String descripcion) {
+            this.descripcion = descripcion;
+        }
+
+        public void setCostoUnitario(double costoUnitario) {
+            this.costoUnitario = costoUnitario;
+        }
+
+        public void setCantidad(double cantidad) {
+            this.cantidad = cantidad;
+        }
     }
 }
-
