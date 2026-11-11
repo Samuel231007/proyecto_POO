@@ -314,3 +314,21 @@ Los datos de los usuarios y de las solicitudes no deben modificarse sin verifica
 **Consecuencia**
 
 Se reduce el riesgo de cambios inconsistentes, se facilita la validación de la información y se tiene un mayor control sobre las operaciones de registro, actualización y cancelación.
+
+## Decisión 17 · Eliminar la interfaz Pagable
+
+**Decisión**
+
+Eliminar la interfaz Pagable y trasladar sus operaciones directamente a OrdenServicio, ya que era la única clase que la implementaba.
+
+**Alternativa considerada**
+
+Mantener Pagable como una interfaz independiente para definir las operaciones de registro de pagos y consulta del saldo pendiente.
+
+**Por qué**
+
+Pagable solamente era implementada por OrdenServicio, por lo que no aportaba reutilización ni una ventaja significativa de diseño. Mantenerla añadía una estructura innecesaria al proyecto.
+
+**Consecuencia**
+
+OrdenServicio incorpora directamente las operaciones establecidas, manteniendo la funcionalidad de gestión de pagos sin depender de una interfaz adicional. Se simplifica la estructura del modelo y se evita utilizar abstracciones que no aportan beneficios concretos.
