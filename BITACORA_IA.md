@@ -87,4 +87,18 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 
 ---
 
+
+## Registro 7 · Revisión y ajustes de las clases del diagrama UML
+
+| Campo | Detalle |
+|---|---|
+| **Fecha** | 20/10/2026 |
+| **Herramienta** | ChatGPT |
+| **¿Qué se le pidió?** | Se solicitó apoyo para revisar las clases `Tecnico`, `Asignacion`, `DisponibilidadTecnico` y `FranjaHoraria`, con el fin de aclarar algunas dudas sobre sus atributos, métodos y relaciones con las demás clases del diagrama UML. |
+| **¿Qué respondió?** | La herramienta proporcionó explicaciones y sugerencias para mejorar la claridad de las responsabilidades de cada clase, revisar los métodos necesarios y comprender mejor las relaciones de herencia, asociación y composición. |
+| **¿Qué aceptamos?** | Aceptamos las explicaciones y sugerencias que nos permitieron aclarar la función de cada clase, organizar mejor sus responsabilidades y comprender las conexiones representadas en el diagrama. |
+| **¿Qué corregimos?** | Realizamos pequeños ajustes en la definición de algunos métodos y en la descripción de las relaciones entre las clases, procurando mantener el diseño original del equipo y cumplir con los requerimientos establecidos. |
+
+---
+
 *Se irán agregando nuevos registros a medida que el equipo use IA en el desarrollo del proyecto (diseño de clases, generación de código, documentación, etc.), cada uno con su fecha, herramienta, lo pedido, lo respondido, lo aceptado y lo corregido.*
