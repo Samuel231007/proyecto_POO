@@ -117,4 +117,17 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 
 ---
 
+## Registro 9 · Integración a `main` de Servicio, Garantia y OrdenServicio
+
+| Campo | Detalle |
+|---|---|
+| **Fecha** | 12/11/2026 |
+| **Herramienta y modelo** | Claude (Anthropic) · modelo Claude Sonnet 5.5 |
+| **Qué se le pidió** | Revisar `Servicio`, `Garantia` y `OrdenServicio`, subirlas a `main` y preparar sus pruebas y la explicación de la parte. |
+| **Qué respondió** | Detectó que `OrdenServicio` no compilaba por `Pagable` (eliminada en la Decisión 17), propuso quitarla y subir las clases en 3 commits, y redactó `PruebaServicioGarantia.java` y `Explicacion_Clases_Vale.md`. |
+| **Qué aceptamos** | Quitar `Pagable`, subir las tres clases a `main`, pasar las decisiones A–D a las decisiones 18–21 y marcar RF-06 y RF-07 como implementados. |
+| **Qué corregimos** | Se pidió no tocar la bitácora hasta decidir cuánto registrar. RF-05, RF-16 y RF-18 se dejaron en "Pendiente" hasta que existan las clases de las que dependen. La explicación se actualizó para quitar `Pagable`. |
+
+---
+
 *Se irán agregando nuevos registros a medida que el equipo use IA en el desarrollo del proyecto (diseño de clases, generación de código, documentación, etc.), cada uno con su fecha, herramienta, lo pedido, lo respondido, lo aceptado y lo corregido.*
