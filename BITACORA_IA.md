@@ -130,4 +130,17 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 
 ---
 
+## Registro 10 · Integración a `main` de las clases de notificaciones
+
+| Campo | Detalle |
+|---|---|
+| **Fecha** | 12/11/2026 |
+| **Herramienta y modelo** | Claude (Anthropic) · modelo Claude Sonnet 5.5 |
+| **Qué se le pidió** | Comprobar los commits de cada integrante, subir a `main` las 4 clases de notificaciones y preparar sus pruebas y su explicación. |
+| **Qué respondió** | Contó los commits del repositorio, explicó cómo verificar la subida en GitHub y generó los scripts para llevar las clases a `main` en 3 commits. También redactó `PruebaNotificaciones.java` y `Explicacion_Notificaciones.md`. |
+| **Qué aceptamos** | Llevar las 4 clases a `main` sin cambiar su código y marcar RF-19 como implementado. |
+| **Qué corregimos** | Windows bloqueó el archivo `.bat`, así que se usó una versión para Git Bash. No se tocó la bitácora hasta decidir cuánto registrar. |
+
+---
+
 *Se irán agregando nuevos registros a medida que el equipo use IA en el desarrollo del proyecto (diseño de clases, generación de código, documentación, etc.), cada uno con su fecha, herramienta, lo pedido, lo respondido, lo aceptado y lo corregido.*
