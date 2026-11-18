@@ -143,4 +143,30 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 
 ---
 
+## Registro 11 · Repositorios, persistencia en archivos y organización por paquetes
+
+| Campo | Detalle |
+|---|---|
+| **Fecha** | 17/11/2026 |
+| **Herramienta y modelo** | Claude (Anthropic) · modelo claude-opus-5-5 |
+| **Qué se le pidió** | Completar el código unificado del proyecto según los requerimientos, tomando como base el repositorio del profesor (SistemaGestionBiblioteca): organizarlo por paquetes y crear los repositorios, la persistencia y los archivos de texto que faltaban. |
+| **Qué respondió** | Organizó las clases en los paquetes del proyecto base, creó `FileManage`, `BaseRepository` y un repositorio por archivo `.txt` (16 archivos con datos de ejemplo), la capa de servicios con un servicio por rol y los menús de consola. Hizo los ajustes mínimos a los modelos para poder leerlos de los archivos y probó que los datos se conservan al cerrar y volver a abrir el programa. |
+| **Qué aceptamos** | La estructura por paquetes, la persistencia en archivos `.txt` y las decisiones 22 a 27 del registro de decisiones. |
+| **Qué corregimos** | Se pidió una imagen de cómo se veía la interfaz para revisarla; al verla, se pidió mejorar la parte visual (Registro 12). |
+
+---
+
+## Registro 12 · Interfaz gráfica e integración a `main`
+
+| Campo | Detalle |
+|---|---|
+| **Fecha** | 18/11/2026 |
+| **Herramienta y modelo** | Claude (Anthropic) · modelo claude-opus-5-5 |
+| **Qué se le pidió** | Mejorar la parte visual de la interfaz para que fuera acorde a una plataforma de técnicos del hogar y cumpliera todos los requerimientos; después, ajustar el código a la estructura exacta del repositorio del profesor y subirlo al repositorio del equipo. |
+| **Qué respondió** | Creó una interfaz gráfica en Swing con un panel por rol y la probó recorriendo los flujos de los tres roles. Al probarla encontró que se podía registrar dos veces el mismo pago y lo corrigió (Decisión 28). Preparó la integración a `main` en commits pequeños que compilan, adaptó las pruebas del equipo a los paquetes y actualizó el README, la trazabilidad y el registro de decisiones. |
+| **Qué aceptamos** | La interfaz gráfica conservando la consola, la corrección de los pagos y la integración a `main` con la historia de las clases que ya estaban. |
+| **Qué corregimos** | Se pidió seguir exactamente la estructura del repositorio del profesor: las ventanas pasaron de un paquete `gui` a `ui`, la clase `Validar` pasó de `utilidades` a `modelos` y quedó un solo `Main.java`. Al integrar se detectó que la versión unificada de `Servicio` había perdido los setters con validación que pide la Decisión 18, y se recuperaron para que las pruebas del equipo pasaran completas. |
+
+---
+
 *Se irán agregando nuevos registros a medida que el equipo use IA en el desarrollo del proyecto (diseño de clases, generación de código, documentación, etc.), cada uno con su fecha, herramienta, lo pedido, lo respondido, lo aceptado y lo corregido.*
