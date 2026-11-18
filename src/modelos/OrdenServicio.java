@@ -298,7 +298,17 @@ public class OrdenServicio implements IImprimible {
         if (estado == EstadoOrden.CANCELADA) { throw new IllegalStateException("No se pueden registrar pagos en una orden cancelada."); }
         double saldo = getSaldoPendiente();
         if (saldo <= 0) { throw new IllegalStateException("La orden no tiene saldo por pagar."); }
-        if (pago.getMonto() > saldo) { throw new IllegalArgumentException("El pago (" + dinero(pago.getMonto()) + ") supera el saldo pendiente (" + dinero(saldo) + ")."); }
+        // Los pagos que aún no se confirman también cuentan: así no se puede pagar dos veces lo mismo.
+        double enRevision = 0;
+        for (Pago p : pagos) { if (p.estaPendiente()) { enRevision += p.getMonto(); } }
+        double disponible = saldo - enRevision;
+        if (disponible <= 0) {
+            throw new IllegalStateException("Ya hay pagos por " + dinero(enRevision) + " esperando confirmación que cubren el saldo. Espere a que el administrador los revise.");
+        }
+        if (pago.getMonto() > disponible) {
+            throw new IllegalArgumentException("El pago (" + dinero(pago.getMonto()) + ") supera lo que falta por pagar (" + dinero(disponible)
+                    + (enRevision > 0 ? ", descontando " + dinero(enRevision) + " en revisión" : "") + ").");
+        }
         pagos.add(pago);
         System.out.println("Pago registrado: " + pago);
     }
