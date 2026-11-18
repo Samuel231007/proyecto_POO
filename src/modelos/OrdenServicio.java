@@ -1,259 +1,379 @@
+package modelos;
+
+import enums.EstadoOrden;
+import interfaces.IImprimible;
+import interfaces.Notificable;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Orden de servicio: reúne el servicio pedido, el técnico, el estado, los costos,
- * la garantía y los pagos. Los pagos se registran aqui mismo (decision 17).
- * Contiene la clase anidada estática CambioEstado (decisión 9).
- * Apoya RF-05, RF-06, RF-16, RF-18, RF-17, RF-19 y RNF-04.
+ * Orden de servicio: une al cliente, su solicitud, el servicio, el técnico, el estado, los costos,
+ * el detalle del trabajo, la garantía, la calificación, los pagos y los avisos.
+ * Apoya RF-04 a RF-07, RF-10, RF-12, RF-14 a RF-19, RNF-02, RNF-03, RNF-04 y RNF-05.
  */
-public class OrdenServicio {
+public class OrdenServicio implements IImprimible {
 
-    // Estados posibles de la orden (RF-06).
-    public enum Estado {
-        PENDIENTE,
-        ASIGNADA,
-        EN_PROCESO,
-        FINALIZADA,
-        CANCELADA
-    }
-
-    /**
-     * Clase anidada estática: guarda un cambio de estado de la orden (RNF-04).
-     * Es estática porque no necesita acceder a la orden que la contiene.
-     * Es de solo lectura: se crea una vez y no se modifica.
-     */
+    // Clase anidada estática: un cambio de estado. Constructor privado y solo getters: el historial no se falsifica (RNF-04).
     public static class CambioEstado {
-        private final Estado estadoAnterior;
-        private final Estado estadoNuevo;
+        private final EstadoOrden estadoAnterior;
+        private final EstadoOrden estadoNuevo;
         private final LocalDateTime fecha;
         private final String responsable;
 
-        // Privado: solo OrdenServicio puede crear cambios, así el historial no se falsifica.
-        private CambioEstado(Estado estadoAnterior, Estado estadoNuevo, String responsable) {
+        private CambioEstado(EstadoOrden estadoAnterior, EstadoOrden estadoNuevo, String responsable) {
+            this(estadoAnterior, estadoNuevo, LocalDateTime.now(), responsable);
+        }
+
+        // RNF-01: se usa al leer el archivo, con la fecha original del cambio.
+        private CambioEstado(EstadoOrden estadoAnterior, EstadoOrden estadoNuevo, LocalDateTime fecha, String responsable) {
             this.estadoAnterior = estadoAnterior;
             this.estadoNuevo = estadoNuevo;
-            this.fecha = LocalDateTime.now();
+            this.fecha = fecha;
             this.responsable = responsable;
         }
 
-        public Estado getEstadoAnterior() {
-            return estadoAnterior;
-        }
+        public EstadoOrden getEstadoAnterior() { return estadoAnterior; }
+        public EstadoOrden getEstadoNuevo() { return estadoNuevo; }
+        public LocalDateTime getFecha() { return fecha; }
+        public String getResponsable() { return responsable; }
 
-        public Estado getEstadoNuevo() {
-            return estadoNuevo;
-        }
-
-        public LocalDateTime getFecha() {
-            return fecha;
-        }
-
-        public String getResponsable() {
-            return responsable;
-        }
-
+        @Override
+        public String toString() { return fecha.toLocalDate() + " " + estadoAnterior + " -> " + estadoNuevo + " (por " + responsable + ")"; }
     }
 
-    // Atributo estático: lo comparten todas las órdenes y sirve para numerarlas.
-    private static int consecutivo = 0;
+    private static int consecutivo = 0;   // atributo estático: numera las órdenes
 
     private final String codigo;
-    private final String documentoCliente;
+    private final Cliente cliente;
+    private final Solicitud solicitud;
     private final Servicio servicio;
+    private final Asignacion asignacion;  // composición: la orden crea y maneja su propia asignación (RF-14)
     private final LocalDateTime fechaCreacion;
-    private String documentoTecnico;   // Vacío hasta que se asigna un técnico.
-    private double tarifaBaseTecnico;  // Tarifa base del técnico asignado.
-    private Estado estado;
-    private double costoEstimado;
-    private double costoFinal;
-    private Garantia garantia;         // Se crea al finalizar la orden.
-    private final List<CambioEstado> cambios;
-    private final List<Pago> pagos;
+    private Tecnico tecnico;              // null hasta que se asigna
+    private EstadoOrden estado = EstadoOrden.PENDIENTE;
+    private double costoMaterialesEstimado, costoEstimado;
+    private double costoManoObraFinal, costoMaterialesFinal, costoFinal;
+    private DetalleTrabajo detalle;       // RF-15: se registra mientras la orden está en proceso
+    private Garantia garantia;            // se crea al finalizar
+    private Calificacion calificacion;    // se crea cuando el cliente califica (RF-10)
+    private final List<CambioEstado> cambios = new ArrayList<>();
+    private final List<Pago> pagos = new ArrayList<>();
+    private final List<Notificacion> notificaciones = new ArrayList<>();
 
-    // Toda orden nueva queda pendiente (RF-03).
-    public OrdenServicio(String codigo, String documentoCliente, Servicio servicio) {
-        if (codigo == null || codigo.trim().isEmpty()) {
-            throw new IllegalArgumentException("El código de la orden es obligatorio.");
+    public OrdenServicio(String codigo, Cliente cliente, Solicitud solicitud, Servicio servicio) {
+        Validar.objeto(cliente, "cliente");
+        Validar.objeto(solicitud, "solicitud");
+        Validar.objeto(servicio, "servicio");
+        if (solicitud.getEstado() != EstadoOrden.PENDIENTE) { throw new IllegalStateException("La solicitud " + solicitud.getIdSolicitud() + " ya no está pendiente."); }
+        if (!servicio.getTipo().equalsIgnoreCase(solicitud.getTipoProblema())) {
+            throw new IllegalArgumentException("El servicio (" + servicio.getTipo() + ") no coincide con el tipo de problema de la solicitud (" + solicitud.getTipoProblema() + ").");
         }
-        if (documentoCliente == null || documentoCliente.trim().isEmpty()) {
-            throw new IllegalArgumentException("El documento del cliente es obligatorio.");
-        }
-        if (servicio == null) {
-            throw new IllegalArgumentException("El servicio es obligatorio.");
-        }
-        this.codigo = codigo.trim();
-        this.documentoCliente = documentoCliente.trim();
+        this.codigo = Validar.texto(codigo, "código de la orden");
+        this.cliente = cliente;
+        this.solicitud = solicitud;
         this.servicio = servicio;
         this.fechaCreacion = LocalDateTime.now();
-        this.estado = Estado.PENDIENTE;
-        this.cambios = new ArrayList<>();
-        this.pagos = new ArrayList<>();
+        this.asignacion = new Asignacion(this);
     }
 
-    /**
-     * Método estático: genera el siguiente código de orden (OS-001, OS-002...).
-     * Es estático porque no depende de una orden en particular.
-     */
+    // RNF-01 (sobrecarga de constructores): lo usa OrdenServicioRepository para reconstruir la orden tal como quedó guardada.
+    // No vuelve a validar las reglas de negocio ni envía avisos: esos datos ya se validaron cuando se crearon.
+    public OrdenServicio(String codigo, Cliente cliente, Solicitud solicitud, Servicio servicio, LocalDateTime fechaCreacion,
+                         Tecnico tecnico, EstadoOrden estado, double costoMaterialesEstimado, double costoEstimado,
+                         double costoManoObraFinal, double costoMaterialesFinal, double costoFinal) {
+        Validar.objeto(cliente, "cliente");
+        Validar.objeto(solicitud, "solicitud");
+        Validar.objeto(servicio, "servicio");
+        Validar.objeto(fechaCreacion, "fecha de creación");
+        Validar.objeto(estado, "estado");
+        this.codigo = Validar.texto(codigo, "código de la orden");
+        this.cliente = cliente;
+        this.solicitud = solicitud;
+        this.servicio = servicio;
+        this.fechaCreacion = fechaCreacion;
+        this.tecnico = tecnico;
+        this.estado = estado;
+        this.costoMaterialesEstimado = costoMaterialesEstimado;
+        this.costoEstimado = costoEstimado;
+        this.costoManoObraFinal = costoManoObraFinal;
+        this.costoMaterialesFinal = costoMaterialesFinal;
+        this.costoFinal = costoFinal;
+        this.asignacion = new Asignacion(this);
+        actualizarConsecutivo(this.codigo);
+    }
+
+    // Método estático: siguiente código (OS-001, OS-002...).
     public static String generarCodigo() {
         consecutivo++;
-        // Rellena con ceros: OS-001, OS-002, ...
-        if (consecutivo < 10) {
-            return "OS-00" + consecutivo;
-        } else if (consecutivo < 100) {
-            return "OS-0" + consecutivo;
+        String ceros = consecutivo < 10 ? "00" : consecutivo < 100 ? "0" : "";
+        return "OS-" + ceros + consecutivo;
+    }
+
+    public static int getTotalOrdenes() { return consecutivo; }
+
+    // RNF-01: si se cargó la orden OS-007, la siguiente nueva será OS-008 (no se repiten códigos).
+    private static void actualizarConsecutivo(String codigo) {
+        try {
+            int numero = Integer.parseInt(codigo.substring(codigo.indexOf('-') + 1));
+            if (numero > consecutivo) { consecutivo = numero; }
+        } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+            // Código con otro formato: no afecta el consecutivo.
         }
-        return "OS-" + consecutivo;
     }
 
-    /** Método estático: cuántos códigos de orden se han generado. */
-    public static int getTotalOrdenes() {
-        return consecutivo;
-    }
+    public String getCodigo() { return codigo; }
+    public Cliente getCliente() { return cliente; }
+    public String getDocumentoCliente() { return cliente.getDocumento(); }
+    public Solicitud getSolicitud() { return solicitud; }
+    public Servicio getServicio() { return servicio; }
+    public Asignacion getAsignacion() { return asignacion; }
+    public Tecnico getTecnico() { return tecnico; }
+    public String getDocumentoTecnico() { return tecnico == null ? null : tecnico.getDocumento(); }
+    public EstadoOrden getEstado() { return estado; }
+    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
+    public DetalleTrabajo getDetalle() { return detalle; }
+    public Garantia getGarantia() { return garantia; }
+    public Calificacion getCalificacion() { return calificacion; }
+    public double getCostoEstimado() { return costoEstimado; }
+    public double getCostoMaterialesEstimado() { return costoMaterialesEstimado; }
+    public double getCostoManoObraFinal() { return costoManoObraFinal; }
+    public double getCostoMaterialesFinal() { return costoMaterialesFinal; }
+    public double getCostoFinal() { return costoFinal; }
+    public List<CambioEstado> getCambios() { return new ArrayList<>(cambios); }
+    public List<Notificacion> getNotificaciones() { return new ArrayList<>(notificaciones); }
 
-    public Garantia getGarantia() {
-        return garantia;
-    }
-
-    public List<CambioEstado> getCambios() {
-        return new ArrayList<>(cambios);
-    }
+    // RF-09: activa = no ha terminado (ni finalizada ni cancelada).
+    public boolean estaActiva() { return estado != EstadoOrden.FINALIZADA && estado != EstadoOrden.CANCELADA; }
 
     // ---------- RF-06: cambios de estado ----------
 
-    // Asigna el técnico y pasa la orden a ASIGNADA.
-    public void asignarTecnico(String documentoTecnico, double tarifaBaseTecnico, String responsable) {
-        if (documentoTecnico == null || documentoTecnico.trim().isEmpty()) {
-            throw new IllegalArgumentException("El documento del técnico es obligatorio.");
-        }
-        if (tarifaBaseTecnico <= 0) {
-            throw new IllegalArgumentException("La tarifa base del técnico debe ser mayor a 0.");
-        }
-        cambiarEstado(Estado.ASIGNADA, responsable);
-        this.documentoTecnico = documentoTecnico.trim();
-        this.tarifaBaseTecnico = tarifaBaseTecnico;
+    // Sin "public": solo Asignacion la llama, después de revisar especialidad, zona y horario (RF-04 y RF-13).
+    // Si ya estaba ASIGNADA es una reasignación (RF-14): sigue ASIGNADA y solo cambia el técnico.
+    void asignarTecnico(Tecnico nuevo, String responsable) {
+        Validar.objeto(nuevo, "técnico");
+        Validar.texto(responsable, "responsable");
+        if (estado != EstadoOrden.ASIGNADA) { cambiarEstado(EstadoOrden.ASIGNADA, responsable); }
+        tecnico = nuevo;
+        nuevo.recibirSolicitud(solicitud);
+        // Si ya había estimado, se recalcula con la tarifa del técnico nuevo.
+        if (costoEstimado > 0) { calcularCostoEstimado(nuevo.getTarifaBase(), costoMaterialesEstimado); }
     }
 
-    public void iniciarTrabajo(String responsable) {
-        cambiarEstado(Estado.EN_PROCESO, responsable);
-    }
+    public void iniciarTrabajo(String responsable) { cambiarEstado(EstadoOrden.EN_PROCESO, responsable); }
 
-    // Al finalizar se crea la garantía del servicio con los días de su tipo (RF-07).
+    // RF-07 y RF-16: al finalizar se calcula el costo final y se crea la garantía.
+    // RNF-03: primero se calcula todo; si algo falla, la orden queda exactamente igual.
     public void finalizar(String responsable) {
-        cambiarEstado(Estado.FINALIZADA, responsable);
-        garantia = new Garantia(LocalDate.now(), servicio.getDiasGarantia(),
-                "Fallas del servicio de " + servicio.getTipo());
+        if (tecnico == null) { throw new IllegalStateException("No se puede finalizar una orden que no ha sido asignada."); }
+        if (estado != EstadoOrden.EN_PROCESO) { throw new IllegalStateException("No se puede pasar de " + estado + " a FINALIZADA."); }
+        if (detalle == null) { throw new IllegalStateException("Registre primero el detalle del trabajo (actividades, horas y materiales)."); }
+        Validar.texto(responsable, "responsable");
+        double manoObra = servicio.calcularManoObra(detalle.getHorasTrabajo(), tecnico.getTarifaBase());
+        double materiales = detalle.calcularCostoMateriales();
+        Garantia nueva = new Garantia(LocalDate.now(), servicio.getDiasGarantia(), "Fallas del servicio de " + servicio.getTipo());
+
+        costoManoObraFinal = manoObra;
+        costoMaterialesFinal = materiales;
+        costoFinal = manoObra + materiales;
+        garantia = nueva;
+        cambiarEstado(EstadoOrden.FINALIZADA, responsable);
     }
 
-    public void cancelar(String responsable) {
-        cambiarEstado(Estado.CANCELADA, responsable);
+    // RF-12: el motivo queda guardado en la solicitud.
+    public void cancelar(String responsable, String motivo) {
+        String motivoLimpio = Validar.texto(motivo, "motivo de cancelación");
+        cambiarEstado(EstadoOrden.CANCELADA, responsable);
+        solicitud.registrarMotivoCancelacion(motivoLimpio);
     }
 
-    // Único lugar donde cambia el estado: valida la transición y deja el registro.
-    private void cambiarEstado(Estado nuevo, String responsable) {
-        if (responsable == null || responsable.trim().isEmpty()) {
-            throw new IllegalArgumentException("Debe indicar quién hace el cambio.");
-        }
-        if (nuevo == Estado.FINALIZADA && documentoTecnico == null) {
+    // Único lugar donde cambia el estado: valida la transición, deja el registro y avisa al cliente.
+    private void cambiarEstado(EstadoOrden nuevo, String responsable) {
+        Validar.texto(responsable, "responsable");
+        if (nuevo == EstadoOrden.FINALIZADA && tecnico == null) {
             throw new IllegalStateException("No se puede finalizar una orden que no ha sido asignada.");
         }
         if (!transicionPermitida(estado, nuevo)) {
             throw new IllegalStateException("No se puede pasar de " + estado + " a " + nuevo + ".");
         }
-        cambios.add(new CambioEstado(estado, nuevo, responsable.trim()));
+        CambioEstado cambio = new CambioEstado(estado, nuevo, responsable.trim());
+        cambios.add(cambio);
         estado = nuevo;
+        solicitud.actualizarEstado(nuevo);   // la solicitud siempre refleja el estado de su orden
+        notificarCliente(cambio);
     }
 
-    private boolean transicionPermitida(Estado actual, Estado nuevo) {
+    private boolean transicionPermitida(EstadoOrden actual, EstadoOrden nuevo) {
         switch (actual) {
-            case PENDIENTE:
-                return nuevo == Estado.ASIGNADA || nuevo == Estado.CANCELADA;
-            case ASIGNADA:
-                return nuevo == Estado.EN_PROCESO || nuevo == Estado.CANCELADA;
-            case EN_PROCESO:
-                return nuevo == Estado.FINALIZADA;
-            default:
-                return false; // FINALIZADA y CANCELADA son finales.
+            case PENDIENTE: return nuevo == EstadoOrden.ASIGNADA || nuevo == EstadoOrden.CANCELADA;
+            case ASIGNADA: return nuevo == EstadoOrden.EN_PROCESO || nuevo == EstadoOrden.CANCELADA;
+            case EN_PROCESO: return nuevo == EstadoOrden.FINALIZADA;
+            default: return false;   // FINALIZADA y CANCELADA son finales
         }
+    }
+
+    // ---------- RF-19: aviso automático en cada cambio de estado ----------
+
+    // Si el envío falla, la notificación queda FALLIDA con su causa, pero el cambio de estado sí se conserva.
+    private void notificarCliente(CambioEstado cambio) {
+        Notificable canal = cliente.getCanalNotificacion();
+        String mensaje = Notificacion.crearMensajeCambioEstado(cliente.getNombre(), codigo,
+                cambio.getEstadoAnterior().name(), cambio.getEstadoNuevo().name());
+        Notificacion aviso = new Notificacion(codigo, cliente.getDocumento(), cliente.getNombre(),
+                cliente.getTelefono(), cliente.getCorreo(), mensaje);
+        canal.enviar(aviso);
+        notificaciones.add(aviso);
+        System.out.println("  Aviso al cliente -> " + aviso);
+    }
+
+    // ---------- RF-15: detalle del trabajo ----------
+
+    // Sin "public" de uso libre: lo registra el técnico asignado con Tecnico.registrarTrabajo.
+    void registrarDetalle(DetalleTrabajo nuevo) {
+        Validar.objeto(nuevo, "detalle del trabajo");
+        if (estado != EstadoOrden.EN_PROCESO) { throw new IllegalStateException("Solo se registra el trabajo de una orden EN_PROCESO (está " + estado + ")."); }
+        nuevo.validarCompleto();
+        detalle = nuevo;
     }
 
     // ---------- RF-05 y RF-16: costos ----------
 
     // Estimado = mano de obra con la duración estimada + materiales estimados.
     public double calcularCostoEstimado(double tarifaBaseTecnico, double costoMateriales) {
-        validarMateriales(costoMateriales);
-        costoEstimado = servicio.calcularManoObra(servicio.getDuracionEstimadaHoras(), tarifaBaseTecnico)
-                + costoMateriales;
+        if (costoMateriales < 0) { throw new IllegalArgumentException("El costo de materiales no puede ser negativo."); }
+        double manoObra = servicio.calcularManoObra(servicio.getDuracionEstimadaHoras(), tarifaBaseTecnico);
+        costoMaterialesEstimado = costoMateriales;
+        costoEstimado = manoObra + costoMateriales;
         return costoEstimado;
     }
 
-    // Final = mano de obra con las horas reales + materiales usados.
-    public double calcularCostoFinal(double horasReales, double costoMateriales) {
-        if (documentoTecnico == null) {
-            throw new IllegalStateException("La orden no tiene técnico asignado.");
-        }
-        validarMateriales(costoMateriales);
-        costoFinal = servicio.calcularManoObra(horasReales, tarifaBaseTecnico) + costoMateriales;
-        return costoFinal;
-    }
-
-    // Diferencia entre final y estimado: positivo = salió más caro de lo estimado.
+    // Positivo = salió más caro de lo estimado.
     public double compararConEstimado() {
-        if (costoEstimado <= 0 || costoFinal <= 0) {
-            throw new IllegalStateException("Calcule primero el costo estimado y el final.");
-        }
+        if (costoEstimado <= 0 || costoFinal <= 0) { throw new IllegalStateException("Calcule primero el costo estimado y finalice la orden."); }
         return costoFinal - costoEstimado;
     }
 
-    private void validarMateriales(double costoMateriales) {
-        if (costoMateriales < 0) {
-            throw new IllegalArgumentException("El costo de materiales no puede ser negativo.");
+    // RF-16: costo final desglosado y diferencia frente al estimado.
+    public String getDesgloseCosto() {
+        if (costoFinal <= 0) { throw new IllegalStateException("La orden " + codigo + " aún no tiene costo final."); }
+        String texto = "Costo final de la orden " + codigo + ":"
+                + "\n  Mano de obra: " + detalle.getHorasTrabajo() + " h x " + dinero(tecnico.getTarifaBase())
+                + " x factor " + servicio.getFactorTarifa() + " = " + dinero(costoManoObraFinal)
+                + "\n  Materiales: " + dinero(costoMaterialesFinal)
+                + "\n  TOTAL: " + dinero(costoFinal);
+        if (costoEstimado > 0) {
+            double diferencia = compararConEstimado();
+            texto += "\n  Estimado inicial: " + dinero(costoEstimado) + " | Diferencia: "
+                    + (diferencia >= 0 ? "+" : "-") + dinero(Math.abs(diferencia))
+                    + (diferencia > 0 ? " (más caro)" : diferencia < 0 ? " (más barato)" : " (igual)");
         }
+        return texto;
     }
 
-    // ---------- RF-19: aviso del último cambio de estado ----------
+    private static String dinero(double valor) { return String.format("$%,.0f", valor); }
 
-    // Crea la notificación del último cambio de estado; el canal (Notificable) la envía después.
-    public Notificacion crearAvisoUltimoCambio(String nombreCliente, String telefonoCliente, String correoCliente) {
-        if (cambios.isEmpty()) {
-            throw new IllegalStateException("La orden todavía no ha cambiado de estado.");
-        }
-        CambioEstado ultimo = cambios.get(cambios.size() - 1);
-        String mensaje = Notificacion.crearMensajeCambioEstado(nombreCliente, codigo,
-                ultimo.getEstadoAnterior().name(), ultimo.getEstadoNuevo().name());
-        return new Notificacion(codigo, documentoCliente, nombreCliente, telefonoCliente, correoCliente, mensaje);
+    // ---------- RF-10: calificación ----------
+
+    // Solo se califica una orden finalizada y una sola vez.
+    public void calificar(Calificacion nueva) {
+        Validar.objeto(nueva, "calificación");
+        if (estado != EstadoOrden.FINALIZADA) { throw new IllegalStateException("Solo se puede calificar una orden finalizada (está " + estado + ")."); }
+        if (calificacion != null) { throw new IllegalStateException("Esta orden ya fue calificada."); }
+        calificacion = nueva;
     }
 
     // ---------- RF-18: revisión por garantía ----------
 
     public void solicitarRevisionGarantia(LocalDate fecha, String problema) {
-        if (garantia == null) {
-            throw new IllegalStateException("La orden aún no tiene garantía.");
-        }
+        if (garantia == null) { throw new IllegalStateException("La orden aún no tiene garantía: debe estar finalizada."); }
         garantia.solicitarRevision(fecha, problema);
     }
 
-    // ---------- Pagos (RF-17) ----------
+    // ---------- RF-17: pagos ----------
 
     public void registrarPago(Pago pago) {
-        if (pago == null) {
-            throw new IllegalArgumentException("El pago es obligatorio.");
-        }
+        Validar.objeto(pago, "pago");
+        if (estado == EstadoOrden.CANCELADA) { throw new IllegalStateException("No se pueden registrar pagos en una orden cancelada."); }
+        double saldo = getSaldoPendiente();
+        if (saldo <= 0) { throw new IllegalStateException("La orden no tiene saldo por pagar."); }
+        if (pago.getMonto() > saldo) { throw new IllegalArgumentException("El pago (" + dinero(pago.getMonto()) + ") supera el saldo pendiente (" + dinero(saldo) + ")."); }
         pagos.add(pago);
+        System.out.println("Pago registrado: " + pago);
     }
 
     // Saldo = costo final (o el estimado si aún no hay final) menos los pagos confirmados.
     public double getSaldoPendiente() {
-        double total = costoFinal > 0 ? costoFinal : costoEstimado;
-        double pagado = 0;
+        double saldo = costoFinal > 0 ? costoFinal : costoEstimado;
         for (Pago p : pagos) {
-            if (p.estaConfirmado()) {
-                pagado += p.getMonto();
-            }
+            if (p.estaConfirmado()) { saldo -= p.getMonto(); }
         }
-        return total - pagado;
+        return saldo;
     }
 
+    // RNF-02 y RNF-05: los pagos solo los ve el administrador o el cliente dueño de la orden.
+    public List<Pago> getPagos(Usuario quienConsulta) {
+        if (!(quienConsulta instanceof Administrador) && quienConsulta != cliente) {
+            throw new SecurityException("No tiene permiso para ver los pagos de la orden " + codigo + ".");
+        }
+        return new ArrayList<>(pagos);
+    }
+
+    // ---------- RNF-01: uso exclusivo de los repositorios al guardar y leer los archivos ----------
+    // No son consultas de una persona, por eso no piden un Usuario. La interfaz de consola nunca los usa.
+
+    public List<Pago> getPagosParaGuardar() { return new ArrayList<>(pagos); }
+
+    public void restaurarCambio(EstadoOrden anterior, EstadoOrden nuevo, LocalDateTime fecha, String responsable) {
+        cambios.add(new CambioEstado(anterior, nuevo, fecha, Validar.texto(responsable, "responsable")));
+    }
+
+    public void restaurarDetalle(DetalleTrabajo guardado) {
+        Validar.objeto(guardado, "detalle del trabajo");
+        guardado.validarCompleto();
+        detalle = guardado;
+    }
+
+    public void restaurarGarantia(Garantia guardada) {
+        Validar.objeto(guardada, "garantía");
+        garantia = guardada;
+    }
+
+    public void restaurarPago(Pago guardado) {
+        Validar.objeto(guardado, "pago");
+        pagos.add(guardado);
+    }
+
+    public void restaurarNotificacion(Notificacion guardada) {
+        Validar.objeto(guardada, "notificación");
+        notificaciones.add(guardada);
+    }
+
+    // ---------- IImprimible ----------
+
+    @Override
+    public void imprimir() {
+        System.out.println(this);
+        System.out.println("  Solicitud #" + solicitud.getIdSolicitud() + ": " + solicitud.getDescripcion()
+                + " | " + solicitud.getUbicacion() + " | " + solicitud.getHorarioDisponible());
+        if (costoEstimado > 0) { System.out.println("  Costo estimado: " + dinero(costoEstimado)); }
+        if (costoFinal > 0) { System.out.println("  " + getDesgloseCosto().replace("\n", "\n  ")); }
+        if (estado != EstadoOrden.CANCELADA && (costoFinal > 0 || costoEstimado > 0)) {
+            System.out.println("  Saldo pendiente: " + dinero(getSaldoPendiente()));
+        }
+        if (estado == EstadoOrden.CANCELADA) { System.out.println("  Motivo de cancelación: " + solicitud.getMotivoCancelacion()); }
+        if (garantia != null) { System.out.println("  Garantía vigente hasta: " + garantia.getFechaFin() + " | Revisiones: " + garantia.getRevisiones()); }
+        if (calificacion != null) { System.out.println("  Calificación: " + calificacion); }
+    }
+
+    @Override
+    public String aLinea() { return toString(); }
+
+    @Override
+    public String toString() {
+        return codigo + " | " + servicio.getTipo() + " | Cliente: " + cliente.getNombre()
+                + " | Técnico: " + (tecnico == null ? "sin asignar" : tecnico.getNombre()) + " | " + estado
+                + " | Creada: " + fechaCreacion.toLocalDate();
+    }
 }
