@@ -107,3 +107,258 @@ Los mensajes de commit son descriptivos y en español, en modo imperativo. Cuand
 - Mantener configurado `.gitignore` para archivos compilados y del IDE.
 - Integrar a `main` cambios que compilen.
 - Evitar `push --force` y no reescribir historial compartido.
+
+---
+
+## 4. Código del proyecto
+
+El código sigue la misma organización del proyecto base del profesor ([SistemaGestionBiblioteca](https://github.com/wilmertri/SistemaGestionBiblioteca)): una carpeta `src/` con los paquetes `enums`, `files`, `interfaces`, `modelos`, `persistencia`, `repositorios`, `servicios` y `ui`, y un único `Main.java`. Las decisiones de esta organización están en el registro de decisiones (Decisiones 22 a 29).
+
+### Pruebas
+
+Las pruebas del equipo están en la carpeta `pruebas/` (marcada como carpeta de pruebas en IntelliJ). Para ejecutarlas: clic derecho sobre el archivo → **Run**.
+
+### Cómo ejecutar
+
+**Requisitos:** Java 11 o superior (el proyecto está configurado con JDK 21) e IntelliJ IDEA.
+
+1. Clonar el repositorio y abrir la carpeta `proyecto_POO` en IntelliJ IDEA.
+2. Verificar que el **directorio de trabajo** sea la raíz del proyecto (así encuentra `src/files/`).
+3. Ejecutar **`Main.java`** → abre la aplicación con ventanas (interfaz gráfica).
+4. Opcional: para la versión con menús de texto, en IntelliJ ir a *Run → Edit Configurations → Program arguments* y escribir `consola`.
+
+Las dos versiones usan los mismos servicios, repositorios y archivos `.txt`: lo que se hace en una se ve en la otra.
+
+### Interfaz gráfica (paquete `ui/`)
+
+Hecha con **Java Swing** (viene incluido en el JDK, no hay que instalar nada). Colores de la marca: azul (confianza) y naranja (herramienta). Los íconos se dibujan con código Java2D (gota = plomería, rayo = electricidad, rodillo = pintura, llave = cerrajería, martillo = carpintería), así que no hay archivos de imagen.
+
+| Pantalla | Qué permite | Requerimientos |
+|---|---|---|
+| Inicio de sesión | Elegir rol, ingresar y crear cuenta de cliente | RF-02, RNF-02, RNF-05 |
+| Cliente → Inicio | Resumen: órdenes activas, saldo por pagar, canal de avisos | RF-08 |
+| Cliente → Solicitar servicio | Tarjetas por oficio con duración, garantía y tarifa | RF-03 |
+| Cliente → Mis órdenes | Ver detalle, cancelar, calificar con estrellas, garantía, pagar | RF-08, RF-10, RF-12, RF-17, RF-18 |
+| Cliente → Mi perfil | Datos de contacto, canal WhatsApp/correo, contraseña | RF-11, RF-19 |
+| Técnico → Inicio y Mis órdenes | Próximas visitas, iniciar, registrar trabajo y materiales, finalizar | RF-06, RF-09, RF-15, RF-16 |
+| Técnico → Mi agenda | Calendario semanal con horario, bloqueos y visitas | RF-13 |
+| Admin → Panel general | Órdenes por estado, ingresos, calificación promedio, gráfico por oficio | — |
+| Admin → Órdenes | Filtros, asignar con costo estimado, reasignar, cancelar | RF-04, RF-05, RF-06, RF-14, RF-20 |
+| Admin → Técnicos / Clientes / Servicios | Registrar técnicos, ver agenda, catálogo de servicios | RF-01, RF-05, RF-07 |
+| Admin → Pagos | Confirmar o rechazar pagos | RF-17 |
+| Detalle de orden | Costos, trabajo, garantía, calificación, pagos, línea de tiempo y avisos | RF-16, RF-19, RNF-04 |
+
+Los botones solo se activan cuando la acción tiene sentido (por ejemplo, "Cancelar" solo con órdenes pendientes), y todo error se muestra en una ventana con un mensaje claro (RNF-06).
+
+### Usuarios de prueba (ya están en los .txt)
+
+| Rol | Documento | Contraseña | Datos |
+|---|---|---|---|
+| Administrador | 1001 | admin123 | Laura Gómez |
+| Técnico | 2001 | clave1 | Luis Pérez — Plomería, Chía |
+| Técnico | 2002 | clave2 | Pedro Ruiz — Plomería, Chía |
+| Técnico | 2003 | clave3 | Marta Díaz — Electricidad, Bogotá |
+| Técnico | 2004 | clave4 | Jorge Castro — Pintura, Cajicá |
+| Técnico | 2005 | clave5 | Diana Herrera — Cerrajería, Chía |
+| Cliente | 3001 | miClave | Sofía Ríos — Chía (avisos por WhatsApp) |
+| Cliente | 3002 | clave3002 | Andrés Mejía — Bogotá (avisos por correo) |
+| Cliente | 3003 | clave3003 | Camila Torres — Cajicá |
+
+### Órdenes de ejemplo
+
+| Orden | Estado | Para probar |
+|---|---|---|
+| OS-001 | FINALIZADA | Costo final vs. estimado, garantía con revisión, calificación, pagos (uno confirmado, uno pendiente), reasignación de Luis a Pedro |
+| OS-002 | CANCELADA | Cancelación con motivo |
+| OS-003 | EN_PROCESO | Marta puede registrar el trabajo y finalizarla |
+| OS-004 | ASIGNADA | Jorge puede iniciarla, o el administrador cancelarla |
+| OS-005 | PENDIENTE | El administrador puede asignarla a Diana (opción 7) |
+
+> La opción **5 del menú principal** ejecuta la demo de todos los requerimientos **en memoria**: no modifica los archivos.
+
+---
+
+### Arquitectura
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  CAPA UI (ui/)                                                   │
+│  Ventanas: VentanaPrincipal, PanelLogin, PanelCliente,           │
+│            PanelTecnico, PanelAdministrador, DialogoDetalleOrden │
+│  Consola:  MenuPrincipal, MenuCliente... (argumento "consola")   │
+│  Responsabilidad: mostrar y pedir datos. Sin reglas de negocio.  │
+├──────────────────────────────────────────────────────────────────┤
+│  CAPA SERVICIOS (servicios/)                                     │
+│  GestorPlataforma, ClienteServicio, TecnicoServicio,             │
+│  AdministradorServicio                                           │
+│  Responsabilidad: coordinar cada operación y guardarla.          │
+├──────────────────────────────────────────────────────────────────┤
+│  CAPA REPOSITORIOS (repositorios/) + persistencia/FileManage     │
+│  Responsabilidad: convertir objetos Java ↔ líneas de texto.      │
+├──────────────────────────────────────────────────────────────────┤
+│  CAPA MODELOS (modelos/ + enums/ + interfaces/)                  │
+│  Responsabilidad: las entidades del dominio y sus reglas.        │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+**Flujo de una operación** (ejemplo: el técnico finaliza una orden):
+
+```
+MenuTecnico (opción 8)                       [UI]
+   ↓
+TecnicoServicio.finalizarOrden(tecnico, "OS-003")   [Servicios: revisa que la orden sea suya]
+   ↓
+OrdenServicio.finalizar(...)                 [Modelos: calcula costo final y garantía]
+   ↓
+GestorPlataforma.guardarOrden(orden)         [Servicios]
+   ↓
+OrdenServicioRepository.updateData(...)      [Repositorios: ordenes.txt + garantias.txt + ...]
+   ↓
+FileManage.writeAllLinesInFile(...)          [Persistencia]
+```
+
+### Modo dual: ArrayList vs. archivo
+
+Igual que `EstudianteServicio` en el proyecto base, `GestorPlataforma` funciona en dos modos según el constructor:
+
+```java
+new GestorPlataforma();        // MODO ARCHIVO: carga src/files/*.txt y guarda cada cambio (RNF-01)
+new GestorPlataforma(false);   // MODO MEMORIA: solo ArrayList (lo usa DemoRequerimientos)
+```
+
+Los datos se cargan **una sola vez** al iniciar y todas las órdenes apuntan a los mismos objetos `Cliente` y `Tecnico` de las listas. Esto es necesario porque el código del equipo compara con `==` (por ejemplo `orden.getCliente() != this` en `Cliente.verificarPropia`). Si cada consulta volviera a leer el archivo, se crearían objetos nuevos y esas comparaciones fallarían.
+
+---
+
+### Estructura del proyecto
+
+```
+proyecto_POO/
+├── README.md, REGISTRO_DECISIONES.md, TRAZABILIDAD.md, BITACORA_IA.md, Explicacion_*.md
+├── pruebas/                             Pruebas del equipo (PruebaNotificaciones, PruebaServicioGarantia)
+└── src/
+    ├── Main.java                        Punto de entrada — abre la ventana (o la consola con el argumento "consola")
+    │
+    ├── enums/
+    │   ├── EstadoOrden.java             PENDIENTE, ASIGNADA, EN_PROCESO, FINALIZADA, CANCELADA
+    │   ├── EstadoPago.java              PENDIENTE, CONFIRMADO, RECHAZADO
+    │   └── EstadoEnvio.java             PENDIENTE, ENVIADA, FALLIDA
+    │
+    ├── interfaces/
+    │   ├── IRepository.java             Contrato CRUD genérico <T>
+    │   ├── IRepositorioDependiente.java Contrato para datos que pertenecen a otro objeto <P>
+    │   ├── IServicio.java               Contrato de consulta genérico <T>
+    │   ├── IImprimible.java             Contrato de impresión en consola
+    │   └── Notificable.java             Canal de avisos (RF-19)
+    │
+    ├── modelos/                         Código del equipo (ver "Cambios" abajo)
+    │   ├── Usuario, Administrador, Cliente, Tecnico
+    │   ├── DisponibilidadTecnico (+ FranjaHoraria anidada)
+    │   ├── Solicitud, Servicio, OrdenServicio (+ CambioEstado anidada), Asignacion (+ Movimiento anidada)
+    │   ├── DetalleTrabajo (+ Material anidada), Garantia, Calificacion
+    │   ├── Pago (abstracta), Efectivo, Tarjeta, Transferencia
+    │   ├── Notificacion, NotificacionWhatsApp, NotificacionCorreo
+    │   └── Validar                      Validaciones comunes de los modelos (RNF-06)
+    │
+    ├── persistencia/
+    │   └── FileManage.java              Leer/escribir líneas en archivos .txt (UTF-8)
+    │
+    ├── repositorios/
+    │   ├── BaseRepository.java          Clase abstracta — fileManage + delimitador + ayudas
+    │   ├── AdministradorRepository      administradores.txt
+    │   ├── ClienteRepository            clientes.txt
+    │   ├── TecnicoRepository            tecnicos.txt          (TIENE un DisponibilidadRepository)
+    │   ├── DisponibilidadRepository     disponibilidades.txt
+    │   ├── ServicioRepository           servicios.txt
+    │   ├── SolicitudRepository          solicitudes.txt
+    │   ├── OrdenServicioRepository      ordenes.txt           (TIENE los 7 repositorios de abajo)
+    │   ├── CambioEstadoRepository       cambios_estado.txt
+    │   ├── AsignacionRepository         asignaciones.txt
+    │   ├── DetalleTrabajoRepository     detalles_trabajo.txt  (TIENE un MaterialRepository)
+    │   ├── MaterialRepository           materiales.txt
+    │   ├── GarantiaRepository           garantias.txt         (TIENE un RevisionGarantiaRepository)
+    │   ├── RevisionGarantiaRepository   revisiones_garantia.txt
+    │   ├── CalificacionRepository       calificaciones.txt
+    │   ├── PagoRepository               pagos.txt
+    │   └── NotificacionRepository       notificaciones.txt
+    │
+    ├── servicios/
+    │   ├── GestorPlataforma.java        Listas en memoria + repositorios (modo dual)
+    │   ├── ClienteServicio.java         Acciones del cliente
+    │   ├── TecnicoServicio.java         Acciones del técnico
+    │   └── AdministradorServicio.java   Acciones del administrador
+    │
+    ├── ui/                              Interfaz de usuario
+    │   │   ── Ventanas (Swing) ──
+    │   ├── VentanaPrincipal.java        La ventana: crea los servicios y cambia de pantalla
+    │   ├── PanelLogin.java              Inicio de sesión por rol y registro de clientes
+    │   ├── PanelRol.java                Clase abstracta: barra lateral + secciones
+    │   ├── PanelCliente.java            ← hereda de PanelRol
+    │   ├── PanelTecnico.java            ← hereda de PanelRol
+    │   ├── PanelAdministrador.java      ← hereda de PanelRol
+    │   ├── DialogoDetalleOrden.java     Ficha completa de una orden
+    │   ├── TablaOrdenes.java            Tabla con íconos de oficio e insignias de estado
+    │   ├── CalendarioSemanal.java       Agenda del técnico dibujada con Java2D
+    │   ├── Formulario.java              Ventana de formulario reutilizable
+    │   ├── Acciones.java                Ejecuta acciones y muestra éxito/error
+    │   ├── Tema.java, Iconos.java       Colores, fuentes e íconos dibujados
+    │   ├── Boton, PanelTarjeta, Insignia, Componentes, SelectorFranja, SelectorEstrellas, PanelDesplazable
+    │   │   ── Consola ──
+    │   ├── MenuPrincipal.java           Inicio de sesión por rol y registro de clientes
+    │   ├── MenuCliente.java
+    │   ├── MenuTecnico.java
+    │   ├── MenuAdministrador.java
+    │   ├── DemoRequerimientos.java      El programa de prueba del equipo, en memoria
+    │   └── Consola.java                 Lectura de datos compartida por los menús
+    │
+    └── files/                           16 archivos .txt con datos de ejemplo
+```
+
+---
+
+### Formato de los archivos de datos
+
+Todos usan el delimitador `|`. Cada línea es un registro y **el primer campo es su clave**.
+Los archivos de datos que pertenecen a una orden empiezan con el código de la orden; los de disponibilidad, con el documento del técnico.
+
+| Archivo | Formato |
+|---|---|
+| `administradores.txt` | `documento\|nombre\|correo\|telefono\|contraseniaCifrada\|areaResponsable` |
+| `clientes.txt` | `documento\|nombre\|correo\|telefono\|contraseniaCifrada\|ubicacion\|canal` |
+| `tecnicos.txt` | `documento\|nombre\|correo\|telefono\|contraseniaCifrada\|especialidad\|zona\|tarifaBase` |
+| `disponibilidades.txt` | `documentoTecnico\|DISPONIBLE o BLOQUEO\|dia\|horaInicio\|horaFin` |
+| `servicios.txt` | `tipo\|factorTarifa\|duracionHoras\|diasGarantia` |
+| `solicitudes.txt` | `id\|tipoProblema\|ubicacion\|descripcion\|dia\|horaInicio\|horaFin\|fechaCreacion\|estado\|motivoCancelacion` |
+| `ordenes.txt` | `codigo\|documentoCliente\|idSolicitud\|tipoServicio\|documentoTecnico\|estado\|fechaCreacion\|materialesEstimados\|costoEstimado\|manoObraFinal\|materialesFinal\|costoFinal` |
+| `cambios_estado.txt` | `codigoOrden\|estadoAnterior\|estadoNuevo\|fecha\|responsable` |
+| `asignaciones.txt` | `codigoOrden\|fecha\|documentoTecnicoAnterior\|documentoTecnicoNuevo\|responsable` |
+| `detalles_trabajo.txt` | `codigoOrden\|descripcion\|horas\|actividad1;actividad2;...` |
+| `materiales.txt` | `codigoOrden\|descripcion\|costoUnitario\|cantidad` |
+| `garantias.txt` | `codigoOrden\|fechaInicio\|diasVigencia\|cobertura` |
+| `revisiones_garantia.txt` | `codigoOrden\|fecha\|problema` |
+| `calificaciones.txt` | `codigoOrden\|estrellas\|comentario\|fecha` |
+| `pagos.txt` | `codigoOrden\|metodo\|monto\|fecha\|estado\|referencia` |
+| `notificaciones.txt` | `codigoOrden\|id\|documentoCliente\|nombre\|telefono\|correo\|mensaje\|fecha\|canal\|estadoEnvio\|detalle` |
+
+> **RNF-05:** las contraseñas se guardan cifradas con SHA-256 (nunca en texto plano), y de la tarjeta solo se guarda la referencia de autorización, nunca el número ni el código de seguridad.
+
+> **Composición en archivos:** igual que `prestamos.txt` en el proyecto base, `ordenes.txt` guarda solo los **IDs** del cliente, la solicitud, el servicio y el técnico. Al leer, `OrdenServicioRepository` busca los objetos completos y arma la orden.
+
+---
+
+### Conceptos POO en el proyecto
+
+| Concepto | Dónde |
+|---|---|
+| Herencia | `Cliente`, `Tecnico`, `Administrador` ← `Usuario`; `Efectivo`, `Tarjeta`, `Transferencia` ← `Pago`; todos los repositorios ← `BaseRepository`; `PanelCliente`, `PanelTecnico`, `PanelAdministrador` ← `PanelRol`; `Boton` ← `JButton` |
+| Clases abstractas | `Usuario`, `Pago`, `BaseRepository`, `PanelRol` (con métodos abstractos `registrarSecciones`, `descripcionUsuario`, `colorRol`) |
+| Interfaces | `Notificable`, `IRepository<T>`, `IRepositorioDependiente<P>`, `IServicio<T>`, `IImprimible`; en la GUI se implementan `Icon` y `Scrollable` de Swing |
+| Polimorfismo | `Notificable` (WhatsApp o correo); `Pago` (3 tipos); `OrdenServicioRepository` recorre una lista de `IRepositorioDependiente` sin saber cuál es cada uno |
+| Genericidad | `IRepository<T>`, `IRepositorioDependiente<P>`, `IServicio<T>` |
+| Composición | `OrdenServicio` TIENE `Asignacion`, `Garantia`, `DetalleTrabajo`...; `Tecnico` TIENE `DisponibilidadTecnico`; repositorios que TIENEN otros repositorios |
+| Clases anidadas estáticas | `FranjaHoraria`, `CambioEstado`, `Movimiento`, `Material` |
+| Enum | `EstadoOrden`, `EstadoPago`, `EstadoEnvio` |
+| Sobrecarga de constructores | Constructor normal + constructor de reconstrucción (lo usa el repositorio al leer el archivo) en `Usuario`, `Cliente`, `Tecnico`, `Solicitud`, `OrdenServicio`, `Calificacion`, `Notificacion`; `GestorPlataforma()` vs `GestorPlataforma(boolean)` |
+| Sobrecarga de métodos | `OrdenServicioRepository.getDataList()` y `getDataList(clientes, tecnicos, servicios)` |
+| Atributos y métodos estáticos | `OrdenServicio.generarCodigo()`, consecutivos de `Solicitud` y `Notificacion`, `Validar` |
+| Encapsulamiento | Atributos `private`; métodos sin `public` que solo usa el mismo paquete (`OrdenServicio.asignarTecnico`, `Solicitud.actualizarEstado`) |
