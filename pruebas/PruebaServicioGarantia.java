@@ -1,14 +1,18 @@
+import modelos.Garantia;
+import modelos.Servicio;
 import java.time.LocalDate;
 
 /**
  * Pruebas sencillas de las reglas de Servicio y Garantia (se ejecuta con main).
  * Parte de Valeria Alvarado.
- * No necesita otras clases del proyecto: se compila solo con Servicio.java y Garantia.java.
+ * Usa las clases Servicio y Garantia del paquete modelos.
  * Apoya RF-05 (precio por tipo de servicio), RF-07 (garantía) y RF-18 (revisión por garantía).
  *
  * Cómo ejecutarla:
- *   javac Servicio.java Garantia.java PruebaServicioGarantia.java
- *   java PruebaServicioGarantia
+ *   En IntelliJ: clic derecho sobre el archivo (carpeta pruebas/) → Run.
+ *   Por consola, desde la raíz del proyecto:
+ *     javac -encoding UTF-8 -d out $(find src pruebas -name "*.java")
+ *     java -cp out PruebaServicioGarantia
  */
 public class PruebaServicioGarantia {
 

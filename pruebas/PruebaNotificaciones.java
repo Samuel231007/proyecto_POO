@@ -1,12 +1,20 @@
+import enums.EstadoEnvio;
+import interfaces.Notificable;
+import modelos.Notificacion;
+import modelos.NotificacionCorreo;
+import modelos.NotificacionWhatsApp;
+
 /**
  * Pruebas sencillas de Notificacion, Notificable y los canales WhatsApp y Correo (se ejecuta con main).
  * Parte de Juan David Lara.
- * No necesita otras clases del proyecto: se compila solo con las cuatro clases de notificaciones.
+ * Usa la interfaz Notificable (paquete interfaces), las clases de notificaciones (paquete modelos) y el enum EstadoEnvio (paquete enums).
  * Apoya RF-19 (aviso al cambiar el estado), RNF-04 (el registro no se altera) y RNF-06 (mensajes claros).
  *
  * Cómo ejecutarla:
- *   javac Notificable.java Notificacion.java NotificacionWhatsApp.java NotificacionCorreo.java PruebaNotificaciones.java
- *   java PruebaNotificaciones
+ *   En IntelliJ: clic derecho sobre el archivo (carpeta pruebas/) → Run.
+ *   Por consola, desde la raíz del proyecto:
+ *     javac -encoding UTF-8 -d out $(find src pruebas -name "*.java")
+ *     java -cp out PruebaNotificaciones
  */
 public class PruebaNotificaciones {
 
@@ -45,7 +53,7 @@ public class PruebaNotificaciones {
 
         Notificacion aviso = crearAviso("3001234567", "ana@correo.com");
         verificar("Un aviso nuevo queda PENDIENTE",
-                aviso.getEstadoEnvio() == Notificacion.EstadoEnvio.PENDIENTE && !aviso.fueEnviada());
+                aviso.getEstadoEnvio() == EstadoEnvio.PENDIENTE && !aviso.fueEnviada());
         verificar("Un aviso nuevo todavía no tiene canal", aviso.getCanal().equals(""));
 
         // Atributo y método estáticos: el contador lo comparten todos los avisos.
@@ -123,7 +131,7 @@ public class PruebaNotificaciones {
         boolean resultado = whatsapp.enviar(valida);
         verificar("Con un celular válido devuelve true", resultado);
         verificar("Con un celular válido queda ENVIADA por WhatsApp",
-                valida.getEstadoEnvio() == Notificacion.EstadoEnvio.ENVIADA
+                valida.getEstadoEnvio() == EstadoEnvio.ENVIADA
                         && valida.getCanal().equals("WhatsApp"));
         verificar("El detalle indica a qué número se envió",
                 valida.getDetalle().equals("Enviado por WhatsApp al 3001234567."));
@@ -134,7 +142,7 @@ public class PruebaNotificaciones {
             Notificacion aviso = crearAviso(celularesInvalidos[i], "ana@correo.com");
             boolean envio = whatsapp.enviar(aviso);
             verificar("Rechaza el celular \"" + celularesInvalidos[i] + "\" y queda FALLIDA",
-                    !envio && aviso.getEstadoEnvio() == Notificacion.EstadoEnvio.FALLIDA);
+                    !envio && aviso.getEstadoEnvio() == EstadoEnvio.FALLIDA);
         }
 
         Notificacion sinCelular = crearAviso(null, "ana@correo.com");
@@ -164,7 +172,7 @@ public class PruebaNotificaciones {
         boolean resultado = correo.enviar(valida);
         verificar("Con un correo válido devuelve true", resultado);
         verificar("Con un correo válido queda ENVIADA por Correo",
-                valida.getEstadoEnvio() == Notificacion.EstadoEnvio.ENVIADA
+                valida.getEstadoEnvio() == EstadoEnvio.ENVIADA
                         && valida.getCanal().equals("Correo"));
         verificar("El detalle incluye el correo y el asunto con el código de la orden",
                 valida.getDetalle().contains("ana@correo.com")
@@ -176,7 +184,7 @@ public class PruebaNotificaciones {
             Notificacion aviso = crearAviso("3001234567", correosInvalidos[i]);
             boolean envio = correo.enviar(aviso);
             verificar("Rechaza el correo \"" + correosInvalidos[i] + "\" y queda FALLIDA",
-                    !envio && aviso.getEstadoEnvio() == Notificacion.EstadoEnvio.FALLIDA);
+                    !envio && aviso.getEstadoEnvio() == EstadoEnvio.FALLIDA);
         }
 
         Notificacion sinCorreo = crearAviso("3001234567", null);
