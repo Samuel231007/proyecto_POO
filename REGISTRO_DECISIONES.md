@@ -415,3 +415,166 @@ El costo depende de datos que ya tiene la orden (el servicio, el técnico y el e
 **Consecuencia**
 
 La fórmula es: horas x tarifa base del técnico x factor del tipo + materiales. El estimado usa la duración estimada de Servicio y el final usa las horas reales. Esta decisión apoya RF-05 y RF-16.
+
+---
+
+## Decisión 22 · Organizar el código en paquetes y capas, como el proyecto base
+
+**Decisión**
+
+El código va en `src/` con los mismos paquetes del proyecto base del profesor: `modelos`, `enums`, `interfaces`, `persistencia`, `repositorios`, `servicios`, `ui` y `files`, y un único `Main.java`. Cada capa solo usa la de abajo: ui → servicios → repositorios y persistencia → modelos.
+
+**Alternativas consideradas**
+
+1. Dejar todas las clases en la raíz del repositorio, sin paquetes.
+2. Crear paquetes propios distintos a los del proyecto base (por ejemplo `gui` o `utilidades`).
+
+**Por qué**
+
+Sin paquetes, la lógica, los archivos y la interfaz quedan mezclados y cuesta saber dónde va cada cosa. Usar los mismos paquetes del proyecto base hace que el profesor reconozca la estructura y que cada capa tenga una sola responsabilidad.
+
+**Consecuencia**
+
+Las clases que estaban en la raíz se movieron con `git mv` para conservar su historia. La clase de apoyo `Validar` quedó en `modelos` porque la usan los modelos, y las ventanas quedaron en `ui` junto a los menús de consola. Esta decisión apoya RNF-03.
+
+---
+
+## Decisión 23 · Guardar los datos en archivos .txt con un repositorio por archivo
+
+**Decisión**
+
+Cada tipo de dato se guarda en su propio archivo de `src/files/` (clientes, técnicos, órdenes, pagos...). `FileManage` lee y escribe las líneas, y cada repositorio convierte los objetos en líneas separadas por `|` y al revés. El primer campo de cada línea es su clave (documento, código de la orden o id). Lo que pertenece a una orden (cambios de estado, pagos, avisos...) se guarda en su propio archivo con el código de la orden al inicio, y lo maneja un repositorio que implementa la interfaz genérica `IRepositorioDependiente<P>`.
+
+**Alternativas consideradas**
+
+1. Serializar todo en un solo archivo binario (`plataforma.dat`).
+2. Guardar cada orden con todos sus datos en una sola línea.
+
+**Por qué**
+
+El proyecto base usa archivos de texto con repositorios, y un archivo de texto se puede abrir y revisar. Una sola línea por orden con listas adentro (pagos, cambios, avisos) sería difícil de leer y de actualizar.
+
+**Consecuencia**
+
+Los datos se cargan una sola vez al iniciar y todas las órdenes apuntan a los mismos objetos `Cliente` y `Tecnico`, porque el código compara con `==` (por ejemplo en `Cliente.verificarPropia`). Para leer los archivos se agregaron constructores de reconstrucción (sobrecarga) y métodos `restaurar...` que no vuelven a enviar avisos. Los archivos se escriben en UTF-8 y primero en un archivo temporal, para que un error no deje el archivo a medias (RNF-03). Esta decisión apoya RNF-01.
+
+---
+
+## Decisión 24 · Los enums de estado pasan al paquete enums
+
+**Decisión**
+
+`OrdenServicio.Estado`, `Pago.Estado` y `Notificacion.EstadoEnvio` pasan a ser `EstadoOrden`, `EstadoPago` y `EstadoEnvio` en el paquete `enums`.
+
+**Alternativa considerada**
+
+Dejarlos como enums anidados dentro de sus clases.
+
+**Por qué**
+
+El proyecto base tiene un paquete `enums`, y estos estados los usan varias capas (repositorios, servicios e interfaz). La Solicitud ya usaba el mismo estado de la orden, así que no pertenecía solo a `OrdenServicio`.
+
+**Consecuencia**
+
+Las clases anidadas que no son enums (`CambioEstado`, `FranjaHoraria`, `Material`) siguen dentro de su clase contenedora, como dice la Decisión 9.
+
+---
+
+## Decisión 25 · Validar reúne las validaciones y prohíbe los separadores de los archivos
+
+**Decisión**
+
+La clase `Validar` reúne las validaciones que se repetían (texto obligatorio, número positivo, objeto obligatorio) y además rechaza los caracteres `|` y `;` en los textos.
+
+**Alternativa considerada**
+
+Escapar esos caracteres al guardar y volver a convertirlos al leer.
+
+**Por qué**
+
+`|` separa los campos de los archivos y `;` separa las actividades de un trabajo. Si un nombre tuviera `|`, al leer el archivo los datos quedarían corridos. Rechazarlos con un mensaje claro es más sencillo que escaparlos.
+
+**Consecuencia**
+
+Si un usuario escribe `|` o `;`, recibe el mensaje: El campo "nombre" no puede contener el carácter '|'. Esta decisión apoya RNF-03 y RNF-06.
+
+---
+
+## Decisión 26 · Registrar técnicos y filtrar órdenes pasan a AdministradorServicio
+
+**Decisión**
+
+Los métodos `registrarTecnico` y `filtrarOrdenes` salen de la clase `Administrador` y pasan a `AdministradorServicio`. `Administrador` conserva `reasignarOrden`.
+
+**Alternativa considerada**
+
+Dejarlos en `Administrador`, recibiendo el `GestorPlataforma` como parámetro.
+
+**Por qué**
+
+En la arquitectura por capas, un modelo no debe depender de la capa de servicios. Si `Administrador` recibe el gestor, el paquete `modelos` queda dependiendo de `servicios` y las capas se mezclan.
+
+**Consecuencia**
+
+RF-01 y RF-20 siguen siendo acciones del administrador, pero se hacen desde su servicio. Así quedan también los servicios del cliente y del técnico: un servicio por rol.
+
+---
+
+## Decisión 27 · Asignacion guarda cada movimiento como un objeto
+
+**Decisión**
+
+`Asignacion` guarda cada asignación o reasignación en la clase anidada estática `Movimiento` (fecha, técnico anterior, técnico nuevo y responsable), en lugar de un texto. `getRegistroCambios()` sigue devolviendo el mismo texto que antes.
+
+**Alternativa considerada**
+
+Guardar en el archivo el texto del registro tal como estaba.
+
+**Por qué**
+
+El texto incluye el carácter `|` y los nombres de los técnicos, no sus documentos, así que no se podía volver a armar la asignación al leer el archivo.
+
+**Consecuencia**
+
+El archivo `asignaciones.txt` guarda los documentos de los técnicos, y al leerlo se recupera el historial completo de reasignaciones. Esta decisión apoya RF-14 y RNF-04.
+
+---
+
+## Decisión 28 · Los pagos pendientes cuentan al registrar un pago nuevo
+
+**Decisión**
+
+`OrdenServicio.registrarPago` rechaza un pago si, sumado a los pagos que esperan confirmación, supera el saldo de la orden.
+
+**Alternativa considerada**
+
+Contar solo los pagos confirmados, como estaba antes.
+
+**Por qué**
+
+Al probar la interfaz se encontró que una orden con $141.000 de saldo y un pago de $141.000 pendiente aceptaba otro pago igual, así que se podía cobrar dos veces lo mismo.
+
+**Consecuencia**
+
+El mensaje explica cuánto está en revisión y cuánto falta por pagar. Si el administrador rechaza un pago, ese valor vuelve a quedar disponible. Esta decisión apoya RF-17 y RNF-03.
+
+---
+
+## Decisión 29 · Interfaz gráfica con Swing, conservando la consola
+
+**Decisión**
+
+La aplicación se usa con ventanas hechas en Swing: inicio de sesión por rol y un panel para el cliente, el técnico y el administrador. `PanelRol` es una clase abstracta con la barra lateral, y `PanelCliente`, `PanelTecnico` y `PanelAdministrador` heredan de ella. Los menús de consola del estilo del proyecto base se conservan y se abren con el argumento `consola`.
+
+**Alternativas consideradas**
+
+1. Usar solo la consola.
+2. Usar JavaFX.
+
+**Por qué**
+
+Las ventanas muestran mejor la información del dominio (agenda del técnico, estados con colores, costos). Swing viene incluido en el JDK, así que no hay que instalar librerías, a diferencia de JavaFX.
+
+**Consecuencia**
+
+Las ventanas usan los mismos servicios, repositorios y archivos que la consola: no se cambió la lógica del proyecto para agregarlas. Cada error se muestra en una ventana con un mensaje claro y los botones solo se activan cuando la acción tiene sentido. Esta decisión apoya RNF-02 y RNF-06.
