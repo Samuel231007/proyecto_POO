@@ -1,0 +1,5 @@
+1|Plomería|Chía|Fuga en el lavamanos|MONDAY|08:00|10:00|2026-11-17T10:30:27|FINALIZADA|
+2|Plomería|Chía|Revisar el tanque del baño|MONDAY|15:00|16:00|2026-11-17T10:30:27|CANCELADA|Ya no lo necesito
+3|Electricidad|Bogotá|Cortocircuito en la cocina|WEDNESDAY|09:00|11:00|2026-11-17T10:30:27|EN_PROCESO|
+4|Pintura|Cajicá|Pintar una habitación de 3x4|FRIDAY|08:00|14:00|2026-11-17T10:30:27|ASIGNADA|
+5|Cerrajería|Chía|Cambiar la guarda de la puerta principal|TUESDAY|10:00|11:00|2026-11-17T10:30:27|PENDIENTE|

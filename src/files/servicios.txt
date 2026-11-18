@@ -1,0 +1,5 @@
+Plomería|1.2|2.0|30
+Electricidad|1.5|2.0|60
+Pintura|1.0|6.0|15
+Cerrajería|1.3|1.0|30
+Carpintería|1.1|4.0|45

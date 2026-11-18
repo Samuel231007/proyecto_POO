@@ -1,0 +1,5 @@
+2001|Luis Pérez|luis@correo.co|3201234567|9010e72389a80487d473017425c6ec7951068abed82a4df32459c91f0e45d2ea|Plomería|Chía|50000.0
+2002|Pedro Ruiz|pedro@correo.co|3207654321|998aab960cd9f809b09dd12eade1de4a2985f62335d8ff45a775a598ead09b06|Plomería|Chía|60000.0
+2003|Marta Díaz|marta@correo.co|3112223344|ebeaace31a258620999e9fba185031b757451d37dd76b3bea25c5b897bb46be4|Electricidad|Bogotá|70000.0
+2004|Jorge Castro|jorge@correo.co|3123334455|ae84504e96e41376c2b23e773fc66a6689f60bdd3f68a0909c4a4ccaa554fb2b|Pintura|Cajicá|45000.0
+2005|Diana Herrera|diana@correo.co|3134445566|ae4379b9e5aed205fb7a1e6899aaaf7fa1a38d03031bf116331454fc99d02d56|Cerrajería|Chía|55000.0
