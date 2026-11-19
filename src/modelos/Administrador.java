@@ -1,17 +1,11 @@
 package modelos;
 
-
-/**
- * Hereda de Usuario. Reasigna órdenes (RF-14).
- * Registrar técnicos (RF-01) y filtrar órdenes (RF-20) ahora se hacen en servicios.AdministradorServicio,
- * porque la capa de modelos no debe conocer a la capa de servicios (arquitectura por capas del proyecto base).
- */
 public class Administrador extends Usuario {
     private String areaResponsable;
 
     public Administrador(String nombre, String documento, String telefono,
                          String contrasenia, String correo, String areaResponsable) {
-        super(nombre, documento, correo, telefono, contrasenia); // orden de Usuario: correo, telefono
+        super(nombre, documento, correo, telefono, contrasenia);
         this.areaResponsable = Validar.texto(areaResponsable, "área responsable");
     }
 

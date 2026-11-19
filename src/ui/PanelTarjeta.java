@@ -4,9 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
-/** Panel blanco con esquinas redondeadas y una sombra suave: la "tarjeta" en la que se agrupa la información. */
 public class PanelTarjeta extends JPanel {
-
     private Color fondo = Tema.BLANCO;
     private Color borde = Tema.BORDE;
 
@@ -31,7 +29,6 @@ public class PanelTarjeta extends JPanel {
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = Tema.suavizar(g);
         int w = getWidth(), h = getHeight();
-        // sombra
         g2.setColor(new Color(15, 23, 42, 10));
         g2.fill(new RoundRectangle2D.Double(1, 3, w - 2, h - 3, 18, 18));
         g2.setColor(fondo);

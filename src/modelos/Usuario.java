@@ -1,11 +1,9 @@
 package modelos;
 
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/** Clase padre de Cliente, Tecnico y Administrador. RF-01, RF-02, RNF-02 y RNF-05. */
 public abstract class Usuario {
     private String nombre, correo, telefono;
     private final String documento;          // identifica al usuario: no cambia (RF-01 y RF-02 no permiten repetidos)
@@ -38,7 +36,6 @@ public abstract class Usuario {
     // Lo necesita el repositorio para guardar el usuario en el archivo.
     public String getContraseniaCifrada() { return contraseniaCifrada; }
 
-    // Polimorfismo: cada tipo de usuario dice cuál es su rol.
     public abstract String getRol();
 
     // Solo las clases hijas cambian estos datos, y siempre validados.
@@ -56,7 +53,6 @@ public abstract class Usuario {
         System.out.println("Contraseña actualizada correctamente.");
     }
 
-    // RNF-02: solo entra quien conoce la contraseña.
     public boolean iniciarSesion(String contrasenia) {
         if (verificarContrasenia(contrasenia)) {
             System.out.println("Sesión iniciada correctamente. Bienvenido(a), " + nombre + ".");

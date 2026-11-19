@@ -1,6 +1,5 @@
 package modelos;
 
-
 import java.time.LocalDate;
 
 public class Tarjeta extends Pago {

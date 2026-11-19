@@ -1,6 +1,5 @@
 package enums;
 
-/** Resultado del envío de una notificación (RF-19). Antes era Notificacion.EstadoEnvio. */
 public enum EstadoEnvio {
     PENDIENTE("Pendiente"),
     ENVIADA("Enviada"),

@@ -14,12 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * Tabla de órdenes de servicio con el ícono del oficio y una insignia de color para el estado.
- * Doble clic en una fila abre el detalle.
- */
 public class TablaOrdenes extends JPanel {
-
     private final ModeloOrdenes modelo;
     private final JTable tabla;
 
@@ -46,7 +41,6 @@ public class TablaOrdenes extends JPanel {
         setPreferredSize(new Dimension(600, alto));
     }
 
-    /** Orden de la fila seleccionada, o null. */
     public OrdenServicio getSeleccionada() {
         int fila = tabla.getSelectedRow();
         return fila < 0 ? null : modelo.ordenes.get(tabla.convertRowIndexToModel(fila));
@@ -59,8 +53,6 @@ public class TablaOrdenes extends JPanel {
     public void alCambiarSeleccion(Runnable accion) {
         tabla.getSelectionModel().addListSelectionListener(e -> { if (!e.getValueIsAdjusting()) { accion.run(); } });
     }
-
-    // ─── Modelo de datos de la tabla (clase anidada estática) ─────────────────
 
     private static class ModeloOrdenes extends AbstractTableModel {
         private final List<OrdenServicio> ordenes;
@@ -106,9 +98,6 @@ public class TablaOrdenes extends JPanel {
         }
     }
 
-    // ─── Cómo se dibujan las celdas especiales ────────────────────────────────
-
-    /** Celda de servicio: ícono del oficio + nombre. */
     private static class RenderServicio extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable t, Object v, boolean s, boolean f, int r, int c) {
@@ -120,7 +109,6 @@ public class TablaOrdenes extends JPanel {
         }
     }
 
-    /** Celda de estado: insignia de color. */
     private static class RenderEstado implements TableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable t, Object v, boolean s, boolean f, int r, int c) {

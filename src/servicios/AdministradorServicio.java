@@ -13,19 +13,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Lógica de negocio de las acciones del ADMINISTRADOR (RF-01, RF-04, RF-05, RF-06, RF-14, RF-17, RF-20, RNF-04).
- * Cada método hace la operación con los modelos y luego la guarda en los archivos a través del gestor (RNF-01).
- */
 public class AdministradorServicio implements IServicio<Administrador> {
-
     private final GestorPlataforma gestor;
 
     public AdministradorServicio(GestorPlataforma gestor) {
         this.gestor = gestor;
     }
-
-    // ─── Implementación de IServicio ──────────────────────────────────────────
 
     @Override
     public ArrayList<Administrador> getDataList() { return gestor.getAdministradores(); }
@@ -52,8 +45,6 @@ public class AdministradorServicio implements IServicio<Administrador> {
         }
     }
 
-    // ─── Sesión ───────────────────────────────────────────────────────────────
-
     public void registrarAdministrador(Administrador administrador) { gestor.registrarAdministrador(administrador); }
 
     public Administrador iniciarSesion(String documento, String contrasenia) {
@@ -65,15 +56,11 @@ public class AdministradorServicio implements IServicio<Administrador> {
         return admin.iniciarSesion(contrasenia) ? admin : null;
     }
 
-    // ─── RF-01 y catálogo de servicios ────────────────────────────────────────
-
-    // RF-01: el gestor rechaza documentos repetidos.
     public void registrarTecnico(Administrador admin, Tecnico tecnico) {
         gestor.registrarTecnico(tecnico);
         System.out.println("Técnico " + tecnico.getNombre() + " registrado en la plataforma por " + admin.getNombre() + ".");
     }
 
-    // RF-05 y RF-07: cada tipo de servicio define su tarifa, duración y garantía.
     public void registrarServicio(Servicio servicio) {
         gestor.registrarServicio(servicio);
         System.out.println("Servicio " + servicio.getTipo() + " agregado al catálogo.");
@@ -84,8 +71,6 @@ public class AdministradorServicio implements IServicio<Administrador> {
         for (Servicio s : gestor.getServicios()) { s.imprimir(); }
     }
 
-    // ─── Órdenes ──────────────────────────────────────────────────────────────
-
     public OrdenServicio buscarOrden(String codigo) {
         OrdenServicio orden = gestor.buscarOrden(codigo);
         if (orden == null) { throw new IllegalArgumentException("No existe la orden " + codigo + "."); }
@@ -94,7 +79,6 @@ public class AdministradorServicio implements IServicio<Administrador> {
 
     public List<OrdenServicio> getOrdenes() { return gestor.getOrdenes(); }
 
-    // RF-04: técnicos de esa especialidad, zona y horario libre.
     public List<Tecnico> buscarTecnicosDisponibles(String codigo) {
         return gestor.buscarTecnicosDisponibles(buscarOrden(codigo).getSolicitud());
     }
@@ -113,7 +97,6 @@ public class AdministradorServicio implements IServicio<Administrador> {
         return asignado;
     }
 
-    // RF-14
     public boolean reasignarOrden(Administrador admin, String codigo, String documentoTecnico) {
         OrdenServicio orden = buscarOrden(codigo);
         boolean reasignada = admin.reasignarOrden(orden, gestor.buscarTecnico(documentoTecnico));
@@ -129,12 +112,9 @@ public class AdministradorServicio implements IServicio<Administrador> {
         System.out.println("Orden " + orden.getCodigo() + " cancelada.");
     }
 
-    // RF-20
     public List<OrdenServicio> filtrarOrdenes(EstadoOrden estado, LocalDate fecha, Cliente cliente, Tecnico tecnico) {
         return gestor.filtrarOrdenes(estado, fecha, cliente, tecnico);
     }
-
-    // ─── Pagos (RF-17 y RNF-05) ───────────────────────────────────────────────
 
     public List<Pago> consultarPagos(Administrador admin, String codigo) {
         return buscarOrden(codigo).getPagos(admin);
@@ -160,8 +140,6 @@ public class AdministradorServicio implements IServicio<Administrador> {
         }
         return pagos.get(numeroPago - 1);
     }
-
-    // ─── RNF-04: trazabilidad ─────────────────────────────────────────────────
 
     public void mostrarTrazabilidad(String codigo) {
         OrdenServicio orden = buscarOrden(codigo);

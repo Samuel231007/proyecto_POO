@@ -6,15 +6,8 @@ import modelos.OrdenServicio;
 
 import java.util.ArrayList;
 
-/**
- * Detalle del trabajo de cada orden sobre detalles_trabajo.txt (RF-15, RF-16).
- * Formato: codigoOrden|descripcion|horasTrabajo|actividad1;actividad2;actividad3
- *
- * COMPOSICIÓN: TIENE un MaterialRepository, porque los materiales se guardan aparte en materiales.txt
- * (una orden puede tener muchos materiales).
- */
+// Formato: codigoOrden|descripcion|horasTrabajo|actividad1;actividad2;actividad3
 public class DetalleTrabajoRepository extends BaseRepository implements IRepositorioDependiente<OrdenServicio> {
-
     private static final String SEPARADOR_ACTIVIDADES = ";";
     private final MaterialRepository materialRepository;
 

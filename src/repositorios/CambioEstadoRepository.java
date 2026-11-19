@@ -8,12 +8,8 @@ import modelos.OrdenServicio.CambioEstado;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-/**
- * Historial de cambios de estado de cada orden sobre cambios_estado.txt (RF-06, RNF-04).
- * Formato: codigoOrden|estadoAnterior|estadoNuevo|fecha|responsable
- */
+// Formato: codigoOrden|estadoAnterior|estadoNuevo|fecha|responsable
 public class CambioEstadoRepository extends BaseRepository implements IRepositorioDependiente<OrdenServicio> {
-
     public CambioEstadoRepository() {
         super("cambios_estado.txt", "|");
     }

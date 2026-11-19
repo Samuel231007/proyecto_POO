@@ -12,17 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-/**
- * CLASE ABSTRACTA: estructura común de los paneles de Cliente, Técnico y Administrador.
- *   - barra lateral azul con el logo, el usuario y el menú de secciones
- *   - encabezado con el título de la sección y la fecha
- *   - zona de contenido que se vuelve a construir cada vez (así siempre muestra datos actualizados)
- *
- * Cada subclase (HERENCIA) solo define sus secciones en registrarSecciones() — POLIMORFISMO.
- */
+// Base de los paneles de cada rol: barra lateral, menú y secciones.
+// Cada sección se vuelve a construir al mostrarla, así siempre tiene los datos actualizados.
 public abstract class PanelRol extends JPanel {
-
-    /** Sección del menú: nombre, ícono y cómo se construye su contenido. */
     private static final class Seccion {
         final String nombre, descripcion;
         final Icon icono, iconoActivo;
@@ -66,16 +58,13 @@ public abstract class PanelRol extends JPanel {
         add(derecha, BorderLayout.CENTER);
     }
 
-    /** Cada rol agrega aquí sus secciones con agregarSeccion(...). */
     protected abstract void registrarSecciones();
 
-    /** Texto que aparece debajo del nombre del usuario: "Cliente · Chía". */
     protected abstract String descripcionUsuario();
 
-    /** Color del avatar de este rol. */
     protected abstract Color colorRol();
 
-    /** Las subclases lo llaman al final de su constructor (cuando sus atributos ya tienen valor). */
+    // Las subclases lo llaman al final de su constructor, cuando sus atributos ya tienen valor.
     protected final void iniciar() {
         registrarSecciones();
         for (Seccion s : secciones) {
@@ -91,19 +80,16 @@ public abstract class PanelRol extends JPanel {
         secciones.add(new Seccion(nombre, descripcion, icono.crear(Color.decode("#9FB3C8")), icono.crear(Color.WHITE), constructor));
     }
 
-    /** Fábrica de íconos de un color dado (Iconos::casa, Iconos::lista...). */
     @FunctionalInterface
     protected interface IconoFabrica {
         Icon crear(Color color);
     }
 
-    /** Vuelve a construir la sección actual (después de cada acción, para ver los datos nuevos). */
     protected final void refrescar() {
         if (actual != null) { mostrar(actual); }
         actualizarUsuario();
     }
 
-    /** Navega a otra sección por su nombre. */
     protected final void irA(String nombre) {
         for (Seccion s : secciones) { if (s.nombre.equals(nombre)) { mostrar(s); return; } }
     }
@@ -123,8 +109,6 @@ public abstract class PanelRol extends JPanel {
         contenido.revalidate();
         contenido.repaint();
     }
-
-    // ─── Barra lateral ────────────────────────────────────────────────────────
 
     private final JPanel tarjetaUsuario = new JPanel(new BorderLayout(12, 0));
 
@@ -219,8 +203,6 @@ public abstract class PanelRol extends JPanel {
         return encabezado;
     }
 
-    // ─── Botón del menú lateral ───────────────────────────────────────────────
-
     private class BotonMenu extends JLabel {
         private final Seccion seccion;
         private boolean encima;
@@ -271,9 +253,6 @@ public abstract class PanelRol extends JPanel {
         }
     }
 
-    // ─── Ayudas para las subclases ────────────────────────────────────────────
-
-    /** Columna vertical de bloques con espacio entre ellos. */
     protected static JPanel pila(JComponent... bloques) {
         JPanel p = new JPanel();
         p.setOpaque(false);
@@ -286,7 +265,6 @@ public abstract class PanelRol extends JPanel {
         return p;
     }
 
-    /** Fila de tarjetas de estadísticas del mismo ancho. */
     protected static JPanel filaEstadisticas(JComponent... tarjetas) {
         JPanel p = new JPanel(new GridLayout(1, tarjetas.length, 16, 0));
         p.setOpaque(false);
@@ -294,7 +272,6 @@ public abstract class PanelRol extends JPanel {
         return p;
     }
 
-    /** PanelTarjeta con título, subtítulo, botones a la derecha y contenido. */
     protected static PanelTarjeta tarjeta(String titulo, String subtitulo, JComponent contenido, JComponent... acciones) {
         PanelTarjeta t = new PanelTarjeta(new BorderLayout());
         JPanel arriba = new JPanel(new BorderLayout());
@@ -311,13 +288,11 @@ public abstract class PanelRol extends JPanel {
         return t;
     }
 
-    /** Abre la ficha completa de una orden. */
     protected void verDetalle(modelos.OrdenServicio orden) {
         if (orden == null) { Acciones.info(this, "Seleccione una orden", "Haga clic en una fila de la tabla y vuelva a intentarlo."); return; }
         new DialogoDetalleOrden(this, orden, usuario).setVisible(true);
     }
 
-    /** Devuelve la orden seleccionada o muestra un aviso si no hay ninguna. */
     protected modelos.OrdenServicio seleccionada(TablaOrdenes tabla) {
         modelos.OrdenServicio o = tabla.getSeleccionada();
         if (o == null) { Acciones.info(this, "Seleccione una orden", "Haga clic en una fila de la tabla y vuelva a intentarlo."); }

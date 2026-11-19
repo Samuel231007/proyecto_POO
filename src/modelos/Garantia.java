@@ -1,11 +1,9 @@
 package modelos;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Garantía de un servicio terminado: vigencia y revisiones. RF-07 y RF-18. */
 public class Garantia {
     private final LocalDate fechaInicio;
     private final int diasVigencia;
@@ -37,6 +35,6 @@ public class Garantia {
         revisiones.add(fecha + " - " + problema.trim());
     }
 
-    public List<String> getRevisiones() { return new ArrayList<>(revisiones); }   // copia
+    public List<String> getRevisiones() { return new ArrayList<>(revisiones); }
     public String getCobertura() { return cobertura; }
 }

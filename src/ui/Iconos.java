@@ -4,21 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
 
-/**
- * Íconos dibujados con Java2D: no se necesitan archivos de imagen.
- * Cada ícono se dibuja en una cuadrícula de 24 x 24 y se escala al tamaño pedido.
- *
- * INTERFAZ FUNCIONAL + CLASE ANIDADA: Pintor dice cómo se dibuja; IconoDibujado implementa Icon de Swing.
- */
+// Íconos dibujados con Java2D sobre una cuadrícula de 24 x 24: no se usan archivos de imagen.
 public final class Iconos {
-
-    /** Cómo se dibuja un ícono sobre la cuadrícula de 24 x 24. */
     @FunctionalInterface
     private interface Pintor {
         void pintar(Graphics2D g);
     }
 
-    /** Implementación de javax.swing.Icon que dibuja un Pintor con el color y tamaño dados. */
     private static final class IconoDibujado implements Icon {
         private final int tamanio;
         private final Color color;
@@ -49,8 +41,6 @@ public final class Iconos {
 
     private static Icon crear(int tamanio, Color color, Pintor pintor) { return new IconoDibujado(tamanio, color, pintor); }
 
-    // ─── Logo: una casa naranja con una llave inglesa blanca ──────────────────
-
     public static Icon logo(int tamanio) {
         return crear(tamanio, Tema.NARANJA, g -> {
             g.fill(new RoundRectangle2D.Double(0, 0, 24, 24, 7, 7));
@@ -62,16 +52,12 @@ public final class Iconos {
             g.draw(new Line2D.Double(6.5, 10.5, 6.5, 19));
             g.draw(new Line2D.Double(17.5, 10.5, 17.5, 19));
             g.draw(new Line2D.Double(6.5, 19, 17.5, 19));
-            // llave inglesa dentro de la casa
             g.setStroke(new BasicStroke(1.8f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             g.draw(new Line2D.Double(9.3, 16.7, 13.3, 12.7));
             g.draw(new Arc2D.Double(12.2, 9.6, 4.4, 4.4, 200, 270, Arc2D.OPEN));
         });
     }
 
-    // ─── Oficios (uno por tipo de servicio) ───────────────────────────────────
-
-    /** Ícono según el tipo de servicio; si no se conoce, una llave inglesa. */
     public static Icon servicio(String tipo, int tamanio, Color color) {
         String t = tipo == null ? "" : tipo.toLowerCase(Tema.COLOMBIA);
         if (t.startsWith("plom")) { return gota(tamanio, color); }
@@ -82,7 +68,6 @@ public final class Iconos {
         return herramienta(tamanio, color);
     }
 
-    /** Color propio de cada oficio, para las tarjetas de servicios. */
     public static Color colorServicio(String tipo) {
         String t = tipo == null ? "" : tipo.toLowerCase(Tema.COLOMBIA);
         if (t.startsWith("plom")) { return new Color(0x0E, 0xA5, 0xE9); }
@@ -143,7 +128,6 @@ public final class Iconos {
         });
     }
 
-    /** Llave inglesa: el ícono general del técnico. */
     public static Icon herramienta(int s, Color c) {
         return crear(s, c, g -> {
             g.setStroke(new BasicStroke(2.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
@@ -151,8 +135,6 @@ public final class Iconos {
             g.draw(new Arc2D.Double(11, 3, 10, 10, 225, 270, Arc2D.OPEN));
         });
     }
-
-    // ─── Íconos de navegación y acciones ──────────────────────────────────────
 
     public static Icon casa(int s, Color c) {
         return crear(s, c, g -> {
@@ -173,7 +155,6 @@ public final class Iconos {
         });
     }
 
-    /** Casco de seguridad: el técnico. */
     public static Icon casco(int s, Color c) {
         return crear(s, c, g -> {
             g.draw(new Arc2D.Double(4.5, 6, 15, 14, 0, 180, Arc2D.OPEN));
@@ -182,7 +163,6 @@ public final class Iconos {
         });
     }
 
-    /** Escudo: el administrador. */
     public static Icon escudo(int s, Color c) {
         return crear(s, c, g -> {
             Path2D p = new Path2D.Double();

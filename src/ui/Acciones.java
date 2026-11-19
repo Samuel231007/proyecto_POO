@@ -8,16 +8,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Puente entre la interfaz gráfica y la lógica del proyecto.
- *
- * Los modelos y servicios del equipo informan con System.out.println ("Bloqueo registrado", "El técnico no es
- * de esa zona"...). Para no cambiar ese código, aquí se "captura" lo que imprimen durante una acción y se
- * muestra en una ventana bonita. Si la acción lanza una excepción, se muestra su mensaje como error (RNF-06).
- */
+// Los modelos informan con System.out.println; aquí se captura lo que imprimen durante una acción
+// y se muestra en una ventana. Si la acción lanza una excepción, se muestra como error (RNF-06).
 public final class Acciones {
-
-    /** Acción de la interfaz: devuelve true si se completó. */
     @FunctionalInterface
     public interface Accion {
         boolean ejecutar();
@@ -25,11 +18,6 @@ public final class Acciones {
 
     private Acciones() { }
 
-    /**
-     * Ejecuta la acción y muestra el resultado.
-     * @param tituloExito título del mensaje de éxito; null = no mostrar nada si salió bien.
-     * @return true si la acción se completó.
-     */
     public static boolean ejecutar(Component padre, String tituloExito, Accion accion) {
         PrintStream original = System.out;
         ByteArrayOutputStream capturado = new ByteArrayOutputStream();
@@ -73,8 +61,6 @@ public final class Acciones {
         if (error != null) { resultado.add(error); }
         return resultado;
     }
-
-    // ─── Ventanas de mensaje ──────────────────────────────────────────────────
 
     public enum Tipo { EXITO, ERROR, ADVERTENCIA, INFO }
 

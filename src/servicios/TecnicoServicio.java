@@ -9,19 +9,12 @@ import modelos.Tecnico;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Lógica de negocio de las acciones del TÉCNICO (RF-06, RF-09, RF-13, RF-15, RF-16).
- * Cada método hace la operación con los modelos y luego la guarda en los archivos a través del gestor (RNF-01).
- */
 public class TecnicoServicio implements IServicio<Tecnico> {
-
     private final GestorPlataforma gestor;
 
     public TecnicoServicio(GestorPlataforma gestor) {
         this.gestor = gestor;
     }
-
-    // ─── Implementación de IServicio ──────────────────────────────────────────
 
     @Override
     public ArrayList<Tecnico> getDataList() { return gestor.getTecnicos(); }
@@ -54,8 +47,6 @@ public class TecnicoServicio implements IServicio<Tecnico> {
         System.out.println("Total: " + todos.size() + " técnico(s)");
     }
 
-    // ─── Sesión ───────────────────────────────────────────────────────────────
-
     public Tecnico iniciarSesion(String documento, String contrasenia) {
         Tecnico tecnico = gestor.buscarTecnico(documento);
         if (tecnico == null) {
@@ -69,8 +60,6 @@ public class TecnicoServicio implements IServicio<Tecnico> {
         tecnico.cambiarContrasenia(actual, nueva);
         gestor.guardarTecnico(tecnico);
     }
-
-    // ─── RF-13: horario y bloqueos ────────────────────────────────────────────
 
     public void registrarDisponibilidad(Tecnico tecnico, FranjaHoraria franja) {
         tecnico.registrarDisponibilidad(franja);
@@ -89,9 +78,6 @@ public class TecnicoServicio implements IServicio<Tecnico> {
         return quitado;
     }
 
-    // ─── Órdenes del técnico ──────────────────────────────────────────────────
-
-    // RF-09 y RNF-02
     public List<OrdenServicio> consultarOrdenesActivas(Tecnico tecnico) {
         return gestor.consultarOrdenesActivasTecnico(tecnico);
     }
@@ -104,14 +90,12 @@ public class TecnicoServicio implements IServicio<Tecnico> {
         return orden;
     }
 
-    // RF-06: ASIGNADA -> EN_PROCESO
     public void iniciarTrabajo(Tecnico tecnico, String codigo) {
         OrdenServicio orden = buscarOrdenAsignada(tecnico, codigo);
         orden.iniciarTrabajo(tecnico.getNombre());
         gestor.guardarOrden(orden);
     }
 
-    // RF-15
     public void registrarTrabajo(Tecnico tecnico, String codigo, DetalleTrabajo detalle) {
         OrdenServicio orden = buscarOrdenAsignada(tecnico, codigo);
         tecnico.registrarTrabajo(orden, detalle);

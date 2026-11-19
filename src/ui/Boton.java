@@ -6,12 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 
-/**
- * Botón redondeado con los colores del tema. HERENCIA: extiende JButton y redefine cómo se dibuja.
- * ENUM ANIDADO: cada tipo de botón tiene su color de fondo y de texto.
- */
 public class Boton extends JButton {
-
     public enum Tipo {
         PRIMARIO(Tema.NARANJA, Tema.NARANJA_OSCURO, Color.WHITE),
         SECUNDARIO(Color.WHITE, new Color(0xEE, 0xF2, 0xF7), Tema.TEXTO),

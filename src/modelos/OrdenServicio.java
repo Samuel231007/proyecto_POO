@@ -9,14 +9,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Orden de servicio: une al cliente, su solicitud, el servicio, el técnico, el estado, los costos,
- * el detalle del trabajo, la garantía, la calificación, los pagos y los avisos.
- * Apoya RF-04 a RF-07, RF-10, RF-12, RF-14 a RF-19, RNF-02, RNF-03, RNF-04 y RNF-05.
- */
 public class OrdenServicio implements IImprimible {
-
-    // Clase anidada estática: un cambio de estado. Constructor privado y solo getters: el historial no se falsifica (RNF-04).
+    // Constructor privado y solo getters: el historial de cambios no se puede falsificar (RNF-04).
     public static class CambioEstado {
         private final EstadoOrden estadoAnterior;
         private final EstadoOrden estadoNuevo;
@@ -44,21 +38,21 @@ public class OrdenServicio implements IImprimible {
         public String toString() { return fecha.toLocalDate() + " " + estadoAnterior + " -> " + estadoNuevo + " (por " + responsable + ")"; }
     }
 
-    private static int consecutivo = 0;   // atributo estático: numera las órdenes
+    private static int consecutivo = 0;
 
     private final String codigo;
     private final Cliente cliente;
     private final Solicitud solicitud;
     private final Servicio servicio;
-    private final Asignacion asignacion;  // composición: la orden crea y maneja su propia asignación (RF-14)
+    private final Asignacion asignacion;
     private final LocalDateTime fechaCreacion;
     private Tecnico tecnico;              // null hasta que se asigna
     private EstadoOrden estado = EstadoOrden.PENDIENTE;
     private double costoMaterialesEstimado, costoEstimado;
     private double costoManoObraFinal, costoMaterialesFinal, costoFinal;
-    private DetalleTrabajo detalle;       // RF-15: se registra mientras la orden está en proceso
-    private Garantia garantia;            // se crea al finalizar
-    private Calificacion calificacion;    // se crea cuando el cliente califica (RF-10)
+    private DetalleTrabajo detalle;
+    private Garantia garantia;
+    private Calificacion calificacion;
     private final List<CambioEstado> cambios = new ArrayList<>();
     private final List<Pago> pagos = new ArrayList<>();
     private final List<Notificacion> notificaciones = new ArrayList<>();
@@ -105,7 +99,6 @@ public class OrdenServicio implements IImprimible {
         actualizarConsecutivo(this.codigo);
     }
 
-    // Método estático: siguiente código (OS-001, OS-002...).
     public static String generarCodigo() {
         consecutivo++;
         String ceros = consecutivo < 10 ? "00" : consecutivo < 100 ? "0" : "";
@@ -148,8 +141,6 @@ public class OrdenServicio implements IImprimible {
     // RF-09: activa = no ha terminado (ni finalizada ni cancelada).
     public boolean estaActiva() { return estado != EstadoOrden.FINALIZADA && estado != EstadoOrden.CANCELADA; }
 
-    // ---------- RF-06: cambios de estado ----------
-
     // Sin "public": solo Asignacion la llama, después de revisar especialidad, zona y horario (RF-04 y RF-13).
     // Si ya estaba ASIGNADA es una reasignación (RF-14): sigue ASIGNADA y solo cambia el técnico.
     void asignarTecnico(Tecnico nuevo, String responsable) {
@@ -182,7 +173,6 @@ public class OrdenServicio implements IImprimible {
         cambiarEstado(EstadoOrden.FINALIZADA, responsable);
     }
 
-    // RF-12: el motivo queda guardado en la solicitud.
     public void cancelar(String responsable, String motivo) {
         String motivoLimpio = Validar.texto(motivo, "motivo de cancelación");
         cambiarEstado(EstadoOrden.CANCELADA, responsable);
@@ -214,8 +204,6 @@ public class OrdenServicio implements IImprimible {
         }
     }
 
-    // ---------- RF-19: aviso automático en cada cambio de estado ----------
-
     // Si el envío falla, la notificación queda FALLIDA con su causa, pero el cambio de estado sí se conserva.
     private void notificarCliente(CambioEstado cambio) {
         Notificable canal = cliente.getCanalNotificacion();
@@ -228,17 +216,13 @@ public class OrdenServicio implements IImprimible {
         System.out.println("  Aviso al cliente -> " + aviso);
     }
 
-    // ---------- RF-15: detalle del trabajo ----------
-
-    // Sin "public" de uso libre: lo registra el técnico asignado con Tecnico.registrarTrabajo.
+    // Sin "public": lo registra el técnico asignado con Tecnico.registrarTrabajo.
     void registrarDetalle(DetalleTrabajo nuevo) {
         Validar.objeto(nuevo, "detalle del trabajo");
         if (estado != EstadoOrden.EN_PROCESO) { throw new IllegalStateException("Solo se registra el trabajo de una orden EN_PROCESO (está " + estado + ")."); }
         nuevo.validarCompleto();
         detalle = nuevo;
     }
-
-    // ---------- RF-05 y RF-16: costos ----------
 
     // Estimado = mano de obra con la duración estimada + materiales estimados.
     public double calcularCostoEstimado(double tarifaBaseTecnico, double costoMateriales) {
@@ -255,7 +239,6 @@ public class OrdenServicio implements IImprimible {
         return costoFinal - costoEstimado;
     }
 
-    // RF-16: costo final desglosado y diferencia frente al estimado.
     public String getDesgloseCosto() {
         if (costoFinal <= 0) { throw new IllegalStateException("La orden " + codigo + " aún no tiene costo final."); }
         String texto = "Costo final de la orden " + codigo + ":"
@@ -274,9 +257,6 @@ public class OrdenServicio implements IImprimible {
 
     private static String dinero(double valor) { return String.format("$%,.0f", valor); }
 
-    // ---------- RF-10: calificación ----------
-
-    // Solo se califica una orden finalizada y una sola vez.
     public void calificar(Calificacion nueva) {
         Validar.objeto(nueva, "calificación");
         if (estado != EstadoOrden.FINALIZADA) { throw new IllegalStateException("Solo se puede calificar una orden finalizada (está " + estado + ")."); }
@@ -284,14 +264,10 @@ public class OrdenServicio implements IImprimible {
         calificacion = nueva;
     }
 
-    // ---------- RF-18: revisión por garantía ----------
-
     public void solicitarRevisionGarantia(LocalDate fecha, String problema) {
         if (garantia == null) { throw new IllegalStateException("La orden aún no tiene garantía: debe estar finalizada."); }
         garantia.solicitarRevision(fecha, problema);
     }
-
-    // ---------- RF-17: pagos ----------
 
     public void registrarPago(Pago pago) {
         Validar.objeto(pago, "pago");
@@ -330,8 +306,7 @@ public class OrdenServicio implements IImprimible {
         return new ArrayList<>(pagos);
     }
 
-    // ---------- RNF-01: uso exclusivo de los repositorios al guardar y leer los archivos ----------
-    // No son consultas de una persona, por eso no piden un Usuario. La interfaz de consola nunca los usa.
+    // Métodos para los repositorios (RNF-01): no piden un Usuario porque no son consultas de una persona.
 
     public List<Pago> getPagosParaGuardar() { return new ArrayList<>(pagos); }
 
@@ -359,8 +334,6 @@ public class OrdenServicio implements IImprimible {
         Validar.objeto(guardada, "notificación");
         notificaciones.add(guardada);
     }
-
-    // ---------- IImprimible ----------
 
     @Override
     public void imprimir() {

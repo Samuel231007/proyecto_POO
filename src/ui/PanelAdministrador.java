@@ -22,12 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Panel del ADMINISTRADOR: tablero general, órdenes con filtros, técnicos, clientes, servicios y pagos.
- * RF-01, RF-04, RF-05, RF-06, RF-07, RF-14, RF-17, RF-20 y RNF-04.
- */
 public class PanelAdministrador extends PanelRol {
-
     private final Administrador admin;
     private final AdministradorServicio servicio;
     private final GestorPlataforma gestor;
@@ -61,8 +56,6 @@ public class PanelAdministrador extends PanelRol {
 
     @Override
     protected Color colorRol() { return Tema.AZUL_INFO; }
-
-    // ─── Panel general ────────────────────────────────────────────────────────
 
     private JComponent panelGeneral() {
         List<OrdenServicio> todas = gestor.getOrdenes();
@@ -110,7 +103,6 @@ public class PanelAdministrador extends PanelRol {
         return pila(estados, resumen, abajo);
     }
 
-    /** Una orden que espera técnico: oficio, cliente, lugar, horario y botón Asignar. */
     private JComponent filaPendiente(OrdenServicio o) {
         String tipo = o.getServicio().getTipo();
         Color color = Iconos.colorServicio(tipo);
@@ -157,7 +149,6 @@ public class PanelAdministrador extends PanelRol {
         return conteo;
     }
 
-    /** Gráfico de barras horizontales dibujado con Java2D. */
     private static class GraficoBarras extends JComponent {
         private final Map<String, Integer> datos;
 
@@ -194,10 +185,7 @@ public class PanelAdministrador extends PanelRol {
         }
     }
 
-    // ─── Órdenes (RF-04, RF-06, RF-14, RF-20) ─────────────────────────────────
-
     private JComponent ordenes() {
-        // Barra de filtros
         JComboBox<String> estado = Componentes.combo(opcionesEstado());
         estado.setSelectedIndex(filtroEstado == null ? 0 : filtroEstado.ordinal() + 1);
         JTextField fecha = Componentes.campoTexto(filtroFecha);
@@ -250,7 +238,6 @@ public class PanelAdministrador extends PanelRol {
         c.insets = new Insets(0, 0, 0, 0);
         filtros.add(limpiar, c);
 
-        // Tabla filtrada
         LocalDate dia = filtroFecha.isEmpty() ? null : LocalDate.parse(filtroFecha);
         List<OrdenServicio> lista = servicio.filtrarOrdenes(filtroEstado, dia, filtroCliente, filtroTecnico);
         JComponent cuerpoTabla;
@@ -307,7 +294,6 @@ public class PanelAdministrador extends PanelRol {
         return r;
     }
 
-    // RF-04 y RF-05: elegir técnico disponible y calcular el costo estimado.
     private void asignar(OrdenServicio o) {
         List<Tecnico> disponibles = servicio.buscarTecnicosDisponibles(o.getCodigo());
         if (disponibles.isEmpty()) {
@@ -358,7 +344,6 @@ public class PanelAdministrador extends PanelRol {
         return r;
     }
 
-    // RF-14
     private void reasignar(OrdenServicio o) {
         List<Tecnico> disponibles = new ArrayList<>(servicio.buscarTecnicosDisponibles(o.getCodigo()));
         disponibles.remove(o.getTecnico());
@@ -378,7 +363,6 @@ public class PanelAdministrador extends PanelRol {
         refrescar();
     }
 
-    // RF-06
     private void cancelar(OrdenServicio o) {
         JTextArea motivo = Componentes.areaTexto(3);
         Formulario f = new Formulario(this, "Cancelar " + o.getCodigo(), "RF-06 · Solo órdenes pendientes o asignadas",
@@ -391,8 +375,6 @@ public class PanelAdministrador extends PanelRol {
         }));
         refrescar();
     }
-
-    // ─── Técnicos (RF-01) ─────────────────────────────────────────────────────
 
     private JComponent tecnicos() {
         List<Tecnico> lista = gestor.getTecnicos();
@@ -450,7 +432,6 @@ public class PanelAdministrador extends PanelRol {
         d.setVisible(true);
     }
 
-    // RF-01
     private void registrarTecnico() {
         JTextField nombre = Componentes.campoTexto("");
         JTextField documento = Componentes.campoTexto("");
@@ -482,8 +463,6 @@ public class PanelAdministrador extends PanelRol {
         return r;
     }
 
-    // ─── Clientes ─────────────────────────────────────────────────────────────
-
     private JComponent clientes() {
         List<Cliente> lista = gestor.getClientes();
         DefaultTableModel modelo = modeloSoloLectura("Documento", "Nombre", "Celular", "Correo", "Ubicación", "Avisos por", "Órdenes");
@@ -506,8 +485,6 @@ public class PanelAdministrador extends PanelRol {
         });
         return tarjeta("Clientes registrados", lista.size() + " cliente(s) · RF-02", scroll, historial);
     }
-
-    // ─── Servicios (RF-05, RF-07) ─────────────────────────────────────────────
 
     private JComponent servicios() {
         JPanel rejilla = new JPanel(new GridLayout(0, 3, 16, 16));
@@ -560,9 +537,6 @@ public class PanelAdministrador extends PanelRol {
         refrescar();
     }
 
-    // ─── Pagos (RF-17, RNF-05) ────────────────────────────────────────────────
-
-    /** Un pago junto con su orden y su posición (para confirmarlo o rechazarlo). */
     private static final class FilaPago {
         final OrdenServicio orden;
         final Pago pago;
@@ -622,7 +596,6 @@ public class PanelAdministrador extends PanelRol {
         tabla.getSelectionModel().addListSelectionListener(e -> actualizar.run());
         confirmar.addActionListener(e -> revisarPago(tabla, filas, true));
         rechazar.addActionListener(e -> revisarPago(tabla, filas, false));
-        // selecciona el primer pago pendiente
         int primero = 0;
         for (int i = 0; i < filas.size(); i++) { if (filas.get(i).pago.estaPendiente()) { primero = i; break; } }
         tabla.setRowSelectionInterval(primero, primero);

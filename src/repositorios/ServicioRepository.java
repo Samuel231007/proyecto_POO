@@ -5,12 +5,8 @@ import modelos.Servicio;
 
 import java.util.ArrayList;
 
-/**
- * Catálogo de tipos de servicio sobre servicios.txt (RF-05, RF-07).
- * Formato: tipo|factorTarifa|duracionEstimadaHoras|diasGarantia
- */
+// Formato: tipo|factorTarifa|duracionEstimadaHoras|diasGarantia
 public class ServicioRepository extends BaseRepository implements IRepository<Servicio> {
-
     public ServicioRepository() {
         super("servicios.txt", "|");
     }

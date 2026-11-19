@@ -2,9 +2,8 @@ package modelos;
 
 import interfaces.IImprimible;
 
-/** Tipo de servicio (plomería, electricidad...) con su factor de tarifa, duración y garantía. RF-05 y RF-07. */
 public class Servicio implements IImprimible {
-    public static final double FACTOR_NORMAL = 1.0;   // factor de un servicio sin recargo
+    public static final double FACTOR_NORMAL = 1.0;
     private String tipo;
     private double factorTarifa;          // 1.0 = tarifa normal
     private double duracionEstimadaHoras;

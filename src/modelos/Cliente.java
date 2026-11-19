@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public class Cliente extends Usuario implements IImprimible {
     private String ubicacion;
-    private Notificable canalNotificacion = new NotificacionWhatsApp();   // RF-19: canal elegido por el cliente
+    private Notificable canalNotificacion = new NotificacionWhatsApp();
 
     public Cliente(String ubicacion, String nombre, String documento, String telefono, String correo, String contrasenia) {
         super(nombre, documento, correo, telefono, contrasenia);
@@ -38,7 +38,6 @@ public class Cliente extends Usuario implements IImprimible {
         System.out.println("Datos actualizados correctamente.");
     }
 
-    // RF-19: el cliente elige si le llegan los avisos por WhatsApp o por correo.
     public void setCanalNotificacion(Notificable canal) {
         Validar.objeto(canal, "canal de notificación");
         this.canalNotificacion = canal;
@@ -47,7 +46,6 @@ public class Cliente extends Usuario implements IImprimible {
 
     public Notificable getCanalNotificacion() { return canalNotificacion; }
 
-    // RF-03: solicitar un servicio.
     public void solicitarServicio(Solicitud solicitud) {
         Validar.objeto(solicitud, "solicitud");
         solicitud.crear();
@@ -66,14 +64,12 @@ public class Cliente extends Usuario implements IImprimible {
         return true;
     }
 
-    // RF-10: calificar una orden propia que ya esté finalizada.
     public void calificarServicio(OrdenServicio orden, int estrellas, String comentario) {
         verificarPropia(orden);
         orden.calificar(new Calificacion(estrellas, comentario));
         System.out.println("Gracias por calificar el servicio con " + estrellas + " estrella(s).");
     }
 
-    // RF-18: pedir una revisión por garantía de una orden propia.
     public void solicitarRevisionGarantia(OrdenServicio orden, LocalDate fecha, String problema) {
         verificarPropia(orden);
         orden.solicitarRevisionGarantia(fecha, problema);

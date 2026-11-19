@@ -5,15 +5,8 @@ import modelos.Garantia;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-/**
- * Revisiones por garantía de cada orden sobre revisiones_garantia.txt (RF-18).
- * Formato: codigoOrden|fecha|problema
- *
- * Lo usa GarantiaRepository (composición). Al leer se vuelve a llamar a solicitarRevision:
- * como la fecha es la misma que se guardó, la garantía sigue siendo vigente para esa fecha.
- */
+// Formato: codigoOrden|fecha|problema
 public class RevisionGarantiaRepository extends BaseRepository {
-
     public RevisionGarantiaRepository() {
         super("revisiones_garantia.txt", "|");
     }

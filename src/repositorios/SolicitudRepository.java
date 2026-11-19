@@ -10,12 +10,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-/**
- * Solicitudes de servicio sobre solicitudes.txt (RF-03, RF-12, RNF-01).
- * Formato: id|tipoProblema|ubicacion|descripcion|dia|horaInicio|horaFin|fechaCreacion|estado|motivoCancelacion
- */
+// Formato: id|tipoProblema|ubicacion|descripcion|dia|horaInicio|horaFin|fechaCreacion|estado|motivoCancelacion
 public class SolicitudRepository extends BaseRepository implements IRepository<Solicitud> {
-
     public SolicitudRepository() {
         super("solicitudes.txt", "|");
     }

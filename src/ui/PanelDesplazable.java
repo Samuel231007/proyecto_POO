@@ -3,12 +3,7 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Panel para poner dentro de un JScrollPane que se ajusta al ANCHO de la ventana
- * (solo se desplaza hacia abajo, nunca de lado). IMPLEMENTA la interfaz Scrollable de Swing.
- */
 public class PanelDesplazable extends JPanel implements Scrollable {
-
     public PanelDesplazable(LayoutManager layout) {
         super(layout);
     }

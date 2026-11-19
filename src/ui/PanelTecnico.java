@@ -13,12 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-/**
- * Panel del TÉCNICO: inicio con sus próximas visitas, órdenes asignadas, agenda semanal y perfil.
- * RF-06, RF-09, RF-13, RF-15, RF-16 y RNF-02 (solo trabaja sobre sus órdenes).
- */
 public class PanelTecnico extends PanelRol {
-
     private final Tecnico tecnico;
     private final TecnicoServicio servicio;
 
@@ -42,8 +37,6 @@ public class PanelTecnico extends PanelRol {
 
     @Override
     protected Color colorRol() { return Iconos.colorServicio(tecnico.getEspecialidad()); }
-
-    // ─── Inicio ───────────────────────────────────────────────────────────────
 
     private JComponent inicio() {
         List<OrdenServicio> activas = servicio.consultarOrdenesActivas(tecnico);
@@ -108,8 +101,6 @@ public class PanelTecnico extends PanelRol {
         l.setAlignmentX(LEFT_ALIGNMENT);
         return l;
     }
-
-    // ─── Mis órdenes (RF-06, RF-09, RF-15, RF-16) ─────────────────────────────
 
     private JComponent misOrdenes() {
         List<OrdenServicio> activas = servicio.consultarOrdenesActivas(tecnico);
@@ -182,7 +173,6 @@ public class PanelTecnico extends PanelRol {
         return p;
     }
 
-    // RF-15: actividades, horas reales y materiales.
     private void registrarTrabajo(OrdenServicio o) {
         JTextField descripcion = Componentes.campoTexto("");
         JTextField horas = Componentes.campoTexto("");
@@ -261,7 +251,6 @@ public class PanelTecnico extends PanelRol {
         }
     }
 
-    // RF-07 y RF-16: al finalizar se muestra el costo final desglosado.
     private void finalizar(OrdenServicio o) {
         if (!Acciones.confirmar(this, "¿Finalizar la orden " + o.getCodigo() + "?",
                 "Se calculará el costo final con las horas y materiales registrados, se creará la garantía y se avisará al cliente.")) { return; }
@@ -271,8 +260,6 @@ public class PanelTecnico extends PanelRol {
         });
         refrescar();
     }
-
-    // ─── Mi agenda (RF-13) ────────────────────────────────────────────────────
 
     private JComponent agenda() {
         CalendarioSemanal calendario = new CalendarioSemanal(tecnico, servicio.consultarOrdenesActivas(tecnico));
@@ -326,8 +313,6 @@ public class PanelTecnico extends PanelRol {
                 () -> servicio.quitarIndisponibilidad(tecnico, bloqueos.get(combo.getSelectedIndex()))));
         refrescar();
     }
-
-    // ─── Mi perfil ────────────────────────────────────────────────────────────
 
     private JComponent perfil() {
         JPanel datos = new JPanel(new GridLayout(0, 3, 18, 16));

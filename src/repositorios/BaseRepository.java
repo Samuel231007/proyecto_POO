@@ -8,16 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**
- * Clase abstracta base de todos los repositorios (igual que en el proyecto base):
- * cada repositorio TIENE un FileManage (composición) y un delimitador.
- *
- * Además reúne las operaciones que todos repiten. Todas las líneas empiezan con una CLAVE
- * (documento, código de la orden, id...) y con ella se buscan, reemplazan o eliminan.
- */
+// Todas las líneas de los archivos empiezan con su clave (documento, código de la orden o id).
 public abstract class BaseRepository {
-
-    // OOP: Encapsulación con 'protected' — accesible desde esta clase y sus subclases
     protected FileManage fileManage;
     protected String delimiter;
 
@@ -26,19 +18,11 @@ public abstract class BaseRepository {
         this.delimiter = delimiter;
     }
 
-    /**
-     * Separa una línea en sus campos.
-     * Se usa split(..., -1) en lugar de StringTokenizer porque StringTokenizer se salta los campos vacíos
-     * (por ejemplo un motivo de cancelación vacío) y los datos quedarían corridos.
-     */
+    // split con -1 conserva los campos vacíos; StringTokenizer los saltaría y los datos quedarían corridos.
     protected String[] separar(String linea) {
         return linea.split(Pattern.quote(delimiter), -1);
     }
 
-    /**
-     * Une los campos con el delimitador. Un campo null se guarda vacío.
-     * Las fechas con hora se guardan hasta los segundos (2026-11-17T10:30:07) para que el archivo sea fácil de leer.
-     */
     protected String unir(Object... campos) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < campos.length; i++) {
@@ -50,12 +34,10 @@ public abstract class BaseRepository {
         return sb.toString();
     }
 
-    /** Primer campo de la línea: la clave del registro. */
     protected String claveDe(String linea) {
         return separar(linea)[0];
     }
 
-    /** Devuelve la línea cuya clave es "clave", o null si no existe. */
     protected String buscarLinea(String clave) {
         for (String linea : fileManage.getDataOfFile()) {
             if (claveDe(linea).equals(clave)) { return linea; }
@@ -63,7 +45,6 @@ public abstract class BaseRepository {
         return null;
     }
 
-    /** Reemplaza la línea de esa clave; si no existe la agrega al final. */
     protected void guardarLinea(String clave, String nuevaLinea) {
         ArrayList<String> lineas = fileManage.getDataOfFile();
         for (int i = 0; i < lineas.size(); i++) {
@@ -76,12 +57,10 @@ public abstract class BaseRepository {
         fileManage.writeFile(nuevaLinea);
     }
 
-    /** Elimina todas las líneas que tengan esa clave. */
     protected void eliminarPorClave(String clave) {
         reemplazarGrupo(clave, new ArrayList<>());
     }
 
-    /** Todas las líneas de una clave (por ejemplo, todos los pagos de la orden OS-001). */
     protected ArrayList<String> lineasDe(String clave) {
         ArrayList<String> resultado = new ArrayList<>();
         for (String linea : fileManage.getDataOfFile()) {
@@ -90,10 +69,7 @@ public abstract class BaseRepository {
         return resultado;
     }
 
-    /**
-     * Quita todas las líneas de esa clave y escribe las nuevas, en UNA sola escritura del archivo (RNF-03).
-     * Lo usan los repositorios dependientes: así no quedan pagos o cambios duplicados al volver a guardar.
-     */
+    // Quita las líneas de esa clave y escribe las nuevas en una sola escritura (RNF-03), sin dejar duplicados.
     protected void reemplazarGrupo(String clave, List<String> nuevasLineas) {
         ArrayList<String> lineas = new ArrayList<>();
         for (String linea : fileManage.getDataOfFile()) {
@@ -103,7 +79,6 @@ public abstract class BaseRepository {
         fileManage.writeAllLinesInFile(lineas);
     }
 
-    /** Texto vacío del archivo = null en el objeto. */
     protected static String vacioANull(String valor) {
         return (valor == null || valor.isEmpty()) ? null : valor;
     }

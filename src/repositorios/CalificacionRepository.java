@@ -7,12 +7,8 @@ import modelos.OrdenServicio;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-/**
- * Calificación de cada orden sobre calificaciones.txt (RF-10).
- * Formato: codigoOrden|estrellas|comentario|fecha
- */
+// Formato: codigoOrden|estrellas|comentario|fecha
 public class CalificacionRepository extends BaseRepository implements IRepositorioDependiente<OrdenServicio> {
-
     public CalificacionRepository() {
         super("calificaciones.txt", "|");
     }

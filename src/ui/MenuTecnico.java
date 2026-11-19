@@ -7,9 +7,7 @@ import servicios.TecnicoServicio;
 
 import java.util.List;
 
-/** Menú del técnico que inició sesión. Solo trabaja sobre las órdenes que tiene asignadas (RNF-02). */
 public class MenuTecnico {
-
     private final Tecnico tecnico;
     private final TecnicoServicio servicio;
     private final Consola consola;

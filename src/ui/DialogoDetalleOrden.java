@@ -16,14 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/**
- * Ficha completa de una orden: solicitud, técnico, costos, trabajo realizado, garantía, calificación,
- * pagos y la línea de tiempo con todos los cambios (RF-06, RF-07, RF-08, RF-10, RF-16, RF-17, RF-18, RF-19, RNF-04).
- *
- * Los pagos solo se muestran si quien consulta tiene permiso (RNF-02 y RNF-05): el técnico no los ve.
- */
 public class DialogoDetalleOrden extends JDialog {
-
     private static final DateTimeFormatter FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     public DialogoDetalleOrden(Component padre, OrdenServicio orden, Usuario quienConsulta) {
@@ -95,8 +88,6 @@ public class DialogoDetalleOrden extends JDialog {
         c.setAlignmentX(Component.LEFT_ALIGNMENT);
         return c;
     }
-
-    // ─── Secciones ────────────────────────────────────────────────────────────
 
     private JComponent encabezado(OrdenServicio o) {
         PanelTarjeta t = new PanelTarjeta(new BorderLayout(16, 0));
@@ -250,7 +241,6 @@ public class DialogoDetalleOrden extends JDialog {
         return t;
     }
 
-    /** Línea de tiempo vertical con cada cambio de estado (RF-06, RNF-04). */
     private JComponent tarjetaLineaTiempo(OrdenServicio o) {
         PanelTarjeta t = new PanelTarjeta(new BorderLayout());
         t.add(Componentes.encabezado("Línea de tiempo", "Quién hizo cada cambio y cuándo (RNF-04)"), BorderLayout.NORTH);
@@ -280,7 +270,6 @@ public class DialogoDetalleOrden extends JDialog {
         return t;
     }
 
-    /** Un paso de la línea de tiempo: punto de color, título y fecha. */
     private static JComponent paso(Color color, String titulo, String detalle, boolean conLinea) {
         JPanel p = new JPanel(new BorderLayout(12, 0));
         p.setOpaque(false);

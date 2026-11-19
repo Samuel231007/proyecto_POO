@@ -12,15 +12,7 @@ import servicios.TecnicoServicio;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Ventana de la aplicación. Crea el gestor (que carga los .txt) y los servicios, igual que MenuPrincipal,
- * y cambia entre la pantalla de inicio de sesión y el panel de cada rol (CardLayout).
- *
- * La interfaz gráfica es otra CAPA UI: usa exactamente los mismos servicios, repositorios y modelos
- * que los menús de consola. Por eso no hubo que cambiar la lógica del proyecto.
- */
 public class VentanaPrincipal extends JFrame {
-
     private static final String LOGIN = "login", SESION = "sesion";
 
     private final GestorPlataforma gestor;
@@ -49,7 +41,7 @@ public class VentanaPrincipal extends JFrame {
         setContentPane(contenedor);
     }
 
-    /** Abre el panel que corresponde al rol del usuario. POLIMORFISMO con instanceof sobre Usuario. */
+    // Abre el panel que corresponde al rol del usuario.
     public void abrirSesion(Usuario usuario) {
         if (panelSesion != null) { contenedor.remove(panelSesion); }
         if (usuario instanceof Cliente) {
@@ -76,7 +68,6 @@ public class VentanaPrincipal extends JFrame {
     public TecnicoServicio getTecnicoServicio() { return tecnicoServicio; }
     public AdministradorServicio getAdministradorServicio() { return administradorServicio; }
 
-    // Ícono de la ventana (barra de tareas): el mismo logo dibujado.
     private static Image imagenLogo() {
         Icon icono = Iconos.logo(64);
         java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(64, 64, java.awt.image.BufferedImage.TYPE_INT_ARGB);

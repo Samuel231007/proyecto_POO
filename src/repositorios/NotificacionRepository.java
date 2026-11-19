@@ -8,12 +8,8 @@ import modelos.OrdenServicio;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-/**
- * Avisos enviados al cliente por cada orden sobre notificaciones.txt (RF-19, RNF-04).
- * Formato: codigoOrden|id|documentoCliente|nombreCliente|telefono|correo|mensaje|fecha|canal|estadoEnvio|detalle
- */
+// Formato: codigoOrden|id|documentoCliente|nombreCliente|telefono|correo|mensaje|fecha|canal|estadoEnvio|detalle
 public class NotificacionRepository extends BaseRepository implements IRepositorioDependiente<OrdenServicio> {
-
     public NotificacionRepository() {
         super("notificaciones.txt", "|");
     }

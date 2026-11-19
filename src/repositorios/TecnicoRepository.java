@@ -5,15 +5,8 @@ import modelos.Tecnico;
 
 import java.util.ArrayList;
 
-/**
- * CRUD de técnicos sobre tecnicos.txt (RF-01, RNF-01).
- * Formato: documento|nombre|correo|telefono|contraseniaCifrada|especialidad|zonaCobertura|tarifaBase
- *
- * COMPOSICIÓN: este repositorio TIENE un DisponibilidadRepository, porque el horario y los bloqueos
- * del técnico (RF-13) se guardan en otro archivo: disponibilidades.txt.
- */
+// Formato: documento|nombre|correo|telefono|contraseniaCifrada|especialidad|zonaCobertura|tarifaBase
 public class TecnicoRepository extends BaseRepository implements IRepository<Tecnico> {
-
     private final DisponibilidadRepository disponibilidadRepository;
 
     public TecnicoRepository() {

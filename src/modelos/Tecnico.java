@@ -9,8 +9,8 @@ public class Tecnico extends Usuario implements IImprimible {
     private String especialidad;
     private String zonaCobertura;
     private double tarifaBase;
-    private DisponibilidadTecnico horarioDisponible;   // composición
-    private List<Solicitud> solicitudes;               // asociación con Solicitud
+    private DisponibilidadTecnico horarioDisponible;
+    private List<Solicitud> solicitudes;
 
     public Tecnico(String nombre, String documento, String correo, String telefono,
                    String contrasenia, String especialidad, String zonaCobertura, double tarifaBase) {
@@ -28,7 +28,6 @@ public class Tecnico extends Usuario implements IImprimible {
         this.horarioDisponible = new DisponibilidadTecnico(this);
     }
 
-    // Se llama al asignarle una orden.
     public void recibirSolicitud(Solicitud solicitud) {
         if (!solicitudes.contains(solicitud)) { solicitudes.add(solicitud); }
         System.out.println("El técnico " + getNombre() + " recibió la solicitud: " + solicitud.getTipoProblema());
@@ -48,7 +47,6 @@ public class Tecnico extends Usuario implements IImprimible {
         return horarioDisponible.estaDisponible(franja);
     }
 
-    // RF-13: atajos para que el técnico registre su horario y sus bloqueos.
     public void registrarDisponibilidad(DisponibilidadTecnico.FranjaHoraria franja) { horarioDisponible.registrarDisponibilidad(franja); }
     public boolean registrarIndisponibilidad(DisponibilidadTecnico.FranjaHoraria franja) { return horarioDisponible.registrarIndisponibilidad(franja); }
 

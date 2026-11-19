@@ -10,15 +10,8 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 
-/**
- * Fábrica de piezas visuales que se repiten en todas las pantallas (títulos, campos, tablas, estadísticas).
- * MÉTODOS ESTÁTICOS: no hace falta crear un objeto Componentes para usarlos.
- */
 public final class Componentes {
-
     private Componentes() { }
-
-    // ─── Textos ───────────────────────────────────────────────────────────────
 
     public static JLabel titulo(String texto, float tamanio) {
         JLabel l = new JLabel(texto);
@@ -40,8 +33,6 @@ public final class Componentes {
         l.setForeground(Tema.TEXTO);
         return l;
     }
-
-    // ─── Campos de formulario ─────────────────────────────────────────────────
 
     private static Border bordeCampo() {
         return BorderFactory.createCompoundBorder(
@@ -82,7 +73,6 @@ public final class Componentes {
         campo.setBackground(Color.WHITE);
     }
 
-    /** Lista desplegable plana: fondo blanco, borde fino y flecha dibujada (en vez del estilo gris de Nimbus). */
     public static <T> JComboBox<T> combo(T[] opciones) {
         JComboBox<T> combo = new JComboBox<>(opciones);
         combo.setUI(new javax.swing.plaf.basic.BasicComboBoxUI() {
@@ -126,9 +116,6 @@ public final class Componentes {
         return combo;
     }
 
-    // ─── Piezas gráficas ──────────────────────────────────────────────────────
-
-    /** Círculo de color con un ícono en el centro. */
     public static JComponent circuloIcono(Icon icono, Color color, int tamanio) {
         JComponent c = new JComponent() {
             @Override
@@ -150,7 +137,6 @@ public final class Componentes {
         return envoltura;
     }
 
-    /** Cuadro redondeado de color suave con un ícono (para tarjetas de servicio y estadísticas). */
     public static JComponent cuadroIcono(Icon icono, Color color, int tamanio) {
         JComponent c = new JComponent() {
             @Override
@@ -169,7 +155,6 @@ public final class Componentes {
         return c;
     }
 
-    /** Avatar redondo con las iniciales del usuario. */
     public static JComponent avatar(String nombre, Color color, int tamanio) {
         String[] partes = nombre.trim().split("\\s+");
         String iniciales = (partes[0].substring(0, 1) + (partes.length > 1 ? partes[1].substring(0, 1) : "")).toUpperCase(Tema.COLOMBIA);
@@ -193,7 +178,6 @@ public final class Componentes {
         return c;
     }
 
-    /** PanelTarjeta de estadística del tablero: ícono, número grande y descripción. */
     public static PanelTarjeta estadistica(String titulo, String valor, Icon icono, Color color) {
         PanelTarjeta t = new PanelTarjeta(new BorderLayout(14, 0));
         t.add(cuadroIcono(icono, color, 48), BorderLayout.WEST);
@@ -207,7 +191,6 @@ public final class Componentes {
         return t;
     }
 
-    /** Mensaje centrado para listas vacías. */
     public static JComponent vacio(String mensaje, Icon icono) {
         JPanel p = new JPanel(new GridBagLayout());
         p.setOpaque(false);
@@ -226,7 +209,6 @@ public final class Componentes {
         return p;
     }
 
-    /** Fila de componentes alineados a la izquierda. */
     public static JPanel fila(int espacio, Component... componentes) {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, espacio, 0));
         p.setOpaque(false);
@@ -234,7 +216,6 @@ public final class Componentes {
         return p;
     }
 
-    /** Título + subtítulo de una tarjeta. */
     public static JPanel encabezado(String titulo, String subtitulo) {
         JPanel p = new JPanel();
         p.setOpaque(false);
@@ -248,7 +229,6 @@ public final class Componentes {
         return p;
     }
 
-    /** Par "etiqueta: valor" en dos líneas, para fichas de datos. */
     public static JPanel dato(String etiqueta, String valor) {
         JPanel p = new JPanel(new GridLayout(2, 1, 0, 2));
         p.setOpaque(false);
@@ -262,9 +242,6 @@ public final class Componentes {
         return p;
     }
 
-    // ─── Tablas ───────────────────────────────────────────────────────────────
-
-    /** Aplica el estilo del tema a una tabla: filas altas, sin rejilla, encabezado limpio. */
     public static void estilizarTabla(JTable tabla) {
         tabla.setRowHeight(40);
         tabla.setShowGrid(false);
@@ -318,7 +295,6 @@ public final class Componentes {
         return scroll;
     }
 
-    /** Texto corto de la orden para mensajes: "OS-003 · Electricidad". */
     public static String resumen(OrdenServicio o) {
         return o.getCodigo() + " · " + o.getServicio().getTipo();
     }

@@ -10,12 +10,7 @@ import servicios.TecnicoServicio;
 
 import java.util.Scanner;
 
-/**
- * Menú raíz: crea el gestor (que carga los .txt) y los servicios, y abre el menú de cada rol al iniciar sesión.
- */
 public class MenuPrincipal {
-
-    // OOP: COMPOSICIÓN — los servicios se crean aquí y se comparten con los submenús
     private final GestorPlataforma gestor;
     private final ClienteServicio clienteServicio;
     private final TecnicoServicio tecnicoServicio;
@@ -27,7 +22,7 @@ public class MenuPrincipal {
     public MenuPrincipal() {
         this.scanner = new Scanner(System.in);
         this.consola = new Consola(scanner);
-        this.gestor = new GestorPlataforma();   // MODO ARCHIVO: carga src/files/*.txt
+        this.gestor = new GestorPlataforma();
         this.clienteServicio = new ClienteServicio(gestor);
         this.tecnicoServicio = new TecnicoServicio(gestor);
         this.administradorServicio = new AdministradorServicio(gestor);
@@ -75,7 +70,6 @@ public class MenuPrincipal {
         if (cliente != null) { new MenuCliente(cliente, clienteServicio, consola).mostrar(); }
     }
 
-    // RF-02
     private void registrarCliente() {
         System.out.println("\n--- REGISTRO DE CLIENTE ---");
         String nombre = consola.leerTexto("Nombre completo: ");

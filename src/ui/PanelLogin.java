@@ -10,12 +10,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 
-/**
- * Pantalla de bienvenida: a la izquierda la presentación de la plataforma y sus oficios;
- * a la derecha el inicio de sesión por rol (RNF-02) y el registro de clientes nuevos (RF-02).
- */
 public class PanelLogin extends JPanel {
-
     private enum Rol { CLIENTE, TECNICO, ADMINISTRADOR }
 
     private final VentanaPrincipal ventana;
@@ -32,8 +27,6 @@ public class PanelLogin extends JPanel {
         add(crearFormulario());
         actualizarPista();
     }
-
-    // ─── Lado derecho: formulario ─────────────────────────────────────────────
 
     private JComponent crearFormulario() {
         JPanel fondo = new JPanel(new GridBagLayout());
@@ -146,7 +139,6 @@ public class PanelLogin extends JPanel {
         }
     }
 
-    // RF-02: registro de un cliente nuevo.
     private void registrarCliente() {
         JTextField nombre = Componentes.campoTexto("");
         JTextField doc = Componentes.campoTexto("");
@@ -171,8 +163,6 @@ public class PanelLogin extends JPanel {
             return true;
         }));
     }
-
-    // ─── Botón de rol (tarjeta seleccionable con ícono) ───────────────────────
 
     private class BotonRol extends JToggleButton {
         private final Rol rol;
@@ -213,11 +203,7 @@ public class PanelLogin extends JPanel {
         }
     }
 
-    // ─── Lado izquierdo: presentación ─────────────────────────────────────────
-
-    /** Panel azul con el logo, el eslogan y los oficios que ofrece la plataforma. */
     private static class PanelPresentacion extends JPanel {
-
         PanelPresentacion(List<Servicio> servicios) {
             setLayout(new GridBagLayout());
             JPanel caja = new JPanel();
@@ -275,7 +261,6 @@ public class PanelLogin extends JPanel {
             int w = getWidth(), h = getHeight();
             g2.setPaint(new GradientPaint(0, 0, Tema.AZUL_OSCURO, w, h, Tema.AZUL_CLARO));
             g2.fillRect(0, 0, w, h);
-            // círculos decorativos
             g2.setColor(new Color(255, 255, 255, 12));
             g2.fill(new Ellipse2D.Double(w - 260, -120, 420, 420));
             g2.fill(new Ellipse2D.Double(-140, h - 220, 360, 360));

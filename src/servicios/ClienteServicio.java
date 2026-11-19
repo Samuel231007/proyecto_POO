@@ -13,20 +13,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Lógica de negocio de las acciones del CLIENTE (RF-02, RF-03, RF-08, RF-10, RF-11, RF-12, RF-17, RF-18, RF-19).
- * Cada método hace la operación con los modelos y luego la guarda en los archivos a través del gestor (RNF-01).
- */
 public class ClienteServicio implements IServicio<Cliente> {
-
-    // OOP: COMPOSICIÓN — el servicio TIENE el gestor con las listas y los repositorios
     private final GestorPlataforma gestor;
 
     public ClienteServicio(GestorPlataforma gestor) {
         this.gestor = gestor;
     }
-
-    // ─── Implementación de IServicio ──────────────────────────────────────────
 
     @Override
     public ArrayList<Cliente> getDataList() { return gestor.getClientes(); }
@@ -59,12 +51,8 @@ public class ClienteServicio implements IServicio<Cliente> {
         System.out.println("Total: " + todos.size() + " cliente(s)");
     }
 
-    // ─── Sesión y cuenta ──────────────────────────────────────────────────────
-
-    // RF-02
     public void registrarCliente(Cliente cliente) { gestor.registrarCliente(cliente); }
 
-    // RNF-02: devuelve el cliente solo si la contraseña es correcta.
     public Cliente iniciarSesion(String documento, String contrasenia) {
         Cliente cliente = gestor.buscarCliente(documento);
         if (cliente == null) {
@@ -74,13 +62,11 @@ public class ClienteServicio implements IServicio<Cliente> {
         return cliente.iniciarSesion(contrasenia) ? cliente : null;
     }
 
-    // RF-11
     public void actualizarDatos(Cliente cliente, String nombre, String telefono, String correo, String ubicacion) {
         cliente.actualizarDatos(nombre, telefono, correo, ubicacion);
         gestor.guardarCliente(cliente);
     }
 
-    // RF-19
     public void cambiarCanalNotificacion(Cliente cliente, Notificable canal) {
         cliente.setCanalNotificacion(canal);
         gestor.guardarCliente(cliente);
@@ -91,12 +77,7 @@ public class ClienteServicio implements IServicio<Cliente> {
         gestor.guardarCliente(cliente);
     }
 
-    // ─── Solicitudes y órdenes ────────────────────────────────────────────────
-
-    /**
-     * RF-03: crea la solicitud y su orden de servicio en estado PENDIENTE.
-     * Primero se revisa que el servicio exista, para no gastar un ID de solicitud si no se puede atender.
-     */
+    // RF-03: primero se revisa que el servicio exista, para no gastar un ID de solicitud si no se puede atender.
     public OrdenServicio solicitarServicio(Cliente cliente, String tipoProblema, String ubicacion,
                                            String descripcion, FranjaHoraria horario) {
         Servicio servicio = gestor.buscarServicio(tipoProblema);
@@ -110,10 +91,8 @@ public class ClienteServicio implements IServicio<Cliente> {
         return orden;
     }
 
-    // Catálogo que el cliente puede pedir.
     public List<Servicio> getServiciosDisponibles() { return gestor.getServicios(); }
 
-    // RF-08 y RNF-02
     public List<OrdenServicio> consultarHistorial(Cliente cliente) {
         return gestor.consultarHistorialCliente(cliente);
     }
@@ -126,7 +105,6 @@ public class ClienteServicio implements IServicio<Cliente> {
         return orden;
     }
 
-    // RF-12
     public boolean cancelarSolicitud(Cliente cliente, String codigo, String motivo) {
         OrdenServicio orden = buscarOrdenPropia(cliente, codigo);
         boolean cancelada = cliente.cancelarSolicitud(orden, motivo);
@@ -134,21 +112,17 @@ public class ClienteServicio implements IServicio<Cliente> {
         return cancelada;
     }
 
-    // RF-10
     public void calificarServicio(Cliente cliente, String codigo, int estrellas, String comentario) {
         OrdenServicio orden = buscarOrdenPropia(cliente, codigo);
         cliente.calificarServicio(orden, estrellas, comentario);
         gestor.guardarOrden(orden);
     }
 
-    // RF-18
     public void solicitarRevisionGarantia(Cliente cliente, String codigo, LocalDate fecha, String problema) {
         OrdenServicio orden = buscarOrdenPropia(cliente, codigo);
         cliente.solicitarRevisionGarantia(orden, fecha, problema);
         gestor.guardarOrden(orden);
     }
-
-    // ─── Pagos (RF-17) ────────────────────────────────────────────────────────
 
     // El cliente registra el pago; queda PENDIENTE hasta que el administrador lo confirme.
     public void registrarPago(Cliente cliente, String codigo, Pago pago) {
@@ -157,7 +131,6 @@ public class ClienteServicio implements IServicio<Cliente> {
         gestor.guardarOrden(orden);
     }
 
-    // RNF-05: el cliente solo ve los pagos de sus órdenes.
     public List<Pago> consultarPagos(Cliente cliente, String codigo) {
         return buscarOrdenPropia(cliente, codigo).getPagos(cliente);
     }

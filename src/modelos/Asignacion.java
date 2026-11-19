@@ -7,16 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Asigna (y reasigna) un técnico a una orden. Cada orden tiene su propia Asignacion.
- * RF-04: solo acepta técnicos de la especialidad y zona de la solicitud.
- * RF-13: no asigna técnicos con un bloqueo en el horario de la solicitud.
- * RF-14 y RNF-04: conserva los técnicos anteriores.
- */
 public class Asignacion {
-
-    // Clase anidada estática: un movimiento (asignación o reasignación) con su fecha y responsable (RNF-04).
-    // Se guarda como objeto y no como texto para poder escribirlo y leerlo del archivo asignaciones.txt (RNF-01).
+    // Cada asignación o reasignación se guarda como objeto para poder escribirla en asignaciones.txt (RNF-01).
     public static class Movimiento {
         private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         private final LocalDateTime fecha;
@@ -44,10 +36,10 @@ public class Asignacion {
         }
     }
 
-    private Tecnico tecnico;                             // técnico actual (null al inicio)
+    private Tecnico tecnico;
     private final OrdenServicio orden;
-    private final List<Tecnico> historialAsignaciones;   // técnicos anteriores
-    private final List<Movimiento> movimientos = new ArrayList<>();   // RNF-04: fecha, técnicos y responsable de cada cambio
+    private final List<Tecnico> historialAsignaciones;
+    private final List<Movimiento> movimientos = new ArrayList<>();
 
     public Asignacion(OrdenServicio orden) {
         Validar.objeto(orden, "orden");
@@ -124,7 +116,6 @@ public class Asignacion {
     public List<Tecnico> getHistorialAsignaciones() { return new ArrayList<>(historialAsignaciones); }
     public List<Movimiento> getMovimientos() { return new ArrayList<>(movimientos); }
 
-    // Igual que antes: el registro en texto, uno por cambio.
     public List<String> getRegistroCambios() {
         List<String> registro = new ArrayList<>();
         for (Movimiento m : movimientos) { registro.add(m.toString()); }

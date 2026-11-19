@@ -11,18 +11,8 @@ import modelos.Transferencia;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-/**
- * Pagos de cada orden sobre pagos.txt (RF-17, RNF-05).
- * Formato: codigoOrden|metodo|monto|fecha|estado|referencia
- *
- * RNF-05: de la tarjeta solo se guarda la referencia de autorización; el número y el código de seguridad
- * nunca llegan al sistema, así que tampoco al archivo.
- *
- * POLIMORFISMO: al guardar se usa getMetodoPago() y getReferencia() sin saber el tipo de pago;
- * al leer se crea el objeto del tipo correcto (Efectivo, Tarjeta o Transferencia) en una variable de tipo Pago.
- */
+// Formato: codigoOrden|metodo|monto|fecha|estado|referencia
 public class PagoRepository extends BaseRepository implements IRepositorioDependiente<OrdenServicio> {
-
     public PagoRepository() {
         super("pagos.txt", "|");
     }

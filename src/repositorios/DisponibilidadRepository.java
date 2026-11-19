@@ -9,14 +9,8 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-/**
- * Horario y bloqueos de cada técnico sobre disponibilidades.txt (RF-13, RNF-01).
- * Formato: documentoTecnico|tipo|dia|horaInicio|horaFin
- *   tipo = DISPONIBLE (horario en que trabaja) o BLOQUEO (no puede recibir asignaciones)
- *   dia  = MONDAY, TUESDAY... (nombre del enum DayOfWeek)
- */
+// Formato: documentoTecnico|tipo|dia|horaInicio|horaFin
 public class DisponibilidadRepository extends BaseRepository implements IRepositorioDependiente<Tecnico> {
-
     private static final String DISPONIBLE = "DISPONIBLE";
     private static final String BLOQUEO = "BLOQUEO";
 

@@ -8,15 +8,8 @@ import modelos.NotificacionWhatsApp;
 
 import java.util.ArrayList;
 
-/**
- * CRUD de clientes sobre clientes.txt (RF-02, RF-11, RNF-01).
- * Formato: documento|nombre|correo|telefono|contraseniaCifrada|ubicacion|canal
- *
- * El canal se guarda por su nombre ("WhatsApp" o "Correo") y al leer se vuelve a crear el objeto
- * del tipo correcto (POLIMORFISMO: la variable es Notificable, el objeto puede ser de cualquiera de los dos).
- */
+// Formato: documento|nombre|correo|telefono|contraseniaCifrada|ubicacion|canal
 public class ClienteRepository extends BaseRepository implements IRepository<Cliente> {
-
     public ClienteRepository() {
         super("clientes.txt", "|");
     }
@@ -60,9 +53,8 @@ public class ClienteRepository extends BaseRepository implements IRepository<Cli
         return null;
     }
 
-    // Convierte el nombre guardado en el canal correspondiente.
     private Notificable crearCanal(String nombre) {
         if ("Correo".equalsIgnoreCase(nombre)) { return new NotificacionCorreo(); }
-        return new NotificacionWhatsApp();   // canal por defecto
+        return new NotificacionWhatsApp();
     }
 }

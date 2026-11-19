@@ -14,9 +14,7 @@ import servicios.TecnicoServicio;
 import java.time.LocalDate;
 import java.util.List;
 
-/** Menú del administrador (dueño de la plataforma). */
 public class MenuAdministrador {
-
     private final Administrador admin;
     private final AdministradorServicio servicio;
     private final ClienteServicio clienteServicio;

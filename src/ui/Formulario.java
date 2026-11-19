@@ -4,14 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.BooleanSupplier;
 
-/**
- * Ventana de formulario reutilizable: encabezado de color, campos con su etiqueta y botones Cancelar / Aceptar.
- *
- * Si al aceptar la acción falla (por ejemplo, un campo vacío), la ventana NO se cierra:
- * el usuario ve el mensaje de error y puede corregir el dato (RNF-06).
- */
 public class Formulario extends JDialog {
-
     private final JPanel campos = new JPanel(new GridBagLayout());
     private final Boton aceptar;
     private int fila = 0;
@@ -68,7 +61,6 @@ public class Formulario extends JDialog {
         getRootPane().setDefaultButton(aceptar);
     }
 
-    /** Agrega un campo con su etiqueta encima. */
     public Formulario campo(String etiqueta, JComponent componente) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -84,7 +76,6 @@ public class Formulario extends JDialog {
         return this;
     }
 
-    /** Agrega un componente que ocupa todo el ancho, sin etiqueta. */
     public Formulario bloque(JComponent componente) {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -96,7 +87,6 @@ public class Formulario extends JDialog {
         return this;
     }
 
-    /** Nota informativa con fondo de color. */
     public Formulario nota(String texto, Color color) {
         PanelTarjeta t = new PanelTarjeta(new BorderLayout()).conFondo(Tema.suave(color, 0.10f), Tema.suave(color, 0.35f));
         t.setBorder(BorderFactory.createEmptyBorder(10, 14, 12, 14));
@@ -107,10 +97,7 @@ public class Formulario extends JDialog {
         return bloque(t);
     }
 
-    /**
-     * Muestra el formulario. Al pulsar Aceptar se ejecuta alAceptar: si devuelve true se cierra,
-     * si devuelve false (dato inválido) se queda abierto para corregir.
-     */
+    // Si alAceptar devuelve false (dato inválido) la ventana sigue abierta para corregir.
     public boolean mostrar(BooleanSupplier alAceptar) {
         aceptar.addActionListener(e -> {
             if (alAceptar.getAsBoolean()) {

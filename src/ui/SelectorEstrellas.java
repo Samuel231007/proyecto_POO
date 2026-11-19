@@ -5,9 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/** Cinco estrellas que se pueden pulsar para calificar el servicio (RF-10). También sirve solo para mostrar. */
 public class SelectorEstrellas extends JPanel {
-
     private static final Color DORADO = new Color(0xF5, 0xB0, 0x0B);
     private static final String[] TEXTOS = {"Toque una estrella", "Muy malo", "Malo", "Regular", "Bueno", "¡Excelente!"};
 

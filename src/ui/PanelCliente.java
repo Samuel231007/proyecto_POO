@@ -17,12 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Panel del CLIENTE: inicio, solicitar servicio, mis órdenes y mi perfil.
- * RF-02, RF-03, RF-08, RF-10, RF-11, RF-12, RF-17, RF-18, RF-19 y RNF-02 (solo ve sus órdenes).
- */
 public class PanelCliente extends PanelRol {
-
     private final Cliente cliente;
     private final ClienteServicio servicio;
 
@@ -46,8 +41,6 @@ public class PanelCliente extends PanelRol {
 
     @Override
     protected Color colorRol() { return Tema.NARANJA; }
-
-    // ─── Inicio ───────────────────────────────────────────────────────────────
 
     private JComponent inicio() {
         List<OrdenServicio> ordenes = servicio.consultarHistorial(cliente);
@@ -83,8 +76,6 @@ public class PanelCliente extends PanelRol {
         return pila(bienvenida, estadisticas,
                 tarjeta("Órdenes recientes", "Doble clic para ver el detalle", lista, verTodas));
     }
-
-    // ─── Solicitar servicio (RF-03) ───────────────────────────────────────────
 
     private JComponent solicitar() {
         List<Servicio> servicios = servicio.getServiciosDisponibles();
@@ -172,8 +163,6 @@ public class PanelCliente extends PanelRol {
         return nombres;
     }
 
-    // ─── Mis órdenes (RF-08) ──────────────────────────────────────────────────
-
     private JComponent misOrdenes() {
         List<OrdenServicio> ordenes = servicio.consultarHistorial(cliente);
         if (ordenes.isEmpty()) {
@@ -215,7 +204,6 @@ public class PanelCliente extends PanelRol {
         return tarjeta("Historial de órdenes", ordenes.size() + " orden(es) · seleccione una para ver las acciones disponibles", cuerpo);
     }
 
-    // RF-12
     private void cancelar(OrdenServicio o) {
         JTextArea motivo = Componentes.areaTexto(3);
         Formulario f = new Formulario(this, "Cancelar " + o.getCodigo(), "RF-12 · Solo mientras no tenga técnico asignado",
@@ -225,7 +213,6 @@ public class PanelCliente extends PanelRol {
         refrescar();
     }
 
-    // RF-10
     private void calificar(OrdenServicio o) {
         SelectorEstrellas estrellas = new SelectorEstrellas(0, true, 34);
         JTextArea comentario = Componentes.areaTexto(3);
@@ -240,7 +227,6 @@ public class PanelCliente extends PanelRol {
         refrescar();
     }
 
-    // RF-18
     private void revisionGarantia(OrdenServicio o) {
         JTextArea problema = Componentes.areaTexto(3);
         Formulario f = new Formulario(this, "Solicitar revisión por garantía", "RF-18 · Orden " + o.getCodigo(),
@@ -254,7 +240,6 @@ public class PanelCliente extends PanelRol {
         refrescar();
     }
 
-    // RF-17 y RNF-05
     private void pagar(OrdenServicio o) {
         JTextField monto = Componentes.campoTexto(String.valueOf((long) o.getSaldoPendiente()));
         JComboBox<String> metodo = Componentes.combo(new String[]{"Transferencia", "PanelTarjeta (datáfono)", "Efectivo"});
@@ -274,7 +259,7 @@ public class PanelCliente extends PanelRol {
             } catch (NumberFormatException ex) {
                 throw new IllegalArgumentException("Escriba el valor solo con números, por ejemplo 150000.");
             }
-            Pago pago;   // POLIMORFISMO: una variable Pago, tres tipos posibles
+            Pago pago;
             switch (metodo.getSelectedIndex()) {
                 case 0: pago = new Transferencia(valor, LocalDate.now(), referencia.getText()); break;
                 case 1: pago = new modelos.Tarjeta(valor, LocalDate.now(), referencia.getText()); break;
@@ -286,8 +271,6 @@ public class PanelCliente extends PanelRol {
         }));
         refrescar();
     }
-
-    // ─── Mi perfil (RF-11, RF-19) ─────────────────────────────────────────────
 
     private JComponent perfil() {
         JTextField nombre = Componentes.campoTexto(cliente.getNombre());
@@ -314,7 +297,6 @@ public class PanelCliente extends PanelRol {
         datos.add(campos, BorderLayout.CENTER);
         datos.add(Componentes.fila(0, guardar), BorderLayout.SOUTH);
 
-        // Canal de avisos
         boolean whatsapp = cliente.getCanalNotificacion() instanceof NotificacionWhatsApp;
         JPanel canales = new JPanel(new GridLayout(1, 2, 16, 0));
         canales.setOpaque(false);
@@ -323,7 +305,6 @@ public class PanelCliente extends PanelRol {
         canales.add(opcionCanal("Correo", "A " + cliente.getCorreo(), Iconos.correo(26, Tema.AZUL_INFO), Tema.AZUL_INFO, !whatsapp,
                 () -> cambiarCanal(new NotificacionCorreo())));
 
-        // Contraseña
         JPasswordField actual = Componentes.campoClave();
         JPasswordField nueva = Componentes.campoClave();
         Boton cambiar = new Boton("Cambiar contraseña", Iconos.candado(15, Tema.TEXTO), Boton.Tipo.SECUNDARIO);
@@ -392,8 +373,6 @@ public class PanelCliente extends PanelRol {
         return campo;
     }
 
-    // ─── Banner de bienvenida (degradado azul con botón naranja) ──────────────
-
     static class BannerBienvenida extends JPanel {
         BannerBienvenida(String titulo, String texto, String textoBoton, Runnable accion) {
             super(new BorderLayout(20, 0));
@@ -425,7 +404,6 @@ public class PanelCliente extends PanelRol {
             Graphics2D g2 = Tema.suavizar(g);
             g2.setPaint(new GradientPaint(0, 0, Tema.AZUL, getWidth(), getHeight(), Tema.AZUL_CLARO));
             g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
-            // casa y herramienta decorativas al fondo
             Icon deco = Iconos.casa(130, new Color(255, 255, 255, 22));
             deco.paintIcon(this, g2, getWidth() - 360, -12);
             g2.dispose();

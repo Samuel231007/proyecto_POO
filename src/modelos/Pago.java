@@ -5,12 +5,10 @@ import interfaces.IImprimible;
 
 import java.time.LocalDate;
 
-/** Clase abstracta con lo común de todos los pagos (RF-17). Cada tipo define su método y su detalle. */
 public abstract class Pago implements IImprimible {
-
     private final double monto;
     private final LocalDate fecha;
-    private EstadoPago estado = EstadoPago.PENDIENTE;   // todo pago nuevo queda pendiente
+    private EstadoPago estado = EstadoPago.PENDIENTE;
 
     protected Pago(double monto, LocalDate fecha) {
         Validar.positivo(monto, "monto");
@@ -28,7 +26,6 @@ public abstract class Pago implements IImprimible {
     public void confirmarPago() { cambiarDesdePendiente("confirmar", EstadoPago.CONFIRMADO); }
     public void rechazarPago() { cambiarDesdePendiente("rechazar", EstadoPago.RECHAZADO); }
 
-    // Solo se confirma o rechaza un pago que sigue pendiente.
     private void cambiarDesdePendiente(String accion, EstadoPago nuevo) {
         if (estado != EstadoPago.PENDIENTE) {
             throw new IllegalStateException("No se puede " + accion + " un pago que ya está " + estado.name().toLowerCase() + ".");

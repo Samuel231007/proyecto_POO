@@ -8,9 +8,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 
-/** Etiqueta en forma de píldora para mostrar un estado con su color: ● Pendiente, ● Finalizada... */
 public class Insignia extends JLabel {
-
     private final Color color;
 
     public Insignia(String texto, Color color) {

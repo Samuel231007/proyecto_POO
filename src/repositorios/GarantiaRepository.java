@@ -7,14 +7,8 @@ import modelos.OrdenServicio;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-/**
- * Garantía de cada orden finalizada sobre garantias.txt (RF-07).
- * Formato: codigoOrden|fechaInicio|diasVigencia|cobertura
- *
- * COMPOSICIÓN: TIENE un RevisionGarantiaRepository para las revisiones (RF-18), que se guardan en otro archivo.
- */
+// Formato: codigoOrden|fechaInicio|diasVigencia|cobertura
 public class GarantiaRepository extends BaseRepository implements IRepositorioDependiente<OrdenServicio> {
-
     private final RevisionGarantiaRepository revisionRepository;
 
     public GarantiaRepository() {

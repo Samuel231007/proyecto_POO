@@ -5,14 +5,8 @@ import modelos.DetalleTrabajo.Material;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Materiales usados en cada orden sobre materiales.txt (RF-15, RF-16).
- * Formato: codigoOrden|descripcion|costoUnitario|cantidad
- *
- * Lo usa DetalleTrabajoRepository (composición), porque el material pertenece al detalle del trabajo.
- */
+// Formato: codigoOrden|descripcion|costoUnitario|cantidad
 public class MaterialRepository extends BaseRepository {
-
     public MaterialRepository() {
         super("materiales.txt", "|");
     }

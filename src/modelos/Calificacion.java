@@ -1,9 +1,7 @@
 package modelos;
 
-
 import java.time.LocalDateTime;
 
-/** Calificación del cliente al servicio recibido (RF-10): de 1 a 5 estrellas y un comentario opcional. */
 public class Calificacion {
     private final int estrellas;
     private final String comentario;

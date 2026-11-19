@@ -21,17 +21,10 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/**
- * Programa de prueba del equipo (antes estaba en Main): recorre los requerimientos con datos de ejemplo.
- *
- * Usa GestorPlataforma en MODO MEMORIA (new GestorPlataforma(false)): todo vive en ArrayList y
- * NO se modifica ningún archivo .txt. Es la misma comparación "ArrayList vs Archivo" del proyecto base:
- * al terminar la demo estos datos desaparecen, mientras que los del menú principal quedan guardados.
- */
+// Recorre los requerimientos en MODO MEMORIA: no modifica los archivos .txt.
 public class DemoRequerimientos {
-
     public static void ejecutarDemo() {
-        GestorPlataforma gestor = new GestorPlataforma(false);   // MODO MEMORIA
+        GestorPlataforma gestor = new GestorPlataforma(false);
         AdministradorServicio adminServicio = new AdministradorServicio(gestor);
         ClienteServicio clienteServicio = new ClienteServicio(gestor);
         TecnicoServicio tecnicoServicio = new TecnicoServicio(gestor);
@@ -143,8 +136,6 @@ public class DemoRequerimientos {
 
         titulo("Fin de la demo: estos datos estaban solo en memoria y se descartan");
     }
-
-    // ---------- Ayudas para el programa de prueba ----------
 
     private static DisponibilidadTecnico.FranjaHoraria franja(DayOfWeek dia, int desde, int hasta) {
         return new DisponibilidadTecnico.FranjaHoraria(dia, LocalTime.of(desde, 0), LocalTime.of(hasta, 0));

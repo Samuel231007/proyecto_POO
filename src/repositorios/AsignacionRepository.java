@@ -9,16 +9,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Asignaciones y reasignaciones de técnicos de cada orden sobre asignaciones.txt (RF-04, RF-14, RNF-04).
- * Formato: codigoOrden|fecha|documentoTecnicoAnterior|documentoTecnicoNuevo|responsable
- *   documentoTecnicoAnterior queda vacío en la primera asignación.
- *
- * El archivo solo guarda los DOCUMENTOS de los técnicos (no los objetos). Al leer, se buscan en la lista
- * de técnicos ya cargada, para que la orden y la asignación apunten al MISMO objeto Tecnico.
- */
+// Formato: codigoOrden|fecha|documentoTecnicoAnterior|documentoTecnicoNuevo|responsable
 public class AsignacionRepository extends BaseRepository implements IRepositorioDependiente<OrdenServicio> {
-
     private List<Tecnico> tecnicos = new ArrayList<>();   // técnicos ya cargados, para buscar por documento
 
     public AsignacionRepository() {

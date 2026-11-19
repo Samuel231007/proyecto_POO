@@ -8,13 +8,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
-/**
- * Lectura de datos por consola, compartida por todos los menús.
- * En el proyecto base cada menú tenía su propio leerEntero(); aquí se reúnen en una sola clase
- * para no repetir el mismo código en cinco menús.
- */
 public class Consola {
-
     private final Scanner scanner;
 
     public Consola(Scanner scanner) {
@@ -66,7 +60,6 @@ public class Consola {
         return fecha;
     }
 
-    // Pide día y horas, y crea la franja (FranjaHoraria valida que el inicio sea antes del fin).
     public FranjaHoraria leerFranja() {
         System.out.println("Día: 1=Lunes 2=Martes 3=Miércoles 4=Jueves 5=Viernes 6=Sábado 7=Domingo");
         int dia;
@@ -94,10 +87,7 @@ public class Consola {
         return leerTexto(mensaje + " (s/n): ").equalsIgnoreCase("s");
     }
 
-    /**
-     * RNF-06: ejecuta una opción del menú y, si falla, muestra la causa en lenguaje claro
-     * en lugar de cerrar el programa con un error.
-     */
+    // RNF-06: si una opción falla se muestra el motivo en vez de cerrar el programa.
     public static void intentar(Runnable accion) {
         try {
             accion.run();

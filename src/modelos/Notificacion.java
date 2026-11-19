@@ -5,14 +5,9 @@ import enums.EstadoEnvio;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Registro de un aviso al cliente cuando cambia el estado de su orden. No lo envía: lo hace un canal Notificable.
- * Apoya RF-19, RNF-04 y RNF-06.
- */
 public class Notificacion {
-
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    private static int totalNotificaciones = 0;   // atributo estático: numera las notificaciones
+    private static int totalNotificaciones = 0;
 
     private final int id;
     private final String codigoOrden, documentoCliente, nombreCliente, telefonoCliente, correoCliente, mensaje;
@@ -54,7 +49,6 @@ public class Notificacion {
         if (id > totalNotificaciones) { totalNotificaciones = id; }
     }
 
-    // Método estático: arma el texto del aviso en lenguaje claro (RNF-06).
     public static String crearMensajeCambioEstado(String nombreCliente, String codigoOrden,
                                                   String estadoAnterior, String estadoNuevo) {
         return "Hola " + nombreCliente + ", tu orden " + codigoOrden + " cambió de " + estadoAnterior + " a " + estadoNuevo + ".";

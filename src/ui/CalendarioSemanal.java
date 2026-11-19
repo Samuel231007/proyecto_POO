@@ -13,14 +13,8 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 
-/**
- * Agenda semanal del técnico dibujada con Java2D (RF-13):
- *   verde  = horario en que trabaja
- *   rojo   = bloqueos de indisponibilidad (con rayas)
- *   azul   = visitas de órdenes activas asignadas
- */
+// Agenda del técnico (RF-13): verde = horario, rojo = bloqueos, azul = visitas asignadas.
 public class CalendarioSemanal extends JComponent {
-
     private static final int HORA_DESDE = 6, HORA_HASTA = 21;
     private static final int ANCHO_HORAS = 54, ALTO_ENCABEZADO = 34;
     private static final Color VERDE_SUAVE = new Color(0xD1, 0xFA, 0xE5);
@@ -50,7 +44,6 @@ public class CalendarioSemanal extends JComponent {
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, w, h);
 
-        // encabezado de los días
         g2.setFont(Tema.negrita(12.5f));
         for (int d = 0; d < 7; d++) {
             String nombre = Tema.diaCorto(DayOfWeek.of(d + 1));
@@ -59,7 +52,6 @@ public class CalendarioSemanal extends JComponent {
             g2.drawString(nombre, (int) (x + (anchoDia - g2.getFontMetrics().stringWidth(nombre)) / 2), 22);
         }
 
-        // líneas de las horas
         g2.setFont(Tema.normal(11));
         for (int hora = HORA_DESDE; hora <= HORA_HASTA; hora++) {
             double yy = ALTO_ENCABEZADO + (hora - HORA_DESDE) * altoHora;
@@ -74,15 +66,12 @@ public class CalendarioSemanal extends JComponent {
             g2.draw(new Line2D.Double(x, ALTO_ENCABEZADO, x, h));
         }
 
-        // horario disponible
         for (FranjaHoraria f : tecnico.getHorarioDisponible().getFranjasActuales()) {
             dibujarBloque(g2, f, anchoDia, altoHora, VERDE_SUAVE, Tema.VERDE, "Disponible", false);
         }
-        // bloqueos
         for (FranjaHoraria f : tecnico.getHorarioDisponible().getBloqueosIndisponibles()) {
             dibujarBloque(g2, f, anchoDia, altoHora, ROJO_SUAVE, Tema.ROJO, "Bloqueado", true);
         }
-        // visitas de órdenes activas
         for (OrdenServicio o : ordenes) {
             Color color = o.getEstado() == EstadoOrden.EN_PROCESO ? Tema.VIOLETA : Tema.AZUL_INFO;
             dibujarBloque(g2, o.getSolicitud().getHorarioDisponible(), anchoDia, altoHora,
@@ -124,7 +113,6 @@ public class CalendarioSemanal extends JComponent {
         }
     }
 
-    /** Leyenda de colores que acompaña al calendario. */
     public static JPanel leyenda() {
         JPanel p = Componentes.fila(16,
                 elemento(VERDE_SUAVE, Tema.VERDE, "Horario disponible"),

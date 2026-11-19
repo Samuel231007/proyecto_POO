@@ -7,9 +7,7 @@ import java.awt.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-/** Selector de día y horas (de 6:00 a 21:00, cada media hora) que crea una FranjaHoraria. RF-03 y RF-13. */
 public class SelectorFranja extends JPanel {
-
     private final JComboBox<String> dia;
     private final JComboBox<LocalTime> inicio;
     private final JComboBox<LocalTime> fin;
@@ -41,7 +39,6 @@ public class SelectorFranja extends JPanel {
         return p;
     }
 
-    /** Crea la franja; FranjaHoraria valida que la hora de inicio sea antes que la de fin. */
     public FranjaHoraria getFranja() {
         return new FranjaHoraria(DayOfWeek.of(dia.getSelectedIndex() + 1),
                 (LocalTime) inicio.getSelectedItem(), (LocalTime) fin.getSelectedItem());

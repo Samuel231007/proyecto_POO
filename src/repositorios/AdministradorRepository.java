@@ -5,12 +5,8 @@ import modelos.Administrador;
 
 import java.util.ArrayList;
 
-/**
- * CRUD de administradores sobre administradores.txt
- * Formato: documento|nombre|correo|telefono|contraseniaCifrada|areaResponsable
- */
+// Formato: documento|nombre|correo|telefono|contraseniaCifrada|areaResponsable
 public class AdministradorRepository extends BaseRepository implements IRepository<Administrador> {
-
     public AdministradorRepository() {
         super("administradores.txt", "|");
     }

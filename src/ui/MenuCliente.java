@@ -14,9 +14,7 @@ import servicios.ClienteServicio;
 import java.time.LocalDate;
 import java.util.List;
 
-/** Menú del cliente que inició sesión. Solo ve y gestiona sus propias órdenes (RNF-02). */
 public class MenuCliente {
-
     private final Cliente cliente;
     private final ClienteServicio servicio;
     private final Consola consola;
@@ -128,7 +126,6 @@ public class MenuCliente {
         double monto = consola.leerDouble("Monto a pagar: ");
         int metodo = consola.leerEntero("Método: 1 = Efectivo, 2 = Tarjeta, 3 = Transferencia: ");
         Pago pago;
-        // POLIMORFISMO: la variable es de tipo Pago, el objeto puede ser cualquiera de los tres.
         switch (metodo) {
             case 1: pago = new Efectivo(monto, LocalDate.now()); break;
             case 2:

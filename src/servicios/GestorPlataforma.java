@@ -7,32 +7,21 @@ import modelos.OrdenServicio;
 import modelos.Servicio;
 import modelos.Solicitud;
 import modelos.Tecnico;
+import modelos.Validar;
 import repositorios.AdministradorRepository;
 import repositorios.ClienteRepository;
 import repositorios.OrdenServicioRepository;
 import repositorios.ServicioRepository;
 import repositorios.SolicitudRepository;
 import repositorios.TecnicoRepository;
-import modelos.Validar;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Guarda las listas de administradores, técnicos, clientes, servicios y órdenes, responde las consultas
- * y las guarda en los archivos .txt a través de los repositorios.
- * Apoya RF-01, RF-02, RF-04, RF-08, RF-09, RF-20, RNF-01, RNF-02 y RNF-03.
- *
- * MODO DUAL (igual que EstudianteServicio en el proyecto base):
- *   new GestorPlataforma()       → MODO ARCHIVO: carga los .txt al iniciar y guarda cada cambio (RNF-01).
- *   new GestorPlataforma(false)  → MODO MEMORIA: solo ArrayList; al cerrar el programa los datos se pierden.
- *
- * Los datos se cargan UNA vez en las listas y todas las órdenes apuntan a esos mismos objetos.
- * Por eso, después de cada operación, los servicios llaman a guardarOrden / guardarCliente / guardarTecnico.
- */
+// Guarda los datos en memoria y los persiste con los repositorios (RNF-01).
+// new GestorPlataforma() usa los archivos .txt; new GestorPlataforma(false) trabaja solo en memoria.
 public class GestorPlataforma {
-
     private final boolean usarArchivos;
 
     private final ArrayList<Administrador> administradores = new ArrayList<>();
@@ -41,7 +30,6 @@ public class GestorPlataforma {
     private final ArrayList<Servicio> servicios = new ArrayList<>();
     private final ArrayList<OrdenServicio> ordenes = new ArrayList<>();
 
-    // OOP: COMPOSICIÓN — el gestor TIENE los repositorios
     private final AdministradorRepository administradorRepository = new AdministradorRepository();
     private final ClienteRepository clienteRepository = new ClienteRepository();
     private final TecnicoRepository tecnicoRepository = new TecnicoRepository();
@@ -50,12 +38,10 @@ public class GestorPlataforma {
     private final OrdenServicioRepository ordenRepository =
             new OrdenServicioRepository(clienteRepository, tecnicoRepository, servicioRepository, solicitudRepository);
 
-    /** MODO ARCHIVO. */
     public GestorPlataforma() {
         this(true);
     }
 
-    /** Sobrecarga de constructores: true = archivos .txt, false = solo memoria. */
     public GestorPlataforma(boolean usarArchivos) {
         this.usarArchivos = usarArchivos;
         if (usarArchivos) { cargarDatos(); }
@@ -63,22 +49,19 @@ public class GestorPlataforma {
 
     public boolean isUsandoArchivos() { return usarArchivos; }
 
-    // ---------- RNF-01: cargar los datos al iniciar ----------
-
     private void cargarDatos() {
         administradores.addAll(administradorRepository.getDataList());
         servicios.addAll(servicioRepository.getDataList());
         clientes.addAll(clienteRepository.getDataList());
         tecnicos.addAll(tecnicoRepository.getDataList());
-        // Las órdenes se arman con los MISMOS objetos de las listas de arriba.
+        // Las órdenes se arman con los MISMOS objetos de estas listas: las comparaciones con == dependen de eso (RNF-02).
         ordenes.addAll(ordenRepository.getDataList(clientes, tecnicos, servicios));
         System.out.println("Datos cargados de src/files/: " + administradores.size() + " administrador(es), "
                 + tecnicos.size() + " técnico(s), " + clientes.size() + " cliente(s), "
                 + servicios.size() + " servicio(s) y " + ordenes.size() + " orden(es).");
     }
 
-    // ---------- Registros (RNF-03: primero se guarda en el archivo; si falla, la lista no cambia) ----------
-
+    // RNF-03: en los registros primero se guarda en el archivo; si falla, la lista no cambia.
     public void registrarAdministrador(Administrador administrador) {
         Validar.objeto(administrador, "administrador");
         if (buscarAdministrador(administrador.getDocumento()) != null) {
@@ -88,7 +71,6 @@ public class GestorPlataforma {
         administradores.add(administrador);
     }
 
-    // RF-01: no se permiten dos técnicos con el mismo documento.
     public void registrarTecnico(Tecnico tecnico) {
         Validar.objeto(tecnico, "técnico");
         if (buscarTecnico(tecnico.getDocumento()) != null) {
@@ -127,8 +109,6 @@ public class GestorPlataforma {
         System.out.println("Orden " + orden.getCodigo() + " creada en estado " + orden.getEstado() + ".");
     }
 
-    // ---------- Guardar cambios de objetos que ya existen ----------
-
     public void guardarCliente(Cliente cliente) {
         if (usarArchivos) { clienteRepository.updateData(cliente, cliente); }
     }
@@ -144,8 +124,6 @@ public class GestorPlataforma {
     public void guardarOrden(OrdenServicio orden) {
         if (usarArchivos) { ordenRepository.updateData(orden, orden); }
     }
-
-    // ---------- Búsquedas ----------
 
     public Administrador buscarAdministrador(String documento) {
         for (Administrador a : administradores) { if (a.getDocumento().equals(documento)) { return a; } }
@@ -174,7 +152,6 @@ public class GestorPlataforma {
         return null;
     }
 
-    // RF-04: solo técnicos de esa especialidad y zona, con el horario de la solicitud libre.
     public List<Tecnico> buscarTecnicosDisponibles(Solicitud solicitud) {
         List<Tecnico> resultado = new ArrayList<>();
         for (Tecnico t : tecnicos) {
@@ -185,7 +162,6 @@ public class GestorPlataforma {
         return resultado;
     }
 
-    // RF-08 y RNF-02: el cliente solo ve sus propias órdenes.
     public List<OrdenServicio> consultarHistorialCliente(Cliente cliente) {
         Validar.objeto(cliente, "cliente");
         List<OrdenServicio> resultado = new ArrayList<>();
@@ -195,7 +171,6 @@ public class GestorPlataforma {
         return resultado;
     }
 
-    // RF-09 y RNF-02: el técnico solo ve sus órdenes no finalizadas.
     public List<OrdenServicio> consultarOrdenesActivasTecnico(Tecnico tecnico) {
         Validar.objeto(tecnico, "técnico");
         List<OrdenServicio> resultado = new ArrayList<>();

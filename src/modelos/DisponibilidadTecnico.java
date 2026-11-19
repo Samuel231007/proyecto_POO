@@ -1,14 +1,12 @@
 package modelos;
 
-
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Horario del técnico y bloques en los que no puede recibir asignaciones. RF-13. */
 public class DisponibilidadTecnico {
-    private Tecnico tecnico;                              // técnico dueño de esta disponibilidad
+    private Tecnico tecnico;
     private List<FranjaHoraria> franjasActuales;          // horarios en los que SÍ trabaja
     private List<FranjaHoraria> bloqueosIndisponibles;    // horarios en los que NO puede
 
@@ -76,7 +74,6 @@ public class DisponibilidadTecnico {
     public List<FranjaHoraria> getFranjasActuales() { return new ArrayList<>(franjasActuales); }
     public List<FranjaHoraria> getBloqueosIndisponibles() { return new ArrayList<>(bloqueosIndisponibles); }
 
-    // Clase anidada estática: un día con hora de inicio y de fin. Nunca queda inválida.
     public static class FranjaHoraria {
         private final DayOfWeek dia;
         private final LocalTime horaInicio;

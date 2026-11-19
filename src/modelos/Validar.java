@@ -1,8 +1,6 @@
 package modelos;
 
-/** Validaciones comunes: así no se repite el mismo código en cada clase. RNF-06: mensajes claros. */
 public class Validar {
-
     // RNF-01 y RNF-03: estos caracteres separan los campos en los archivos .txt.
     // Si un texto los tuviera, al leer el archivo los campos quedarían corridos y los datos se dañarían.
     public static final String SEPARADORES = "|;";
@@ -30,7 +28,6 @@ public class Validar {
         return valor;
     }
 
-    // Objeto obligatorio (una orden, un técnico, una fecha...).
     public static void objeto(Object valor, String campo) {
         if (valor == null) { throw new IllegalArgumentException("El campo \"" + campo + "\" es obligatorio."); }
     }
