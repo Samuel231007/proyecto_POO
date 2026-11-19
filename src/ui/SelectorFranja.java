@@ -7,6 +7,7 @@ import java.awt.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
+// Selector de día y horas que crea una FranjaHoraria (RF-03, RF-13).
 public class SelectorFranja extends JPanel {
     private final JComboBox<String> dia;
     private final JComboBox<LocalTime> inicio;

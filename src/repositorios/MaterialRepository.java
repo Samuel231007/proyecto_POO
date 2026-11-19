@@ -11,6 +11,7 @@ public class MaterialRepository extends BaseRepository {
         super("materiales.txt", "|");
     }
 
+    // Lo usa DetalleTrabajoRepository, porque los materiales pertenecen al detalle del trabajo.
     public void guardar(String codigoOrden, List<Material> materiales) {
         ArrayList<String> lineas = new ArrayList<>();
         for (Material m : materiales) {

@@ -2,6 +2,7 @@ package modelos;
 
 import interfaces.Notificable;
 
+// Canal de WhatsApp (envío simulado): revisa el celular y deja el resultado en la notificación.
 public class NotificacionWhatsApp implements Notificable {
     @Override
     public String getNombreCanal() { return "WhatsApp"; }

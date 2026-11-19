@@ -3,6 +3,7 @@ package modelos;
 import java.util.ArrayList;
 import java.util.List;
 
+// Lo que hizo el técnico: descripción, horas reales, actividades y materiales (RF-15, RF-16).
 public class DetalleTrabajo {
     private String descripcion;
     private double horasTrabajo;
@@ -29,12 +30,14 @@ public class DetalleTrabajo {
         if (horasTrabajo <= 0) { throw new IllegalStateException("Faltan las horas reales de trabajo."); }
     }
 
+    // Suma de los materiales: OrdenServicio lo usa para el costo final (RF-16).
     public double calcularCostoMateriales() {
         double total = 0;
         for (Material m : materiales) { total += m.calcularSubtotal(); }
         return total;
     }
 
+    // Material usado con su costo unitario y cantidad.
     public static class Material {
         private final String descripcion;
         private final double costoUnitario;

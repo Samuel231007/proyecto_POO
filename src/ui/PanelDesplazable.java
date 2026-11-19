@@ -3,6 +3,7 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
+// Panel que se ajusta al ancho de la ventana y solo se desplaza hacia abajo.
 public class PanelDesplazable extends JPanel implements Scrollable {
     public PanelDesplazable(LayoutManager layout) {
         super(layout);

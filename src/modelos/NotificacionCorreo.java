@@ -2,6 +2,7 @@ package modelos;
 
 import interfaces.Notificable;
 
+// Canal de correo (envío simulado): revisa la dirección y deja el resultado en la notificación.
 public class NotificacionCorreo implements Notificable {
     @Override
     public String getNombreCanal() { return "Correo"; }

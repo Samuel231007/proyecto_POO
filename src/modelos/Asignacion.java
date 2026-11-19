@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+// Asigna y reasigna el técnico de una orden y conserva el historial (RF-04, RF-13, RF-14, RNF-04).
 public class Asignacion {
     // Cada asignación o reasignación se guarda como objeto para poder escribirla en asignaciones.txt (RNF-01).
     public static class Movimiento {
@@ -47,6 +48,7 @@ public class Asignacion {
         this.historialAsignaciones = new ArrayList<>();
     }
 
+    // RF-04: primera asignación. Devuelve false y explica el motivo si el técnico no sirve.
     public boolean asignarTecnico(Tecnico nuevo, String responsable) {
         if (!sePuedeUsar(nuevo)) { return false; }
         if (estaAsignada()) {
@@ -116,6 +118,7 @@ public class Asignacion {
     public List<Tecnico> getHistorialAsignaciones() { return new ArrayList<>(historialAsignaciones); }
     public List<Movimiento> getMovimientos() { return new ArrayList<>(movimientos); }
 
+    // Historial en texto: una línea por cada asignación o reasignación.
     public List<String> getRegistroCambios() {
         List<String> registro = new ArrayList<>();
         for (Movimiento m : movimientos) { registro.add(m.toString()); }

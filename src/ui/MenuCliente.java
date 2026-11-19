@@ -14,6 +14,7 @@ import servicios.ClienteServicio;
 import java.time.LocalDate;
 import java.util.List;
 
+// Menú de consola del cliente.
 public class MenuCliente {
     private final Cliente cliente;
     private final ClienteServicio servicio;

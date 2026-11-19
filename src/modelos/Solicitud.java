@@ -4,6 +4,7 @@ import enums.EstadoOrden;
 
 import java.time.LocalDateTime;
 
+// Lo que pide el cliente: tipo de problema, ubicación, descripción y horario de visita (RF-03, RF-12).
 public class Solicitud {
     private static int consecutivo = 1;
 

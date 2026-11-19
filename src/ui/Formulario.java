@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.BooleanSupplier;
 
+// Ventana de formulario reutilizable: encabezado, campos y botones Cancelar / Aceptar.
 public class Formulario extends JDialog {
     private final JPanel campos = new JPanel(new GridBagLayout());
     private final Boton aceptar;

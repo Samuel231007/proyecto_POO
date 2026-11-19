@@ -2,6 +2,7 @@ package modelos;
 
 import java.time.LocalDateTime;
 
+// Calificación del cliente: de 1 a 5 estrellas y un comentario opcional (RF-10).
 public class Calificacion {
     private final int estrellas;
     private final String comentario;

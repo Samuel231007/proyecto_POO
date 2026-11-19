@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 
+// Etiqueta de color para mostrar un estado: Pendiente, Finalizada...
 public class Insignia extends JLabel {
     private final Color color;
 

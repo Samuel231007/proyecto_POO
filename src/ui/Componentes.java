@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 
+// Piezas visuales que se repiten en todas las pantallas: títulos, campos, tablas y estadísticas.
 public final class Componentes {
     private Componentes() { }
 

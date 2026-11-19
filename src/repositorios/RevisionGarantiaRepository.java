@@ -21,6 +21,7 @@ public class RevisionGarantiaRepository extends BaseRepository {
         reemplazarGrupo(codigoOrden, lineas);
     }
 
+    // Vuelve a registrar cada revisión con su fecha original; la garantía sigue vigente para esa fecha.
     public void cargarEn(String codigoOrden, Garantia garantia) {
         for (String linea : lineasDe(codigoOrden)) {
             String[] c = separar(linea);

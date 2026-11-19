@@ -23,6 +23,7 @@ public abstract class BaseRepository {
         return linea.split(Pattern.quote(delimiter), -1);
     }
 
+    // Une los campos con el delimitador; las fechas se guardan hasta los segundos.
     protected String unir(Object... campos) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < campos.length; i++) {
@@ -38,6 +39,7 @@ public abstract class BaseRepository {
         return separar(linea)[0];
     }
 
+    // Línea cuya clave es la pedida, o null si no existe.
     protected String buscarLinea(String clave) {
         for (String linea : fileManage.getDataOfFile()) {
             if (claveDe(linea).equals(clave)) { return linea; }
@@ -45,6 +47,7 @@ public abstract class BaseRepository {
         return null;
     }
 
+    // Reemplaza la línea de esa clave; si no existe, la agrega.
     protected void guardarLinea(String clave, String nuevaLinea) {
         ArrayList<String> lineas = fileManage.getDataOfFile();
         for (int i = 0; i < lineas.size(); i++) {
@@ -61,6 +64,7 @@ public abstract class BaseRepository {
         reemplazarGrupo(clave, new ArrayList<>());
     }
 
+    // Todas las líneas de una clave (por ejemplo, todos los pagos de la orden OS-001).
     protected ArrayList<String> lineasDe(String clave) {
         ArrayList<String> resultado = new ArrayList<>();
         for (String linea : fileManage.getDataOfFile()) {

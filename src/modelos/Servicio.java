@@ -2,6 +2,7 @@ package modelos;
 
 import interfaces.IImprimible;
 
+// Tipo de servicio (Plomería, Electricidad...) con su factor de tarifa, duración estimada y días de garantía (RF-05, RF-07).
 public class Servicio implements IImprimible {
     public static final double FACTOR_NORMAL = 1.0;
     private String tipo;

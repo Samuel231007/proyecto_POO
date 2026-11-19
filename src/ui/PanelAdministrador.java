@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+// Panel del administrador: tablero, órdenes, técnicos, clientes, servicios y pagos.
 public class PanelAdministrador extends PanelRol {
     private final Administrador admin;
     private final AdministradorServicio servicio;
@@ -41,6 +42,7 @@ public class PanelAdministrador extends PanelRol {
         iniciar();
     }
 
+    // Secciones del menú lateral del administrador.
     @Override
     protected void registrarSecciones() {
         agregarSeccion("Panel general", "Así va la operación de la plataforma", c -> Iconos.casa(18, c), this::panelGeneral);
@@ -57,6 +59,7 @@ public class PanelAdministrador extends PanelRol {
     @Override
     protected Color colorRol() { return Tema.AZUL_INFO; }
 
+    // Tablero: órdenes por estado, ingresos, calificación promedio y órdenes sin técnico.
     private JComponent panelGeneral() {
         List<OrdenServicio> todas = gestor.getOrdenes();
         Map<EstadoOrden, Integer> porEstado = new LinkedHashMap<>();
@@ -185,6 +188,7 @@ public class PanelAdministrador extends PanelRol {
         }
     }
 
+    // RF-20: filtros y acciones sobre las órdenes.
     private JComponent ordenes() {
         JComboBox<String> estado = Componentes.combo(opcionesEstado());
         estado.setSelectedIndex(filtroEstado == null ? 0 : filtroEstado.ordinal() + 1);
@@ -294,6 +298,7 @@ public class PanelAdministrador extends PanelRol {
         return r;
     }
 
+    // RF-04 y RF-05: elige un técnico disponible y muestra el costo estimado mientras se escribe.
     private void asignar(OrdenServicio o) {
         List<Tecnico> disponibles = servicio.buscarTecnicosDisponibles(o.getCodigo());
         if (disponibles.isEmpty()) {
@@ -344,6 +349,7 @@ public class PanelAdministrador extends PanelRol {
         return r;
     }
 
+    // RF-14: elige otro técnico disponible.
     private void reasignar(OrdenServicio o) {
         List<Tecnico> disponibles = new ArrayList<>(servicio.buscarTecnicosDisponibles(o.getCodigo()));
         disponibles.remove(o.getTecnico());
@@ -363,6 +369,7 @@ public class PanelAdministrador extends PanelRol {
         refrescar();
     }
 
+    // RF-06: cancela una orden pendiente o asignada con su motivo.
     private void cancelar(OrdenServicio o) {
         JTextArea motivo = Componentes.areaTexto(3);
         Formulario f = new Formulario(this, "Cancelar " + o.getCodigo(), "RF-06 · Solo órdenes pendientes o asignadas",
@@ -432,6 +439,7 @@ public class PanelAdministrador extends PanelRol {
         d.setVisible(true);
     }
 
+    // RF-01: formulario de registro de técnicos.
     private void registrarTecnico() {
         JTextField nombre = Componentes.campoTexto("");
         JTextField documento = Componentes.campoTexto("");
@@ -549,6 +557,7 @@ public class PanelAdministrador extends PanelRol {
         }
     }
 
+    // RF-17: todos los pagos con su estado para confirmarlos o rechazarlos.
     private JComponent pagos() {
         List<FilaPago> filas = new ArrayList<>();
         double pendiente = 0, confirmado = 0;

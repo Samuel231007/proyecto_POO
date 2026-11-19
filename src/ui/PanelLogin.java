@@ -10,6 +10,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 
+// Inicio de sesión por rol (RNF-02) y registro de clientes nuevos (RF-02).
 public class PanelLogin extends JPanel {
     private enum Rol { CLIENTE, TECNICO, ADMINISTRADOR }
 
@@ -121,6 +122,7 @@ public class PanelLogin extends JPanel {
         pista.setText("<html><span style='color:#1E40AF'>" + texto + "</span></html>");
     }
 
+    // Inicia sesión con el servicio del rol elegido y abre su panel.
     private void ingresar() {
         String doc = documento.getText().trim();
         String contrasenia = new String(clave.getPassword());

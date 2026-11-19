@@ -14,6 +14,7 @@ import servicios.TecnicoServicio;
 import java.time.LocalDate;
 import java.util.List;
 
+// Menú de consola del administrador.
 public class MenuAdministrador {
     private final Administrador admin;
     private final AdministradorServicio servicio;

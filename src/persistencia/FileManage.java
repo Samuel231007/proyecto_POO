@@ -47,6 +47,7 @@ public class FileManage {
         return lines;
     }
 
+    // Agrega una línea al final del archivo.
     public void writeFile(String newLine) {
         crearCarpetaSiFalta();
         try (BufferedWriter writer = Files.newBufferedWriter(getFile().toPath(), StandardCharsets.UTF_8,
@@ -58,6 +59,7 @@ public class FileManage {
         }
     }
 
+    // Reemplaza una línea por otra.
     public void updateFile(String oldLine, String newLine) {
         ArrayList<String> lines = this.getDataOfFile();
         for (int i = 0; i < lines.size(); i++) {
@@ -69,6 +71,7 @@ public class FileManage {
         }
     }
 
+    // Elimina una línea del archivo.
     public void deleteFile(String line) {
         ArrayList<String> lines = this.getDataOfFile();
         if (lines.remove(line)) {

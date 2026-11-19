@@ -5,6 +5,7 @@ import interfaces.IImprimible;
 import java.util.ArrayList;
 import java.util.List;
 
+// Técnico de la plataforma (RF-01): especialidad, zona de cobertura, tarifa base y horario.
 public class Tecnico extends Usuario implements IImprimible {
     private String especialidad;
     private String zonaCobertura;
@@ -28,6 +29,7 @@ public class Tecnico extends Usuario implements IImprimible {
         this.horarioDisponible = new DisponibilidadTecnico(this);
     }
 
+    // Se llama cuando se le asigna una orden.
     public void recibirSolicitud(Solicitud solicitud) {
         if (!solicitudes.contains(solicitud)) { solicitudes.add(solicitud); }
         System.out.println("El técnico " + getNombre() + " recibió la solicitud: " + solicitud.getTipoProblema());
@@ -43,10 +45,12 @@ public class Tecnico extends Usuario implements IImprimible {
         return especialidad.equalsIgnoreCase(tipoServicio.trim()) && zonaCobertura.equalsIgnoreCase(zona.trim());
     }
 
+    // RF-13: true si esa franja está dentro de su horario y fuera de sus bloqueos.
     public boolean estaDisponible(DisponibilidadTecnico.FranjaHoraria franja) {
         return horarioDisponible.estaDisponible(franja);
     }
 
+    // RF-13: atajos para registrar el horario y los bloqueos del técnico.
     public void registrarDisponibilidad(DisponibilidadTecnico.FranjaHoraria franja) { horarioDisponible.registrarDisponibilidad(franja); }
     public boolean registrarIndisponibilidad(DisponibilidadTecnico.FranjaHoraria franja) { return horarioDisponible.registrarIndisponibilidad(franja); }
 

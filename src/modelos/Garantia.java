@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+// Garantía de un servicio terminado: vigencia, cobertura y revisiones solicitadas (RF-07, RF-18).
 public class Garantia {
     private final LocalDate fechaInicio;
     private final int diasVigencia;

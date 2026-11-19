@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+// Ficha completa de una orden: costos, trabajo, garantía, calificación, pagos, línea de tiempo y avisos.
 public class DialogoDetalleOrden extends JDialog {
     private static final DateTimeFormatter FECHA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 

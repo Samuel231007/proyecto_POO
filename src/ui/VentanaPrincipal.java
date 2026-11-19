@@ -12,6 +12,7 @@ import servicios.TecnicoServicio;
 import javax.swing.*;
 import java.awt.*;
 
+// Ventana de la aplicación: crea los servicios y cambia entre el inicio de sesión y el panel de cada rol.
 public class VentanaPrincipal extends JFrame {
     private static final String LOGIN = "login", SESION = "sesion";
 
@@ -55,6 +56,7 @@ public class VentanaPrincipal extends JFrame {
         tarjetas.show(contenedor, SESION);
     }
 
+    // Vuelve a la pantalla de inicio de sesión.
     public void cerrarSesion() {
         tarjetas.show(contenedor, LOGIN);
         if (panelSesion != null) {

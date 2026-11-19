@@ -105,6 +105,7 @@ public class OrdenServicioRepository extends BaseRepository implements IReposito
                 o.getCostoManoObraFinal(), o.getCostoMaterialesFinal(), o.getCostoFinal());
     }
 
+    // Guarda (o actualiza) la orden, su solicitud y todas sus partes.
     public void guardar(OrdenServicio orden) {
         solicitudRepository.updateData(orden.getSolicitud(), orden.getSolicitud());
         guardarLinea(orden.getCodigo(), getDataLine(orden));

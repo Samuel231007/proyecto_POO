@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+// Tabla de órdenes con el ícono del oficio y el estado en color. Doble clic abre el detalle.
 public class TablaOrdenes extends JPanel {
     private final ModeloOrdenes modelo;
     private final JTable tabla;

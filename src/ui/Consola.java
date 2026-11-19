@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
+// Lee los datos que escribe el usuario en la consola; la comparten todos los menús.
 public class Consola {
     private final Scanner scanner;
 

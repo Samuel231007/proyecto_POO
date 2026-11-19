@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+// Panel del técnico: próximas visitas, órdenes asignadas, agenda y perfil.
 public class PanelTecnico extends PanelRol {
     private final Tecnico tecnico;
     private final TecnicoServicio servicio;
@@ -24,6 +25,7 @@ public class PanelTecnico extends PanelRol {
         iniciar();
     }
 
+    // Secciones del menú lateral del técnico.
     @Override
     protected void registrarSecciones() {
         agregarSeccion("Inicio", "Sus próximas visitas", c -> Iconos.casa(18, c), this::inicio);
@@ -102,6 +104,7 @@ public class PanelTecnico extends PanelRol {
         return l;
     }
 
+    // RF-06, RF-09, RF-15 y RF-16: iniciar, registrar trabajo y finalizar.
     private JComponent misOrdenes() {
         List<OrdenServicio> activas = servicio.consultarOrdenesActivas(tecnico);
         if (activas.isEmpty()) {
@@ -173,6 +176,7 @@ public class PanelTecnico extends PanelRol {
         return p;
     }
 
+    // RF-15: actividades, horas reales y tabla de materiales.
     private void registrarTrabajo(OrdenServicio o) {
         JTextField descripcion = Componentes.campoTexto("");
         JTextField horas = Componentes.campoTexto("");
@@ -251,6 +255,7 @@ public class PanelTecnico extends PanelRol {
         }
     }
 
+    // RF-07 y RF-16: muestra el costo final desglosado.
     private void finalizar(OrdenServicio o) {
         if (!Acciones.confirmar(this, "¿Finalizar la orden " + o.getCodigo() + "?",
                 "Se calculará el costo final con las horas y materiales registrados, se creará la garantía y se avisará al cliente.")) { return; }
@@ -261,6 +266,7 @@ public class PanelTecnico extends PanelRol {
         refrescar();
     }
 
+    // RF-13: calendario semanal con horario, bloqueos y visitas.
     private JComponent agenda() {
         CalendarioSemanal calendario = new CalendarioSemanal(tecnico, servicio.consultarOrdenesActivas(tecnico));
         JPanel cuerpo = new JPanel(new BorderLayout());

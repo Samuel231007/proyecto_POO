@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Clase central: une cliente, solicitud, servicio y técnico, y maneja estado, costos, garantía, calificación, pagos y avisos.
 public class OrdenServicio implements IImprimible {
     // Constructor privado y solo getters: el historial de cambios no se puede falsificar (RNF-04).
     public static class CambioEstado {
@@ -99,6 +100,7 @@ public class OrdenServicio implements IImprimible {
         actualizarConsecutivo(this.codigo);
     }
 
+    // Devuelve el siguiente código de orden: OS-001, OS-002...
     public static String generarCodigo() {
         consecutivo++;
         String ceros = consecutivo < 10 ? "00" : consecutivo < 100 ? "0" : "";
@@ -153,6 +155,7 @@ public class OrdenServicio implements IImprimible {
         if (costoEstimado > 0) { calcularCostoEstimado(nuevo.getTarifaBase(), costoMaterialesEstimado); }
     }
 
+    // RF-06: ASIGNADA -> EN_PROCESO.
     public void iniciarTrabajo(String responsable) { cambiarEstado(EstadoOrden.EN_PROCESO, responsable); }
 
     // RF-07 y RF-16: al finalizar se calcula el costo final y se crea la garantía.
@@ -173,6 +176,7 @@ public class OrdenServicio implements IImprimible {
         cambiarEstado(EstadoOrden.FINALIZADA, responsable);
     }
 
+    // RF-06 y RF-12: cancela la orden y guarda el motivo en la solicitud.
     public void cancelar(String responsable, String motivo) {
         String motivoLimpio = Validar.texto(motivo, "motivo de cancelación");
         cambiarEstado(EstadoOrden.CANCELADA, responsable);
@@ -257,6 +261,7 @@ public class OrdenServicio implements IImprimible {
 
     private static String dinero(double valor) { return String.format("$%,.0f", valor); }
 
+    // RF-10: solo una orden finalizada y una sola vez.
     public void calificar(Calificacion nueva) {
         Validar.objeto(nueva, "calificación");
         if (estado != EstadoOrden.FINALIZADA) { throw new IllegalStateException("Solo se puede calificar una orden finalizada (está " + estado + ")."); }
@@ -264,11 +269,13 @@ public class OrdenServicio implements IImprimible {
         calificacion = nueva;
     }
 
+    // RF-18: la orden debe estar finalizada (tener garantía).
     public void solicitarRevisionGarantia(LocalDate fecha, String problema) {
         if (garantia == null) { throw new IllegalStateException("La orden aún no tiene garantía: debe estar finalizada."); }
         garantia.solicitarRevision(fecha, problema);
     }
 
+    // RF-17: el pago queda PENDIENTE hasta que el administrador lo confirme.
     public void registrarPago(Pago pago) {
         Validar.objeto(pago, "pago");
         if (estado == EstadoOrden.CANCELADA) { throw new IllegalStateException("No se pueden registrar pagos en una orden cancelada."); }
@@ -310,6 +317,7 @@ public class OrdenServicio implements IImprimible {
 
     public List<Pago> getPagosParaGuardar() { return new ArrayList<>(pagos); }
 
+    // Los métodos restaurar... devuelven a la orden lo que estaba guardado, sin validar de nuevo ni enviar avisos.
     public void restaurarCambio(EstadoOrden anterior, EstadoOrden nuevo, LocalDateTime fecha, String responsable) {
         cambios.add(new CambioEstado(anterior, nuevo, fecha, Validar.texto(responsable, "responsable")));
     }

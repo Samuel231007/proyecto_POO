@@ -1,5 +1,6 @@
 package enums;
 
+// Estados de una orden de servicio (RF-06). La Solicitud usa los mismos estados.
 public enum EstadoOrden {
     PENDIENTE("Pendiente"),
     ASIGNADA("Asignada"),

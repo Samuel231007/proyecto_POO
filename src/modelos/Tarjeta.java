@@ -2,6 +2,7 @@ package modelos;
 
 import java.time.LocalDate;
 
+// Pago con tarjeta por datáfono.
 public class Tarjeta extends Pago {
     private final String referenciaAutorizacion;   // RNF-05: se guarda la referencia, nunca el número ni el código de la tarjeta
 

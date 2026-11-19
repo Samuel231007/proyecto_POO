@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+// Clase padre de Cliente, Tecnico y Administrador con los datos y la contraseña comunes.
 public abstract class Usuario {
     private String nombre, correo, telefono;
     private final String documento;          // identifica al usuario: no cambia (RF-01 y RF-02 no permiten repetidos)
@@ -36,6 +37,7 @@ public abstract class Usuario {
     // Lo necesita el repositorio para guardar el usuario en el archivo.
     public String getContraseniaCifrada() { return contraseniaCifrada; }
 
+    // Cada tipo de usuario dice su rol (polimorfismo).
     public abstract String getRol();
 
     // Solo las clases hijas cambian estos datos, y siempre validados.
@@ -43,16 +45,19 @@ public abstract class Usuario {
     protected void setCorreo(String correo) { this.correo = Validar.texto(correo, "correo"); }
     protected void setTelefono(String telefono) { this.telefono = Validar.texto(telefono, "teléfono"); }
 
+    // Compara el código SHA-256 de lo escrito con el que está guardado.
     public boolean verificarContrasenia(String contrasenia) {
         return contrasenia != null && cifrar(contrasenia).equals(contraseniaCifrada);
     }
 
+    // Pide la contraseña actual antes de cambiarla.
     public void cambiarContrasenia(String actual, String nueva) {
         if (!verificarContrasenia(actual)) { throw new IllegalArgumentException("La contraseña actual no es correcta."); }
         contraseniaCifrada = cifrar(Validar.texto(nueva, "contraseña nueva"));
         System.out.println("Contraseña actualizada correctamente.");
     }
 
+    // RNF-02: solo entra quien conoce la contraseña.
     public boolean iniciarSesion(String contrasenia) {
         if (verificarContrasenia(contrasenia)) {
             System.out.println("Sesión iniciada correctamente. Bienvenido(a), " + nombre + ".");

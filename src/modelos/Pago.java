@@ -5,6 +5,7 @@ import interfaces.IImprimible;
 
 import java.time.LocalDate;
 
+// Clase padre de los medios de pago (RF-17): Efectivo, Tarjeta y Transferencia.
 public abstract class Pago implements IImprimible {
     private final double monto;
     private final LocalDate fecha;
@@ -23,6 +24,7 @@ public abstract class Pago implements IImprimible {
     public boolean estaPendiente() { return estado == EstadoPago.PENDIENTE; }
     public boolean estaConfirmado() { return estado == EstadoPago.CONFIRMADO; }
 
+    // El administrador confirma o rechaza el pago; solo se puede si sigue pendiente.
     public void confirmarPago() { cambiarDesdePendiente("confirmar", EstadoPago.CONFIRMADO); }
     public void rechazarPago() { cambiarDesdePendiente("rechazar", EstadoPago.RECHAZADO); }
 
@@ -41,6 +43,7 @@ public abstract class Pago implements IImprimible {
         estado = guardado;
     }
 
+    // Cada medio de pago dice su nombre y su detalle (polimorfismo).
     public abstract String getMetodoPago();
     public abstract String getDetalle();
 

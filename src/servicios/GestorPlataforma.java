@@ -109,6 +109,7 @@ public class GestorPlataforma {
         System.out.println("Orden " + orden.getCodigo() + " creada en estado " + orden.getEstado() + ".");
     }
 
+    // Guardan en los archivos un objeto que ya existe, después de cambiarlo.
     public void guardarCliente(Cliente cliente) {
         if (usarArchivos) { clienteRepository.updateData(cliente, cliente); }
     }
@@ -152,6 +153,7 @@ public class GestorPlataforma {
         return null;
     }
 
+    // RF-04: técnicos de esa especialidad y zona, con el horario de la solicitud libre.
     public List<Tecnico> buscarTecnicosDisponibles(Solicitud solicitud) {
         List<Tecnico> resultado = new ArrayList<>();
         for (Tecnico t : tecnicos) {
@@ -162,6 +164,7 @@ public class GestorPlataforma {
         return resultado;
     }
 
+    // RF-08 y RNF-02: solo las órdenes de ese cliente.
     public List<OrdenServicio> consultarHistorialCliente(Cliente cliente) {
         Validar.objeto(cliente, "cliente");
         List<OrdenServicio> resultado = new ArrayList<>();
@@ -171,6 +174,7 @@ public class GestorPlataforma {
         return resultado;
     }
 
+    // RF-09 y RNF-02: solo las órdenes activas de ese técnico.
     public List<OrdenServicio> consultarOrdenesActivasTecnico(Tecnico tecnico) {
         Validar.objeto(tecnico, "técnico");
         List<OrdenServicio> resultado = new ArrayList<>();

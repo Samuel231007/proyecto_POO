@@ -9,6 +9,7 @@ import modelos.Tecnico;
 import java.util.ArrayList;
 import java.util.List;
 
+// Acciones del técnico. Cada método usa los modelos y luego guarda el cambio con el gestor (RNF-01).
 public class TecnicoServicio implements IServicio<Tecnico> {
     private final GestorPlataforma gestor;
 
@@ -61,6 +62,7 @@ public class TecnicoServicio implements IServicio<Tecnico> {
         gestor.guardarTecnico(tecnico);
     }
 
+    // RF-13: horario de trabajo y bloqueos.
     public void registrarDisponibilidad(Tecnico tecnico, FranjaHoraria franja) {
         tecnico.registrarDisponibilidad(franja);
         gestor.guardarTecnico(tecnico);
@@ -78,6 +80,7 @@ public class TecnicoServicio implements IServicio<Tecnico> {
         return quitado;
     }
 
+    // RF-09: sus órdenes que no han terminado.
     public List<OrdenServicio> consultarOrdenesActivas(Tecnico tecnico) {
         return gestor.consultarOrdenesActivasTecnico(tecnico);
     }
@@ -90,12 +93,14 @@ public class TecnicoServicio implements IServicio<Tecnico> {
         return orden;
     }
 
+    // RF-06: ASIGNADA -> EN_PROCESO.
     public void iniciarTrabajo(Tecnico tecnico, String codigo) {
         OrdenServicio orden = buscarOrdenAsignada(tecnico, codigo);
         orden.iniciarTrabajo(tecnico.getNombre());
         gestor.guardarOrden(orden);
     }
 
+    // RF-15: actividades, horas reales y materiales.
     public void registrarTrabajo(Tecnico tecnico, String codigo, DetalleTrabajo detalle) {
         OrdenServicio orden = buscarOrdenAsignada(tecnico, codigo);
         tecnico.registrarTrabajo(orden, detalle);

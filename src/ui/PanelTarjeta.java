@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
+// Panel blanco con esquinas redondeadas y sombra, donde se agrupa la información.
 public class PanelTarjeta extends JPanel {
     private Color fondo = Tema.BLANCO;
     private Color borde = Tema.BORDE;

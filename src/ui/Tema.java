@@ -10,6 +10,7 @@ import java.time.format.TextStyle;
 import java.util.Arrays;
 import java.util.Locale;
 
+// Colores, fuentes y formatos de toda la interfaz: azul (confianza) y naranja (herramienta).
 public final class Tema {
     public static final String NOMBRE_APP = "Técnicos del Hogar";
     public static final String ESLOGAN = "Expertos a domicilio para tu casa";
@@ -53,6 +54,7 @@ public final class Tema {
     public static Font normal(float tamanio) { return fuente(Font.PLAIN, tamanio); }
     public static Font negrita(float tamanio) { return fuente(Font.BOLD, tamanio); }
 
+    // Aplica la fuente y los colores a Swing al iniciar la aplicación.
     public static void instalar() {
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {

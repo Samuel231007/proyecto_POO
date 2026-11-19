@@ -10,6 +10,7 @@ import servicios.TecnicoServicio;
 
 import java.util.Scanner;
 
+// Menú inicial de la versión de consola: inicio de sesión por rol y registro de clientes.
 public class MenuPrincipal {
     private final GestorPlataforma gestor;
     private final ClienteServicio clienteServicio;

@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+// Acciones del administrador. Cada método usa los modelos y luego guarda el cambio con el gestor (RNF-01).
 public class AdministradorServicio implements IServicio<Administrador> {
     private final GestorPlataforma gestor;
 
@@ -56,11 +57,13 @@ public class AdministradorServicio implements IServicio<Administrador> {
         return admin.iniciarSesion(contrasenia) ? admin : null;
     }
 
+    // RF-01: el gestor rechaza documentos repetidos.
     public void registrarTecnico(Administrador admin, Tecnico tecnico) {
         gestor.registrarTecnico(tecnico);
         System.out.println("Técnico " + tecnico.getNombre() + " registrado en la plataforma por " + admin.getNombre() + ".");
     }
 
+    // RF-05 y RF-07: agrega un tipo de servicio al catálogo.
     public void registrarServicio(Servicio servicio) {
         gestor.registrarServicio(servicio);
         System.out.println("Servicio " + servicio.getTipo() + " agregado al catálogo.");
@@ -79,6 +82,7 @@ public class AdministradorServicio implements IServicio<Administrador> {
 
     public List<OrdenServicio> getOrdenes() { return gestor.getOrdenes(); }
 
+    // RF-04: técnicos de la especialidad y zona de la orden, libres en su horario.
     public List<Tecnico> buscarTecnicosDisponibles(String codigo) {
         return gestor.buscarTecnicosDisponibles(buscarOrden(codigo).getSolicitud());
     }
@@ -97,6 +101,7 @@ public class AdministradorServicio implements IServicio<Administrador> {
         return asignado;
     }
 
+    // RF-14: cambia el técnico antes de iniciar el trabajo.
     public boolean reasignarOrden(Administrador admin, String codigo, String documentoTecnico) {
         OrdenServicio orden = buscarOrden(codigo);
         boolean reasignada = admin.reasignarOrden(orden, gestor.buscarTecnico(documentoTecnico));
@@ -112,10 +117,12 @@ public class AdministradorServicio implements IServicio<Administrador> {
         System.out.println("Orden " + orden.getCodigo() + " cancelada.");
     }
 
+    // RF-20: un filtro en null no se aplica.
     public List<OrdenServicio> filtrarOrdenes(EstadoOrden estado, LocalDate fecha, Cliente cliente, Tecnico tecnico) {
         return gestor.filtrarOrdenes(estado, fecha, cliente, tecnico);
     }
 
+    // RF-17: el administrador revisa los pagos de una orden.
     public List<Pago> consultarPagos(Administrador admin, String codigo) {
         return buscarOrden(codigo).getPagos(admin);
     }
@@ -141,6 +148,7 @@ public class AdministradorServicio implements IServicio<Administrador> {
         return pagos.get(numeroPago - 1);
     }
 
+    // RNF-04: cambios de estado, asignaciones y avisos de una orden.
     public void mostrarTrazabilidad(String codigo) {
         OrdenServicio orden = buscarOrden(codigo);
         System.out.println("Cambios de estado de " + orden.getCodigo() + ":");

@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// Horario de trabajo del técnico y bloques en los que no puede recibir órdenes (RF-13).
 public class DisponibilidadTecnico {
     private Tecnico tecnico;
     private List<FranjaHoraria> franjasActuales;          // horarios en los que SÍ trabaja
@@ -74,6 +75,7 @@ public class DisponibilidadTecnico {
     public List<FranjaHoraria> getFranjasActuales() { return new ArrayList<>(franjasActuales); }
     public List<FranjaHoraria> getBloqueosIndisponibles() { return new ArrayList<>(bloqueosIndisponibles); }
 
+    // Un día con hora de inicio y fin. Valida que el inicio sea antes del fin.
     public static class FranjaHoraria {
         private final DayOfWeek dia;
         private final LocalTime horaInicio;
@@ -89,6 +91,7 @@ public class DisponibilidadTecnico {
             this.horaFin = horaFin;
         }
 
+        // true si las dos franjas son el mismo día y sus horas se cruzan.
         public boolean seCruzaCon(FranjaHoraria otra) {
             return dia == otra.dia && horaInicio.isBefore(otra.horaFin) && otra.horaInicio.isBefore(horaFin);
         }

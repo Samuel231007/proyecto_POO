@@ -1,5 +1,6 @@
 package modelos;
 
+// Administrador de la plataforma. Reasigna órdenes; sus demás acciones están en AdministradorServicio.
 public class Administrador extends Usuario {
     private String areaResponsable;
 

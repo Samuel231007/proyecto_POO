@@ -2,6 +2,7 @@ package modelos;
 
 import java.time.LocalDate;
 
+// Pago por transferencia bancaria.
 public class Transferencia extends Pago {
     private final String referenciaBancaria;
 

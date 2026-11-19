@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 
+// Botón redondeado con los colores del tema. Cada Tipo define su fondo y su texto.
 public class Boton extends JButton {
     public enum Tipo {
         PRIMARIO(Tema.NARANJA, Tema.NARANJA_OSCURO, Color.WHITE),

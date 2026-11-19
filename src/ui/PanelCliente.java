@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+// Panel del cliente: inicio, solicitar servicio, mis órdenes y perfil.
 public class PanelCliente extends PanelRol {
     private final Cliente cliente;
     private final ClienteServicio servicio;
@@ -28,6 +29,7 @@ public class PanelCliente extends PanelRol {
         iniciar();
     }
 
+    // Secciones del menú lateral del cliente.
     @Override
     protected void registrarSecciones() {
         agregarSeccion("Inicio", "Resumen de sus servicios", c -> Iconos.casa(18, c), this::inicio);
@@ -42,6 +44,7 @@ public class PanelCliente extends PanelRol {
     @Override
     protected Color colorRol() { return Tema.NARANJA; }
 
+    // Resumen: órdenes activas, terminadas, saldo por pagar y órdenes recientes.
     private JComponent inicio() {
         List<OrdenServicio> ordenes = servicio.consultarHistorial(cliente);
         int activas = 0, finalizadas = 0;
@@ -77,6 +80,7 @@ public class PanelCliente extends PanelRol {
                 tarjeta("Órdenes recientes", "Doble clic para ver el detalle", lista, verTodas));
     }
 
+    // RF-03: tarjetas de los servicios disponibles.
     private JComponent solicitar() {
         List<Servicio> servicios = servicio.getServiciosDisponibles();
         JPanel rejilla = new JPanel(new GridLayout(0, 3, 16, 16));
@@ -163,6 +167,7 @@ public class PanelCliente extends PanelRol {
         return nombres;
     }
 
+    // RF-08: historial con las acciones de cada orden.
     private JComponent misOrdenes() {
         List<OrdenServicio> ordenes = servicio.consultarHistorial(cliente);
         if (ordenes.isEmpty()) {
@@ -204,6 +209,7 @@ public class PanelCliente extends PanelRol {
         return tarjeta("Historial de órdenes", ordenes.size() + " orden(es) · seleccione una para ver las acciones disponibles", cuerpo);
     }
 
+    // RF-12: formulario para cancelar con el motivo.
     private void cancelar(OrdenServicio o) {
         JTextArea motivo = Componentes.areaTexto(3);
         Formulario f = new Formulario(this, "Cancelar " + o.getCodigo(), "RF-12 · Solo mientras no tenga técnico asignado",
@@ -213,6 +219,7 @@ public class PanelCliente extends PanelRol {
         refrescar();
     }
 
+    // RF-10: formulario de calificación con estrellas.
     private void calificar(OrdenServicio o) {
         SelectorEstrellas estrellas = new SelectorEstrellas(0, true, 34);
         JTextArea comentario = Componentes.areaTexto(3);
@@ -227,6 +234,7 @@ public class PanelCliente extends PanelRol {
         refrescar();
     }
 
+    // RF-18: formulario de revisión por garantía.
     private void revisionGarantia(OrdenServicio o) {
         JTextArea problema = Componentes.areaTexto(3);
         Formulario f = new Formulario(this, "Solicitar revisión por garantía", "RF-18 · Orden " + o.getCodigo(),
@@ -240,6 +248,7 @@ public class PanelCliente extends PanelRol {
         refrescar();
     }
 
+    // RF-17: crea el pago del tipo elegido (polimorfismo) y lo registra.
     private void pagar(OrdenServicio o) {
         JTextField monto = Componentes.campoTexto(String.valueOf((long) o.getSaldoPendiente()));
         JComboBox<String> metodo = Componentes.combo(new String[]{"Transferencia", "PanelTarjeta (datáfono)", "Efectivo"});
@@ -272,6 +281,7 @@ public class PanelCliente extends PanelRol {
         refrescar();
     }
 
+    // RF-11 y RF-19: datos de contacto, canal de avisos y contraseña.
     private JComponent perfil() {
         JTextField nombre = Componentes.campoTexto(cliente.getNombre());
         JTextField telefono = Componentes.campoTexto(cliente.getTelefono());

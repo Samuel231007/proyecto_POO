@@ -1,5 +1,6 @@
 package modelos;
 
+// Validaciones que usan todas las clases del modelo. Si un dato no sirve, lanza una excepción con un mensaje claro (RNF-06).
 public class Validar {
     // RNF-01 y RNF-03: estos caracteres separan los campos en los archivos .txt.
     // Si un texto los tuviera, al leer el archivo los campos quedarían corridos y los datos se dañarían.
@@ -23,11 +24,13 @@ public class Validar {
         return valor;
     }
 
+    // Número obligatorio mayor que cero (tarifas, horas, montos).
     public static double positivo(double valor, String campo) {
         if (valor <= 0) { throw new IllegalArgumentException("El campo \"" + campo + "\" debe ser mayor a 0."); }
         return valor;
     }
 
+    // Objeto obligatorio: una orden, un técnico, una fecha...
     public static void objeto(Object valor, String campo) {
         if (valor == null) { throw new IllegalArgumentException("El campo \"" + campo + "\" es obligatorio."); }
     }

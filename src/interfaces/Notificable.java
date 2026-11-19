@@ -2,6 +2,7 @@ package interfaces;
 
 import modelos.Notificacion;
 
+// Canal por el que se avisa al cliente (RF-19). Lo implementan NotificacionWhatsApp y NotificacionCorreo.
 public interface Notificable {
     String getNombreCanal();
 

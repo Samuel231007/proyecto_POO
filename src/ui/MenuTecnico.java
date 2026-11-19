@@ -7,6 +7,7 @@ import servicios.TecnicoServicio;
 
 import java.util.List;
 
+// Menú de consola del técnico.
 public class MenuTecnico {
     private final Tecnico tecnico;
     private final TecnicoServicio servicio;
