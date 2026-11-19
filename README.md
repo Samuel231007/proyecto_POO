@@ -306,7 +306,7 @@ proyecto_POO/
     │   ├── DetalleTrabajo (+ Material anidada), Garantia, Calificacion
     │   ├── Pago (abstracta), Efectivo, Tarjeta, Transferencia
     │   ├── Notificacion, NotificacionWhatsApp, NotificacionCorreo
-    │   └── Validar                      Validaciones comunes de los modelos (RNF-06)
+    │   └── Validar Validaciones comunes de los modelos (RNF-06)
     │
     ├── persistencia/
     │   └── FileManage.java              Leer/escribir líneas en archivos .txt (UTF-8)
