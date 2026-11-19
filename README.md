@@ -25,11 +25,10 @@ El proyecto sigue la organización del proyecto base [SistemaGestionBiblioteca](
 9. [Cómo ejecutar el proyecto](#cómo-ejecutar-el-proyecto)
 10. [ArrayList vs Archivo de texto](#arraylist-vs-archivo-de-texto)
 11. [Reglas de negocio](#reglas-de-negocio)
-12. [Pruebas](#pruebas)
-13. [Registro de decisiones](#registro-de-decisiones)
-14. [Bitácora de uso de inteligencia artificial](#bitácora-de-uso-de-inteligencia-artificial)
-15. [Explicación de las clases por integrante](#explicación-de-las-clases-por-integrante)
-16. [Organización del repositorio](#organización-del-repositorio)
+12. [Registro de decisiones](#registro-de-decisiones)
+13. [Bitácora de uso de inteligencia artificial](#bitácora-de-uso-de-inteligencia-artificial)
+14. [Explicación de las clases por integrante](#explicación-de-las-clases-por-integrante)
+15. [Organización del repositorio](#organización-del-repositorio)
 
 ---
 
@@ -285,7 +284,6 @@ proyecto_POO/
 ├── README.md                            Este documento (incluye decisiones, trazabilidad y bitácora)
 ├── .gitignore
 ├── .idea/  ·  proyecto_POO.iml          Configuración de IntelliJ IDEA
-├── pruebas/                             Pruebas del equipo (PruebaNotificaciones, PruebaServicioGarantia)
 └── src/
     ├── Main.java                        Punto de entrada — abre la ventana (o la consola con el argumento "consola")
     │
@@ -358,7 +356,7 @@ proyecto_POO/
     │   ├── MenuCliente.java
     │   ├── MenuTecnico.java
     │   ├── MenuAdministrador.java
-    │   ├── DemoRequerimientos.java      El programa de prueba del equipo, en memoria
+    │   ├── DemoRequerimientos.java      Demo de todos los requerimientos, en memoria
     │   └── Consola.java                 Lectura de datos compartida por los menús
     │
     └── files/                           16 archivos .txt con datos de ejemplo
@@ -575,19 +573,6 @@ Al finalizar una orden, el sistema:
 2. Crea la garantía con los días que define el tipo de servicio (RF-07).
 3. Registra el cambio de estado con fecha y responsable (RNF-04) y avisa al cliente por su canal (RF-19).
 4. Guarda la orden y todas sus partes en los archivos `.txt` (RNF-01).
-
----
-
-## Pruebas
-
-Las pruebas del equipo están en la carpeta `pruebas/` (marcada como carpeta de pruebas en IntelliJ). Para ejecutarlas: clic derecho sobre el archivo → **Run**.
-
-| Prueba | Qué revisa | Resultado |
-|---|---|---|
-| `PruebaNotificaciones` | Notificacion, Notificable, NotificacionWhatsApp y NotificacionCorreo | 39 pruebas correctas |
-| `PruebaServicioGarantia` | Servicio y Garantia | 28 pruebas correctas |
-
-Además, la opción **Demo de requerimientos** del menú de consola recorre todos los requerimientos en memoria, sin modificar los archivos.
 
 ---
 
@@ -1144,6 +1129,24 @@ Las ventanas muestran mejor la información del dominio (agenda del técnico, es
 
 Las ventanas usan los mismos servicios, repositorios y archivos que la consola: no se cambió la lógica del proyecto para agregarlas. Cada error se muestra en una ventana con un mensaje claro y los botones solo se activan cuando la acción tiene sentido. Esta decisión apoya RNF-02 y RNF-06.
 
+### Decisión 30 · Código con comentarios solo donde explican algo y sin carpeta de pruebas
+
+**Decisión**
+
+El código conserva solo los comentarios que explican algo que no se ve a simple vista: una regla de negocio, el porqué de una decisión, el formato de cada archivo `.txt` o el requerimiento que se cumple. Se quitan las introducciones largas, los separadores de sección y los comentarios que repiten lo que el código ya dice. También se quita la carpeta `pruebas/`.
+
+**Alternativa considerada**
+
+Mantener los comentarios largos al inicio de cada clase y las pruebas del equipo.
+
+**Por qué**
+
+Los comentarios largos hacían el código más difícil de leer y repetían lo que ya está en este README (arquitectura, formatos y decisiones). Las pruebas cumplieron su función durante la integración: todas pasaron (39 de notificaciones y 28 de servicio y garantía), y la demo de requerimientos sigue recorriendo todo el sistema.
+
+**Consecuencia**
+
+El código pasó de 764 a cerca de 170 líneas de comentarios, sin cambiar ninguna instrucción: las clases compiladas son idénticas antes y después. Las pruebas siguen disponibles en el historial de Git.
+
 ---
 
 ## Bitácora de uso de inteligencia artificial
@@ -1300,7 +1303,7 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 | **Qué se le pidió** | Mejorar la parte visual de la interfaz para que fuera acorde a una plataforma de técnicos del hogar y cumpliera todos los requerimientos; después, ajustar el código a la estructura exacta del repositorio del profesor y subirlo al repositorio del equipo. |
 | **Qué respondió** | Creó una interfaz gráfica en Swing con un panel por rol y la probó recorriendo los flujos de los tres roles. Al probarla encontró que se podía registrar dos veces el mismo pago y lo corrigió (Decisión 28). Preparó la integración a `main` en commits pequeños que compilan, adaptó las pruebas del equipo a los paquetes y actualizó el README, la trazabilidad y el registro de decisiones. |
 | **Qué aceptamos** | La interfaz gráfica conservando la consola, la corrección de los pagos y la integración a `main` con la historia de las clases que ya estaban. |
-| **Qué corregimos** | Se pidió seguir exactamente la estructura del repositorio del profesor: las ventanas pasaron de un paquete `gui` a `ui`, la clase `Validar` pasó de `utilidades` a `modelos` y quedó un solo `Main.java`. Al integrar se detectó que la versión unificada de `Servicio` había perdido los setters con validación que pide la Decisión 18, y se recuperaron para que las pruebas del equipo pasaran completas. Por último, se pidió reunir toda la documentación (estructura, trazabilidad, decisiones y bitácora) en un solo README con el formato del proyecto base. |
+| **Qué corregimos** | Se pidió seguir exactamente la estructura del repositorio del profesor: las ventanas pasaron de un paquete `gui` a `ui`, la clase `Validar` pasó de `utilidades` a `modelos` y quedó un solo `Main.java`. Al integrar se detectó que la versión unificada de `Servicio` había perdido los setters con validación que pide la Decisión 18, y se recuperaron para que las pruebas del equipo pasaran completas. Por último, se pidió reunir toda la documentación (estructura, trazabilidad, decisiones y bitácora) en un solo README con el formato del proyecto base. Después se pidió quitar la carpeta de pruebas y dejar en el código solo los comentarios que explican algo necesario. |
 
 
 *Se irán agregando nuevos registros a medida que el equipo use IA en el desarrollo del proyecto (diseño de clases, generación de código, documentación, etc.), cada uno con su fecha, herramienta, lo pedido, lo respondido, lo aceptado y lo corregido.*
@@ -1309,14 +1312,13 @@ Registro del uso de herramientas de IA durante el desarrollo del proyecto **Téc
 
 ## Explicación de las clases por integrante
 
-Explicaciones escritas por cada integrante sobre sus clases. Describen las clases como estaban antes de la integración: después de ella, los enums anidados pasaron al paquete `enums` (`OrdenServicio.Estado` → `EstadoOrden`, `Notificacion.EstadoEnvio` → `EstadoEnvio`, Decisión 24) y las pruebas están en la carpeta `pruebas/`.
+Explicaciones escritas por cada integrante sobre sus clases. Describen las clases como estaban antes de la integración: después de ella, los enums anidados pasaron al paquete `enums` (`OrdenServicio.Estado` → `EstadoOrden`, `Notificacion.EstadoEnvio` → `EstadoEnvio`, Decisión 24).
 
 ### Parte de Valeria Alvarado · Orden de servicio
 
 **Clases:** `OrdenServicio` (con la clase anidada `CambioEstado` y el enum anidado `Estado`), `Servicio` y `Garantia`\
 **Requerimientos:** RF-05, RF-06, RF-16 y RF-18; también apoya RF-07, RF-17, RF-19 y RNF-04\
-**Decisiones relacionadas del registro:** Decisión 2 (Solicitud y OrdenServicio separadas), Decisión 5 (detalle y materiales), Decisión 9 (clases anidadas), Decisión 17 (se eliminó `Pagable`) y Decisiones 18 a 21 (las de esta parte)\
-**Pruebas:** `PruebaServicioGarantia.java`
+**Decisiones relacionadas del registro:** Decisión 2 (Solicitud y OrdenServicio separadas), Decisión 5 (detalle y materiales), Decisión 9 (clases anidadas), Decisión 17 (se eliminó `Pagable`) y Decisiones 18 a 21 (las de esta parte)
 
 *Cómo leer las tablas:* los atributos y métodos se escriben con su tipo de acceso (público o privado). Lo **estático** se marca con la palabra «estático». La clase anidada y el enum anidado se nombran completos (`OrdenServicio.CambioEstado` y `OrdenServicio.Estado`) para que no se confundan con los enums de otras clases. Las relaciones entre las clases están explicadas en la sección 3.
 
@@ -1417,16 +1419,7 @@ Guarda `estadoAnterior`, `estadoNuevo`, `fecha` y `responsable` (todos privados 
 - **Decisión 20:** `CambioEstado` es una clase anidada estática con constructor privado.
 - **Decisión 21:** los costos se calculan en `OrdenServicio`, y la mano de obra se delega en `Servicio`.
 
-#### 7. Pruebas y supuestos
-
-`PruebaServicioGarantia.java` prueba las reglas de `Servicio` y `Garantia` sin necesitar otras clases del proyecto. Se compila y se ejecuta así:
-
-```
-javac Servicio.java Garantia.java PruebaServicioGarantia.java
-java PruebaServicioGarantia
-```
-
-`OrdenServicio` usa `Pago` y `Notificacion`, por eso solo compila cuando esas clases están junto a ella en el repositorio. La prueba de la orden completa queda para cuando `Pago` y sus subclases estén en `main`.
+#### 7. Supuestos
 
 Supuestos para revisar con el equipo:
 - La orden guarda el documento del cliente y del técnico como texto, porque `Cliente`, `Tecnico` y `Solicitud` todavía no están en `main`; se cambia por objetos cuando estén.
@@ -1437,8 +1430,7 @@ Supuestos para revisar con el equipo:
 
 **Clases:** `Notificacion` (con el enum anidado `EstadoEnvio`), `Notificable` (interfaz), `NotificacionWhatsApp` y `NotificacionCorreo`\
 **Requerimientos:** RF-19; también apoya RNF-04 y RNF-06\
-**Decisiones relacionadas del registro:** Decisión 8 (Notificacion y Notificable tienen responsabilidades distintas) y Decisión 9 (clases anidadas)\
-**Pruebas:** `PruebaNotificaciones.java`
+**Decisiones relacionadas del registro:** Decisión 8 (Notificacion y Notificable tienen responsabilidades distintas) y Decisión 9 (clases anidadas)
 
 *Cómo leer las tablas:* los atributos y métodos se escriben con su tipo de acceso (público o privado). Lo **estático** se marca con la palabra «estático». El enum anidado se nombra completo (`Notificacion.EstadoEnvio`) para que no se confunda con los enums de otras clases. Las relaciones entre las clases están explicadas en la sección 3.
 
@@ -1521,14 +1513,7 @@ La Decisión 8 consideró hacer de `Notificacion` la clase padre de los canales,
 | **RNF-04** Trazabilidad | El aviso no tiene setters y solo se puede procesar una vez; guarda canal, estado y detalle. | — |
 | **RNF-06** Mensajes claros | `crearMensajeCambioEstado` arma el aviso en lenguaje claro y, si el envío falla, el detalle explica la causa. | — |
 
-#### 7. Pruebas y supuestos
-
-`PruebaNotificaciones.java` prueba el registro del aviso, los dos canales y el polimorfismo con `Notificable`, sin necesitar otras clases del proyecto. Se compila y se ejecuta así:
-
-```
-javac Notificable.java Notificacion.java NotificacionWhatsApp.java NotificacionCorreo.java PruebaNotificaciones.java
-java PruebaNotificaciones
-```
+#### 7. Supuestos
 
 Supuestos para revisar con el equipo:
 - El envío es simulado: la validación del celular y del correo es sencilla (formato), no comprueba que el número o la cuenta existan.
