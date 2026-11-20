@@ -1,3 +1,3 @@
-3001|Sofía Ríos|sofia@correo.co|3009998877|c0f412f85ec51c2c293357ce84e0aea910bc6b368d1cd772f278dd11acb708eb|Chía|WhatsApp
-3002|Andrés Mejía|andres@correo.co|3157778899|15f71feafbd82dab107add97151a6db38fb4b3c407610cf129656caa92cf9679|Bogotá|Correo
+3001|Valeria Morales Quintero|valeria.morales@correo.co|3009998877|c0f412f85ec51c2c293357ce84e0aea910bc6b368d1cd772f278dd11acb708eb|Chía|WhatsApp
+3002|Valerie Sofía Medieta|valerie@correo.co|3157778899|15f71feafbd82dab107add97151a6db38fb4b3c407610cf129656caa92cf9679|Bogotá|Correo
 3003|Camila Torres|camila@correo.co|3014445566|49bc046fca8b24e33d5072de52dac68f4ca575f8b37c5b569a99ea37ad0a3050|Cajicá|WhatsApp

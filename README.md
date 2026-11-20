@@ -491,24 +491,24 @@ Las dos versiones usan los mismos servicios, repositorios y archivos `.txt`: lo 
 
 | Rol | Documento | Contraseña | Datos |
 |---|---|---|---|
-| Administrador | 1001 | admin123 | Laura Gómez |
-| Técnico | 2001 | clave1 | Luis Pérez — Plomería, Chía |
+| Administrador | 1001 | admin123 | Samuel Rusinque |
+| Técnico | 2001 | clave1 | Juan David Lara — Plomería, Chía |
 | Técnico | 2002 | clave2 | Pedro Ruiz — Plomería, Chía |
-| Técnico | 2003 | clave3 | Marta Díaz — Electricidad, Bogotá |
-| Técnico | 2004 | clave4 | Jorge Castro — Pintura, Cajicá |
+| Técnico | 2003 | clave3 | Sara Gómez — Electricidad, Bogotá |
+| Técnico | 2004 | clave4 | Valeria Alvarado — Pintura, Cajicá |
 | Técnico | 2005 | clave5 | Diana Herrera — Cerrajería, Chía |
-| Cliente | 3001 | miClave | Sofía Ríos — Chía (avisos por WhatsApp) |
-| Cliente | 3002 | clave3002 | Andrés Mejía — Bogotá (avisos por correo) |
+| Cliente | 3001 | miClave | Valeria Morales Quintero — Chía (avisos por WhatsApp) |
+| Cliente | 3002 | clave3002 | Valerie Sofía Medieta — Bogotá (avisos por correo) |
 | Cliente | 3003 | clave3003 | Camila Torres — Cajicá |
 
 ### Órdenes de ejemplo
 
 | Orden | Estado | Para probar |
 |---|---|---|
-| OS-001 | FINALIZADA | Costo final vs. estimado, garantía con revisión, calificación, pagos (uno confirmado, uno pendiente), reasignación de Luis a Pedro |
+| OS-001 | FINALIZADA | Costo final vs. estimado, garantía con revisión, calificación, pagos (uno confirmado, uno pendiente), reasignación de Juan David a Pedro |
 | OS-002 | CANCELADA | Cancelación con motivo |
-| OS-003 | EN_PROCESO | Marta puede registrar el trabajo y finalizarla |
-| OS-004 | ASIGNADA | Jorge puede iniciarla, o el administrador cancelarla |
+| OS-003 | EN_PROCESO | Sara puede registrar el trabajo y finalizarla |
+| OS-004 | ASIGNADA | Valeria Alvarado puede iniciarla, o el administrador cancelarla |
 | OS-005 | PENDIENTE | El administrador puede asignarla a Diana (ventanas: *Órdenes → Asignar técnico*; consola: opción 7) |
 
 > En la versión de consola, la opción **5 del menú principal** ejecuta la demo de todos los requerimientos **en memoria**: no modifica los archivos.
